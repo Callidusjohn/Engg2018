@@ -1,0 +1,77 @@
+			<PAGE 1>
+
+URL redirect = "/"			
+
+<h2>Page 1</h2>
+
+<hr />
+<h3>Content of Page 1</h3>
+<p>Nothing... yet.</p>
+
+<br />
+<form action=\"/login\" method=\"POST\">
+<input type=\"text\" name=\"prova\">
+<input type=\"submit\" value=\"post\">
+</form>
+
+<br />
+<form action=\"/login\" method=\"GET\">
+<input type=\"text\" name=\"prova2\">
+<input type=\"submit\" value=\"get\">
+
+</form><form action=\"/login\" method=\"POST\">
+<button name=\"LedToggle\" value=\"myvalue\" type=\"submit\">greenery</button>
+</form>
+
+
+			<PAGE 2>
+
+URL redirect = "/page2"	
+
+<h2>Page 2</h2>
+
+<hr />
+<h3>Content of Page 2</h3>
+<p>Nothing here. Except '\002' that.</p>
+<p>Oh, and '\002' that.</p>
+<p>Finally '\002' that.</p>
+
+
+			<PAGE 3>
+
+URL redirect = "/page3"	
+
+<h2>Page 3</h2>
+
+<hr />
+<h3>Content of Page 3</h3>
+<p>
+	<form action=\"/page3\" method=\"POST\">
+	<button name=\"LedOn\" value=\"\002\" type=\"submit\">Turn led \002</button>
+
+	// USING IMAGES - DEFINE
+	"<img src=\"led\002.png\" alt=\"Smiley face\" height=\"32\" width=\"32\" />"
+</p>
+
+
+			<PAGE 4>
+
+URL redirect = "/page4"
+			
+<h2>Page 4</h2>
+
+<hr />
+<h3>Content of Page 4</h3>
+<p>Ehm... no, nothing.</p>
+
+
+			<PAGE 5>
+			
+URL redirect= "/login"
+
+<h2>POST Page 5</h2>
+
+<hr />
+<h3>Content of Page 5</h3>
+<p>received a POST request</p>
+
