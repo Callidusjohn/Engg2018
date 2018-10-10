@@ -47,40 +47,61 @@
   </main>
 
   <footer>
-    <script type="text/javascript">
-    var redCans = document.getElementById('1').value;
-    var greenCans = document.getElementById('2').value;
-    var blueCans = document.getElementById('3').value;
 
-    function total(redCans, greenCans, blueCans){
-      return redCans+greenCans+blueCans;
-    }
-
-    function greaterThanTen(redCans,greenCans,blueCans){
-      if(total(redCans,greenCans,blueCans)>10){
-        return true;
-      }
-      return false;
-    }
-    var form = document.getElementsByName('canForm')
-    form.addEventListener('submit', function (e){
-      e.preventDefault();
-      alert("Submit Clicked");
-    })
-    //alert("total =" + total(redCans,greenCans,blueCans));
-
-
-    </script>
-    <form name="canForm">
+    <form id="canForm" name="canForm">
         <input style="visibility: hidden" id="4" type="number"min="0" max="8" step="1" name="Cans">
         <input style="visibility: hidden" id="5" type="number"min="0" max="8" step="1" name="Cans">
         <input style="visibility: hidden" id="6" type="number"min="0" max="8" step="1" name="Cans">
         <div class="container">
-        <input type="submit">
+        <input type="submit" onclick="sanitiseData()">
       </div>
     </form>
 
   </footer>
 </body>
+<script type="text/javascript">
+document.getElementById('1').value=0;
+document.getElementById('2').value=0;
+document.getElementById('3').value=0;
+function total(){
+  var redCans = document.getElementById('1').value;
+  var greenCans = document.getElementById('2').value;
+  var blueCans = document.getElementById('3').value;
+  var total = parseInt(redCans) + parseInt(greenCans) + parseInt(blueCans);
+  return total;
+}
 
+function greaterThanTen(){
+
+  if(total()>10){
+    return true;
+  }
+  return false;
+}
+
+
+function sanitiseData(){
+  if(!greaterThanTen()){
+    console.log("test")
+    document.getElementById('4').value=document.getElementById('1').value;
+    document.getElementById('5').value=document.getElementById('2').value;
+    document.getElementById('6').value=document.getElementById('3').value;
+  }
+    if(document.getElementById('1').value>8){
+      alert("this ran")
+      document.getElementById('1').value=0;
+      document.getElementById('4').value=0;
+    }
+    if(document.getElementById('2').value>8){
+      document.getElementById('2').value=0;
+      document.getElementById('5').value=0;
+    }
+    if(document.getElementById('3').value>8){
+      document.getElementById('3').value=0;
+      document.getElementById('6').value=0;
+    }
+  alert("total =" + total());
+}
+
+</script>
 </html>
