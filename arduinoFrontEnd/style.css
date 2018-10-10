@@ -1,0 +1,81 @@
+body, html, h1, h2, p, div, a, img, header, footer, span {
+  margin: 0;
+  padding: 0;
+}
+
+* {
+  box-sizing: border-box
+}
+
+html {
+  background: #343434;
+}
+
+footer, header {
+  background: #ffffff;
+  color: #444444;
+  font-family: Arial, "Helvetica Neue", Helvetica, sans-serif;
+  text-align: center;
+  padding: 2em 0;
+}
+
+main {
+  width: 100%;
+  margin: 0 auto;
+  overflow: hidden;
+}
+
+.container {
+    position: relative;
+    text-align: center;
+    font-size: 30px;
+}
+
+.col {
+  width: 33.333%;
+  height: 500px;
+  float: left;
+  text-align: center;
+  padding: 1rem;
+}
+
+
+.col1 {
+  position: relative;
+  background: Red;
+  font-family: Arial, "Helvetica Neue", Helvetica, sans-serif;
+
+}
+
+.col2 {
+  position: relative;
+  background: Green;
+  font-family: Arial, "Helvetica Neue", Helvetica, sans-serif;
+}
+
+.col3 {
+  position: relative;
+  background: Blue;
+  font-family: Arial, "Helvetica Neue", Helvetica, sans-serif;
+}
+
+footer {
+  clear: both;
+}
+
+@media only screen and (max-width:768px) {
+  .col1, .col2 {
+    width: 50%;
+  }
+
+  .col3 {
+    width: 100%;
+  }
+}
+
+@media only screen and (max-width:480px) {
+  .col {
+    float: none;
+    width: 100%;
+  }
+}
