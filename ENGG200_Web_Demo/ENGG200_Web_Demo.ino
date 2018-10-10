@@ -1,27 +1,8 @@
- /*
- * Web Server - multi-page.  5 Feb 2011.
- * Need an Ethernet Shield over Arduino.
- *
- * by Martyn Woerner extending the good work of
- * Alessandro Calzavara, alessandro(dot)calzavara(at)gmail(dot)com
- * and Alberto Capponi, bebbo(at)fast-labs net
- * for Arduino community! :-)
- * 
- * Pro:
- * - HTTP Requests GET & POST
- * - Switch page selection.
- * - HTML pages in flash memory.
- * - Button to turn LED on/off
- * - Favicon & png images
- *
- */
 #include <SPI.h>
 #include <Ethernet.h>
 #include "WebServer.h"
 
 #define USE_DHCP_FOR_IP_ADDRESS
-#define USE_IMAGES
-#define USE_ARDUINO_ICON
 
 /**********************************************************************************************************************
 *                                   MAC address and IP address.
@@ -43,7 +24,7 @@ const char *pStxDelimiter = "\002";    // STX - ASCII start of text character
 /**********************************************************************************************************************
 *                                   Strings stored in flash of the HTML we will be transmitting
 ***********************************************************************************************************************/
-
+// sample comment
 // HTTP Request message
 const char content_404[] PROGMEM = "HTTP/1.1 404 Not Found\nServer: arduino\nContent-Type: text/html\n\n<html><head><title>Arduino Web Server - Error 404</title></head><body><h1>Error 404: Sorry, that page cannot be found!</h1></body>";
 const char * const page_404[] PROGMEM = { content_404 }; // table with 404 page
@@ -92,6 +73,13 @@ const char content_page5[] PROGMEM = "<hr /><h3>Content of Page 5</h3><p>receive
 // declare tables for the pages
 const char * const contents_titles[] PROGMEM = { content_title1, content_title2, content_title3, content_title4, content_title5 }; // titles
 const char * const contents_pages [] PROGMEM = { content_page1, content_page2, content_page3, content_page4, content_page5 }; // real content
+
+
+// declare table for all URIs
+const char * const http_uris[] PROGMEM = { http_uri1, http_uri2, http_uri3, http_uri4, http_uri5 }; // URIs
+
+#define NUM_PAGES  sizeof(contents_pages)  / sizeof(contents_pages[0])
+#define NUM_URIS  (NUM_PAGES)  // Pages URIs + favicon URI, etc
 
 /**********************************************************************************************************************
 *                                                 Shared variable and Setup()
@@ -150,11 +138,6 @@ void loop()
     {
       // Normal page request, may depend on content of the request
       sendPage(client, nUriIndex, requestContent);
-    }
-    else
-    {
-      // Image request
-      sendImage(client, nUriIndex, requestContent);
     }
 
     // give the web browser time to receive the data
@@ -408,20 +391,6 @@ void sendPage(EthernetClient & client, int nUriIndex, BUFFER & requestContent)
 }
 
 /**********************************************************************************************************************
-*                                                              Send Images
-***********************************************************************************************************************/
-void sendImage(EthernetClient & client, int nUriIndex, BUFFER & requestContent)
-{
-  int nImageIndex = nUriIndex - NUM_PAGES;
-
-  // send the header for the requested image
-  sendUriContentByIndex(client, nUriIndex, requestContent);
-
-  // send the image data
-  sendProgMemAsBinary(client, (char *)pgm_read_word(&(data_for_images[nImageIndex])), (int)pgm_read_word(&(size_for_images[nImageIndex])));
-}
-
-/**********************************************************************************************************************
 *                                                              Send content split by buffer size
 ***********************************************************************************************************************/
 // If we provide string data then we don't need specify an explicit size and can do a string copy
@@ -472,8 +441,6 @@ void sendUriContentByIndex(EthernetClient client, int nUriIndex, BUFFER & reques
 
   if (nUriIndex < NUM_PAGES)
     offsetPtr = (char*)pgm_read_word(&(contents_pages[nUriIndex]));
-  else
-    offsetPtr = (char*)pgm_read_word(&(image_header));
 
   buffer[nSize] = 0;  // ensure there is always a string terminator
   remaining = strlen_P(offsetPtr);  // Set total bytes of URI remaining
@@ -547,34 +514,6 @@ void sendSubstitute(EthernetClient client, int nUriIndex, int nSubstituteIndex, 
             break;
         }
         break;
-    }
-  }
-  else
-  {
-    // Image request
-    int nImageIndex = nUriIndex - NUM_PAGES;
-
-    switch (nSubstituteIndex)
-    {
-      case 0:
-        // Content-Length value - ie. image size
-        char strSize[6];  // Up to 5 digits plus null terminator
-        itoa((int)pgm_read_word(&(size_for_images[nImageIndex])), strSize, 10);
-        Serial.println(strSize);    // Debug
-        client.print(strSize);
-        break;
-      case 1:
-        // Content-Type partial value
-        switch (nImageIndex)
-        {
-          case 0:  // favicon
-            client.print("x-icon");
-            break;
-          case 1:  // led on image
-          case 2:  // led off image
-            client.print("png");
-            break;
-        }
     }
   }
 }
