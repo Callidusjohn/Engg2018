@@ -15,4 +15,6 @@ namespace bluetooth_uno {
 
 	// transfer data to Mega
 	int transferToMega(int data);
+
+	void lcd_errorChecking(int data);
 }
