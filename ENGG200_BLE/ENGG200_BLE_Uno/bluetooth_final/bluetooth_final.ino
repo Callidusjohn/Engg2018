@@ -2,7 +2,6 @@
 #include "bluetooth_uno.cpp"
 
 AltSoftSerial BTSerial;
-
 bluetooth_uno bt;
 
 void setup() {

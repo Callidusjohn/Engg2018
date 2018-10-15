@@ -45,7 +45,7 @@ public:
     	}
 	}
 
-	int transferToMega(int data) {
+	void transferToMega(int data) {
 		if (Serial.available()) {
 	      Serial.write(data);
 	    }
