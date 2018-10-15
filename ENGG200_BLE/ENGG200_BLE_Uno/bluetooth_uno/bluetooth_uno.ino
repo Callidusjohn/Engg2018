@@ -1,5 +1,4 @@
 #include <SoftwareSerial.h>
-#include <bluetooth_uno.h>
 
 bool initiateConnToMega() {
 	int PIN = 9;
