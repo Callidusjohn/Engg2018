@@ -5,7 +5,7 @@
 #define USE_DHCP_FOR_IP_ADDRESS
 
 /**********************************************************************************************************************
-*                                   MAC address and IP address.
+                                    MAC address and IP address.
 ***********************************************************************************************************************/
 byte mac[] = { 0xDE, 0xAD, 0xBE, 0xEF, 0xFE, 0xED };
 
@@ -22,7 +22,7 @@ const char *pSpDelimiters = " \r\n";
 const char *pStxDelimiter = "\002";    // STX - ASCII start of text character
 
 /**********************************************************************************************************************
-*                                   Strings stored in flash of the HTML we will be transmitting
+                                    Strings stored in flash of the HTML we will be transmitting
 ***********************************************************************************************************************/
 // sample comment
 // HTTP Request message
@@ -31,7 +31,7 @@ const char * const page_404[] PROGMEM = { content_404 }; // table with 404 page
 
 // HTML Header for pages
 const char content_main_header[] PROGMEM = "HTTP/1.0 200 OK\nServer: arduino\nCache-Control: no-store, no-cache, must-revalidate\nPragma: no-cache\nConnection: close\nContent-Type: text/html\n";
-const char content_main_top[] PROGMEM = "<html><head><title>Arduino Web Server</title><style type=\"text/css\">table{border-collapse:collapse;}td{padding:0.25em 0.5em;border:0.5em solid #C8C8C8;}</style></head><body><h1>Arduino Web Server</h1>";
+const char content_main_top[] PROGMEM = "<html><head><title>Arduino Web Server</title><style type=\"text/css\">table{border-collapse:collapse;}td{padding:0.25em 0.5em;border:0.5em solid #C8C8C8;}</style></head><body><h1>Arduino - Tile Runner Web Server</h1>";
 const char content_main_menu[] PROGMEM = "<table width=\"500\"><tr><td align=\"center\"><a href=\"/\">Page 1</a></td><td align=\"center\"><a href=\"page2\">Page 2</a></td><td align=\"center\"><a href=\"page3\">Page 3</a></td><td align=\"center\"><a href=\"page4\">Page 4</a></td></tr></table>";
 const char content_main_footer[] PROGMEM = "</body></html>";
 const char * const contents_main[] PROGMEM = { content_main_header, content_main_top, content_main_menu, content_main_footer }; // table with 404 page
@@ -43,8 +43,8 @@ const char * const contents_main[] PROGMEM = { content_main_header, content_main
 // Page 1
 const char http_uri1[] PROGMEM = "/";
 const char content_title1[] PROGMEM = "<h2>Page 1</h2>";
-const char content_page1[] PROGMEM = "<hr /><h3>Content of Page 1</h3><p>Nothing... yet.</p><br /><form action=\"/login\" method=\"POST\"><input type=\"text\" name=\"prova\"><input type=\"submit\" value=\"post\"></form>"
-    "<br /><form action=\"/login\" method=\"GET\"><input type=\"text\" name=\"prova2\"><input type=\"submit\" value=\"get\"></form><form action=\"/login\" method=\"POST\"><button name=\"LedToggle\" value=\"myvalue\" type=\"submit\">greenery</button></form>";
+const char content_page1[] PROGMEM = "<hr /><h3>Red Cans</h3><p>How many red cans would you like to pick up?</p><br /><form action=\"/login\" method=\"POST\"><input type=\"number\" name=\"RCans\"><input type=\"submit\" value=\"post\"></form>"
+                                     "<br /><form action=\"/login\" method=\"GET\"><input type=\"text\" name=\"prova2\"><input type=\"submit\" value=\"get\"></form><form action=\"/login\" method=\"POST\"><button name=\"LedToggle\" value=\"myvalue\" type=\"submit\">Submit</button></form>";
 
 // Page 2
 const char http_uri2[] PROGMEM = "/page2";
@@ -56,9 +56,9 @@ const char http_uri3[] PROGMEM = "/page3";
 const char content_title3[] PROGMEM = "<h2>Page 3</h2>";
 const char content_page3[] PROGMEM = "<hr /><h3>Content of Page 3</h3><p><form action=\"/page3\" method=\"POST\"><button name=\"LedOn\" value=\"\002\" type=\"submit\">Turn led \002</button>"
 #ifdef USE_IMAGES
-    "<img src=\"led\002.png\" alt=\"Smiley face\" height=\"32\" width=\"32\" />"
+                                     "<img src=\"led\002.png\" alt=\"Smiley face\" height=\"32\" width=\"32\" />"
 #endif
-    "</form></p>";
+                                     "</form></p>";
 
 // Page 4
 const char http_uri4[] PROGMEM = "/page4";
@@ -67,7 +67,7 @@ const char content_page4[] PROGMEM = "<hr /><h3>Content of Page 4</h3><p>Ehm... 
 
 // Page 5
 const char http_uri5[] PROGMEM = "/login";
-const char content_title5[] PROGMEM = "<h2>POST Page 5</h2>";
+const char content_title5[] PROGMEM = "<h2>Return page from submit page</h2>";
 const char content_page5[] PROGMEM = "<hr /><h3>Content of Page 5</h3><p>received a POST request</p>";
 
 // declare tables for the pages
@@ -82,7 +82,7 @@ const char * const http_uris[] PROGMEM = { http_uri1, http_uri2, http_uri3, http
 #define NUM_URIS  (NUM_PAGES)  // Pages URIs + favicon URI, etc
 
 /**********************************************************************************************************************
-*                                                 Shared variable and Setup()
+                                                  Shared variable and Setup()
 ***********************************************************************************************************************/
 EthernetServer server(80);
 
@@ -92,9 +92,9 @@ void setup()
   Serial.print("Starting Server.");
   Serial.print("Obtaining Ethernet Address...");
 #ifdef USE_DHCP_FOR_IP_ADDRESS
-    Ethernet.begin(mac);  // Use DHCP to get an IP address
+  Ethernet.begin(mac);  // Use DHCP to get an IP address
 #else
-    Ethernet.begin(mac, ip);
+  Ethernet.begin(mac, ip);
 #endif
 
   delay(2000);
@@ -107,7 +107,7 @@ void setup()
 }
 
 /**********************************************************************************************************************
-*                                                           Main loop
+                                                            Main loop
 ***********************************************************************************************************************/
 
 void loop()
@@ -147,26 +147,26 @@ void loop()
 }
 
 /**********************************************************************************************************************
-*                                              Method for read HTTP Header Request from web client
-*
-* The HTTP request format is defined at http://www.w3.org/Protocols/HTTP/1.0/spec.html#Message-Types
-* and shows the following structure:
-*  Full-Request and Full-Response use the generic message format of RFC 822 [7] for transferring entities. Both messages may include optional header fields
-*  (also known as "headers") and an entity body. The entity body is separated from the headers by a null line (i.e., a line with nothing preceding the CRLF).
-*      Full-Request   = Request-Line       
-*                       *( General-Header 
-*                        | Request-Header  
-*                        | Entity-Header ) 
-*                       CRLF
-*                       [ Entity-Body ]    
-*
-* The Request-Line begins with a method token, followed by the Request-URI and the protocol version, and ending with CRLF. The elements are separated by SP characters.
-* No CR or LF are allowed except in the final CRLF sequence.
-*      Request-Line   = Method SP Request-URI SP HTTP-Version CRLF
-* HTTP header fields, which include General-Header, Request-Header, Response-Header, and Entity-Header fields, follow the same generic format.
-* Each header field consists of a name followed immediately by a colon (":"), a single space (SP) character, and the field value.
-* Field names are case-insensitive. Header fields can be extended over multiple lines by preceding each extra line with at least one SP or HT, though this is not recommended.     
-*      HTTP-header    = field-name ":" [ field-value ] CRLF
+                                               Method for read HTTP Header Request from web client
+
+  The HTTP request format is defined at http://www.w3.org/Protocols/HTTP/1.0/spec.html#Message-Types
+  and shows the following structure:
+   Full-Request and Full-Response use the generic message format of RFC 822 [7] for transferring entities. Both messages may include optional header fields
+   (also known as "headers") and an entity body. The entity body is separated from the headers by a null line (i.e., a line with nothing preceding the CRLF).
+       Full-Request   = Request-Line
+*                       *( General-Header
+                         | Request-Header
+                         | Entity-Header )
+                        CRLF
+                        [ Entity-Body ]
+
+  The Request-Line begins with a method token, followed by the Request-URI and the protocol version, and ending with CRLF. The elements are separated by SP characters.
+  No CR or LF are allowed except in the final CRLF sequence.
+       Request-Line   = Method SP Request-URI SP HTTP-Version CRLF
+  HTTP header fields, which include General-Header, Request-Header, Response-Header, and Entity-Header fields, follow the same generic format.
+  Each header field consists of a name followed immediately by a colon (":"), a single space (SP) character, and the field value.
+  Field names are case-insensitive. Header fields can be extended over multiple lines by preceding each extra line with at least one SP or HT, though this is not recommended.
+       HTTP-header    = field-name ":" [ field-value ] CRLF
 ***********************************************************************************************************************/
 // Read HTTP request, setting Uri Index, the requestContent and returning the method type.
 MethodType readHttpRequest(EthernetClient & client, int & nUriIndex, BUFFER & requestContent)
@@ -183,13 +183,13 @@ MethodType readHttpRequest(EthernetClient & client, int & nUriIndex, BUFFER & re
 
   if (nContentLength > 0)
   {
-  // If there is some content then read it and do an elementary decode.
+    // If there is some content then read it and do an elementary decode.
     readEntityBody(client, nContentLength, requestContent);
     if (bIsUrlEncoded)
     {
-    // The '+' encodes for a space, so decode it within the string
-    for (char * pChar = requestContent; (pChar = strchr(pChar, '+')) != NULL; )
-      *pChar = ' ';    // Found a '+' so replace with a space
+      // The '+' encodes for a space, so decode it within the string
+      for (char * pChar = requestContent; (pChar = strchr(pChar, '+')) != NULL; )
+        *pChar = ' ';    // Found a '+' so replace with a space
     }
   }
 
@@ -220,8 +220,8 @@ MethodType readRequestLine(EthernetClient & client, BUFFER & readBuffer, int & n
     for (pQuery = requestContent; (pQuery = strchr(pQuery, '+')) != NULL; )
       *pQuery = ' ';    // Found a '+' so replace with a space
 
-//    Serial.print("Get query string: ");
-//    Serial.println(requestContent);
+    Serial.print("Get query string: ");
+    Serial.println(requestContent);
   }
   if (strcmp(pMethod, "GET") == 0)
     eMethod = MethodGet;
@@ -249,7 +249,7 @@ void readRequestHeaders(EthernetClient & client, BUFFER & readBuffer, int & nCon
   do
   {
     getNextHttpLine(client, readBuffer);
-//    Serial.println(readBuffer); // DEBUG
+    //    Serial.println(readBuffer); // DEBUG
     // Process a header. We only need to extract the (optionl) content
     // length for the binary content that follows all these headers.
     // General-Header = Date | Pragma
@@ -290,14 +290,14 @@ void readEntityBody(EthernetClient & client, int nContentLength, BUFFER & conten
   for (i = 0; i < nContentLength; ++i)
   {
     c = client.read();
-//    Serial.print(c); // DEBUG
+    //    Serial.print(c); // DEBUG
     content[i] = c;
   }
 
   content[nContentLength] = 0;  // Null string terminator
 
-//  Serial.print("Content: ");
-//  Serial.println(content);
+    //Serial.print("Content: ");
+    //Serial.println(content);
 }
 
 // See if we recognize the URI and get its index; or -1 if we don't recognize it.
@@ -316,16 +316,16 @@ int GetUriIndex(char * pUri)
       break;
     }
   }
-//  Serial.print("URI: ");
-//  Serial.print(pUri);
-//  Serial.print(" Page: ");
-//  Serial.println(nUriIndex);
+  //  Serial.print("URI: ");
+  //  Serial.print(pUri);
+  //  Serial.print(" Page: ");
+  //  Serial.println(nUriIndex);
 
   return nUriIndex;
 }
 
 /**********************************************************************************************************************
-* Read the next HTTP header record which is CRLF delimited.  We replace CRLF with string terminating null.
+  Read the next HTTP header record which is CRLF delimited.  We replace CRLF with string terminating null.
 ***********************************************************************************************************************/
 void getNextHttpLine(EthernetClient & client, BUFFER & readBuffer)
 {
@@ -351,20 +351,20 @@ void getNextHttpLine(EthernetClient & client, BUFFER & readBuffer)
 }
 
 /**********************************************************************************************************************
-*                                                              Send Pages
-       Full-Response  = Status-Line         
-                        *( General-Header   
-                         | Response-Header 
-                         | Entity-Header ) 
+                                                               Send Pages
+       Full-Response  = Status-Line
+                         ( General-Header
+                         | Response-Header
+                         | Entity-Header )
                         CRLF
-                        [ Entity-Body ]   
+                        [ Entity-Body ]
 
        Status-Line = HTTP-Version SP Status-Code SP Reason-Phrase CRLF
        General-Header = Date | Pragma
        Response-Header = Location | Server | WWW-Authenticate
        Entity-Header  = Allow | Content-Encoding | Content-Length | Content-Type
                       | Expires | Last-Modified | extension-header
-*
+
 ***********************************************************************************************************************/
 void sendPage(EthernetClient & client, int nUriIndex, BUFFER & requestContent)
 {
@@ -385,13 +385,14 @@ void sendPage(EthernetClient & client, int nUriIndex, BUFFER & requestContent)
   client.print("<br />");
   // send POST variables
   client.print(requestContent);
+  Serial.println(requestContent);
 
   // send footer
-  sendProgMemAsString(client,(char*)pgm_read_word(&(contents_main[CONT_FOOTER])));
+  sendProgMemAsString(client, (char*)pgm_read_word(&(contents_main[CONT_FOOTER])));
 }
 
 /**********************************************************************************************************************
-*                                                              Send content split by buffer size
+                                                               Send content split by buffer size
 ***********************************************************************************************************************/
 // If we provide string data then we don't need specify an explicit size and can do a string copy
 void sendProgMemAsString(EthernetClient & client, const char *realword)
@@ -425,7 +426,7 @@ void sendProgMemAsBinary(EthernetClient & client, const char* realword, int real
 }
 
 /**********************************************************************************************************************
-*                                                              Send real page content
+                                                               Send real page content
 ***********************************************************************************************************************/
 // This method takes the contents page identified by nUriIndex, divides it up into buffer-sized
 // strings, passes it on for STX substitution and finally sending to the client.
