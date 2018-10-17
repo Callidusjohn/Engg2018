@@ -141,7 +141,7 @@ void loop()
         String str = requestContent;
         char str_int[] = parsingString();
     }
-    print(str);
+    Serial.println(str_int);
     
     if (nUriIndex < 0)
     {
