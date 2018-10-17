@@ -1,26 +1,38 @@
-// #include <Arduino.h>
-// #include <SoftwareSerial.h>
-// //#include <Serial.h>
-//
-// namespace bluetooth_uno {
-// 	class bluetooth_uno {
-// 		int PIN;
-//
-// 		// create a connection between Uno and Mega
-// 		bool initiateConnToMega();
-//
-// 		// encrypt data using ROT-18 (ext of ROT-13)
-// 		int encryptData(int data);
-//
-// 		// add a checksum to data for transmission
-// 		int addChecksum(int data);
-//
-// 		// calculate checksum
-// 		int calcChecksum(int data);
-//
-// 		// transfer data to Mega
-// 		int transferToMega(int data);
-//
-// 		void lcd_errorChecking(int data);
-// 	};
-// }
+#include <Arduino.h>
+#include <SoftwareSerial.h>
+#include <AltSoftSerial.h>
+//#include <Serial.h>
+
+struct BluetoothUno {
+
+	// create a connection between Uno and Mega
+	void initiateConnToMega();
+
+	// encrypt data using ROT-18 (ext of ROT-13)
+	int encryptData(int data);
+
+	// add a checksum to data for transmission
+	int addChecksum(int data);
+
+	// calculate checksum
+	int calcChecksum(int data);
+
+	// transfer data to Mega
+	void transferToMega(int data);
+
+	void transmitToMega(int data);
+
+	void lcd_errorChecking(int data);
+
+	void getInfo();
+
+	int PIN;
+	AltSoftSerial BTSerial;
+	boolean NL = true;
+	char c = ' ';
+	struct cans {
+		unsigned char red;
+		unsigned char green;
+		unsigned char blue;
+	};
+};

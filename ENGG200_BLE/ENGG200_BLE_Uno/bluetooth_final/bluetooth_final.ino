@@ -1,8 +1,7 @@
 #include <SoftwareSerial.h>
-#include "bluetooth_uno.cpp"
+#include "bluetooth_uno.h"
 
-AltSoftSerial BTSerial;
-bluetooth_uno bt;
+static BluetoothUno bt;
 
 void setup() {
   	bt.initiateConnToMega();
