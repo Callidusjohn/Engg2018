@@ -9,6 +9,13 @@ using namespace std;
 class bluetooth_uno {
 public:
 	AltSoftSerial BTSerial;
+	boolean NL = true;
+	char c = " ";
+	struct cans {
+		unsigned char red;
+		unsigned char green;
+		unsigned char blue;
+	};
 
 	void initiateConnToMega() {
 		Serial.begin(9600);
@@ -20,14 +27,10 @@ public:
 
 		BTSerial.begin(9600);
 		Serial.println("Arduino Uno: Bluetooth Serial started at 9600 Baud.");
-		BTSerial.print("Print OK if working: ");
-		BTSerial.write("AT"); // this should print OK to monitor
-		BTSerial.write("AT+nnnnnnnn\n"); // replace n with MAC address
+		BTSerial.print("Connection to Uno has been established.");
 	}
 
 	void getInfo() {
-		boolean NL = true;
-		char c = " ";
 		if (BTSerial.available() > 0) {
 			c = BTSerial.read();
 			Serial.write(c);
@@ -39,10 +42,22 @@ public:
 				BTSerial.write(c);
 			}
 
-	        if (NL) { Serial.print("\r\n>");  NL = false; }
+	        if (NL) { Serial.print("\r>");  NL = false; }
 	        Serial.write(c);
 	        if (c==10) { NL = true; }
     	}
+	}
+
+	void transmitToMega(int data) {
+		BTSerial.write(data);
+        if (NL) {
+			Serial.print("\r>");
+			NL = false;
+		}
+        Serial.write(data);
+        if (data==10) {
+			NL = true;
+		}
 	}
 
 	void transferToMega(int data) {
