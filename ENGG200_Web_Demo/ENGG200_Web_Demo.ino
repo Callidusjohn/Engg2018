@@ -109,6 +109,14 @@ void setup()
 /**********************************************************************************************************************
                                                             Main loop
 ***********************************************************************************************************************/
+char[] parsingString(str){
+    char red = str[4];
+    char green = str[12];
+    char blue = str[19];
+    
+    char result[4] = {"0"", red, green, blue};
+    return result;
+}t
 
 void loop()
 {
@@ -129,6 +137,12 @@ void loop()
     Serial.print(" content: ");
     Serial.println(requestContent);
 
+    if (nUriIndex == 0){
+        String str = requestContent;
+        char str_int[] = parsingString();
+    }
+    print(str);
+    
     if (nUriIndex < 0)
     {
       // URI not found
@@ -524,3 +538,5 @@ void setLed(bool isOn)
   isLedOn = isOn;
   digitalWrite(ledPin, isLedOn ? HIGH : LOW);
 }
+stContent;
+    }
