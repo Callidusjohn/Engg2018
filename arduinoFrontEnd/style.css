@@ -29,6 +29,7 @@ main {
     position: relative;
     text-align: center;
     font-size: 30px;
+    font-family: Arial, "Helvetica Neue", Helvetica, sans-serif;
 }
 
 .col {
