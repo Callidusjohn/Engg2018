@@ -6,7 +6,7 @@ string ROT18(string message)
 	for (int i = 0; i < message.length(); i++){
 		// Note we can assume upper case! message[i] = toupper(message[i]);
 		char c = message[i];
-		if ( c > 47 || c < 58){
+		if ( c > 47 && c < 58){
 			c += 25;
 		}
 		else {
@@ -15,7 +15,7 @@ string ROT18(string message)
 		if (c > 90){
 			c -= 43;
 		}
-		if (c > 57 || c < 65){
+		if (c > 57 && c < 65){
 			c -= 7;
 		}
 		ROT18Msg[i] = c;
