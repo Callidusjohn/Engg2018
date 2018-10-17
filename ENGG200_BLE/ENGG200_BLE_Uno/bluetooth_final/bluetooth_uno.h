@@ -3,7 +3,7 @@
 #include <AltSoftSerial.h>
 //#include <Serial.h>
 
-struct BluetoothUno {
+static struct BluetoothUno {
 
 	// create a connection between Uno and Mega
 	void initiateConnToMega();
@@ -28,11 +28,11 @@ struct BluetoothUno {
 
 	int PIN;
 	AltSoftSerial BTSerial;
-	boolean NL = true;
+	bool NL = true;
 	char c = ' ';
 	struct cans {
 		unsigned char red;
 		unsigned char green;
 		unsigned char blue;
 	};
-};
+} BluetoothUno;
