@@ -1,23 +1,24 @@
 <html>
 
 <head><meta charset="utf-8">
+  <link href="style.css" rel="stylesheet">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>
     Tile Runner
   </title>
-  <link href="style.css" rel="stylesheet" type="text/css">
-  <script src="script.js"></script>
 </head>
 
 <body>
   <header>
     <h1>Tile Runner</h1>
+    <p>Pick up to 10 cans</p>
   </header>
   <main>
 
     <div class="col col1">
       <h2>Red Cans</h2>
       <p>how many red cans would you like to pick up?</p>
+      <p>(Max 8 cans)</p>
       <div class="container">
         <form>
           <input id="1" type="number"min="0" max="8" step="1" name="Cans">
@@ -27,6 +28,7 @@
     <div class="col col2">
       <h2>Green Cans</h2>
       <p>how many green cans would you like to pick up?</p>
+      <p>(Max 8 cans)</p>
       <div class="container">
         <form>
           <input id="2" type="number"min="0" max="8" step="1" name="Cans">
@@ -36,6 +38,7 @@
     <div class="col col3">
       <h2>Blue Cans</h2>
       <p>how many blue cans would you like to pick up?</p>
+      <p>(Max 8 cans)</p>
       <div class="container">
         <form>
           <input id="3" type="number"min="0" max="8" step="1"name="Cans">
@@ -59,6 +62,7 @@
 
   </footer>
 </body>
+
 <script type="text/javascript">
 document.getElementById('1').value=0;
 document.getElementById('2').value=0;
@@ -81,27 +85,34 @@ function greaterThanTen(){
 
 
 function sanitiseData(){
-  if(!greaterThanTen()){
-    console.log("test")
-    document.getElementById('4').value=document.getElementById('1').value;
-    document.getElementById('5').value=document.getElementById('2').value;
-    document.getElementById('6').value=document.getElementById('3').value;
-  }
+	var cansValid=true;
     if(document.getElementById('1').value>8){
-      alert("this ran")
       document.getElementById('1').value=0;
       document.getElementById('4').value=0;
+	  cansValid=false;
     }
     if(document.getElementById('2').value>8){
       document.getElementById('2').value=0;
       document.getElementById('5').value=0;
+	  cansValid=false;
     }
     if(document.getElementById('3').value>8){
       document.getElementById('3').value=0;
       document.getElementById('6').value=0;
+	  cansValid=false;
     }
-  alert("total =" + total());
+  if(!greaterThanTen() && cansValid==true){
+    console.log("test")
+    document.getElementById('4').value=document.getElementById('1').value;
+    document.getElementById('5').value=document.getElementById('2').value;
+    document.getElementById('6').value=document.getElementById('3').value;
+	document.getElementById('canForm').submit();
+  }
+  else{
+	alert("Invalid number of Cans submitted.\nPlease submit a max of 10 total.\nNo greater than 8 cans per colour.")
+  }
 }
 
 </script>
+
 </html>
