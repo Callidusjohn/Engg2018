@@ -1,8 +1,16 @@
+#include <Arduino.h>
 #include <SPI.h>
 #include <Ethernet.h>
+#include <SoftwareSerial.h>
+#include <AltSoftSerial.h>
 #include "WebServer.h"
+#include "bluetooth_uno.cpp"
+#include <String.h>
+
 
 #define USE_DHCP_FOR_IP_ADDRESS
+
+bluetooth_uno bt;
 
 /**********************************************************************************************************************
                                     MAC address and IP address.
@@ -96,6 +104,10 @@ void setup()
 #else
   Ethernet.begin(mac, ip);
 #endif
+  bt.initiateConnToMega();
+  //BTSerial.begin(9600);
+  //Serial.println("Arduino Uno: Bluetooth Serial started at 9600 Baud.");
+  //BTSerial.print("Connection to Uno has been established.");
 
   delay(2000);
   server.begin();
@@ -104,6 +116,8 @@ void setup()
 
   pinMode(ledPin, OUTPUT);
   setLed(true);
+
+  
 }
 
 /**********************************************************************************************************************
@@ -118,9 +132,44 @@ char[] parsingString(str){
     return result;
 }t
 
+String parsingString(String str) {
+  char red = str[4];
+  char green = str[12];
+  char blue = str[19];
+
+  String result = "0" + red + green + blue;
+
+  return result;
+}
+
 void loop()
 {
   EthernetClient client = server.available();
+  //bt.getInfo();
+  //bt.transmitToMega(56);
+
+  /**********************************************************************/      /*
+  4  if (BTSerial.available() > 0) {
+        c = BTSerial.read();
+        Serial.write(c);
+      }
+      while (Serial.available() > 0) {
+        c = Serial.read();
+
+        if (c != 10 && c != 13) {
+          BTSerial.write(c);
+        }
+
+        if (NL) {
+          Serial.print("\r>");
+          NL = false;
+        }
+        Serial.write(c);
+        if (c == 10) {
+          NL = true;
+        }
+      }
+    /**********************************************************************/
 
   if (client)
   {
@@ -136,6 +185,16 @@ void loop()
     Serial.print(nUriIndex);
     Serial.print(" content: ");
     Serial.println(requestContent);
+    
+
+    if (nUriIndex == 0 ) {
+      String str = requestContent;
+      String integer = parsingString(str);
+      //client.println(integer);
+      //Serial.println(str);
+      AltSoftSerial BTSerial;
+      BTSerial.write(12345);
+    }
 
     if (nUriIndex == 0){
         String str = requestContent;
