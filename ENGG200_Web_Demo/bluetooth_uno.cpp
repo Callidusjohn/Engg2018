@@ -1,7 +1,7 @@
 #include <Arduino.h>
 #include <SoftwareSerial.h>
 #include <AltSoftSerial.h>
-#include <String.h>
+#include <string.h>
 #include "bluetooth_uno.h"
 
 using namespace std;
@@ -10,7 +10,7 @@ class bluetooth_uno {
   public:
     AltSoftSerial BTSerial;
     boolean NL = true;
-    char c = " ";
+    char c = ' ';
     struct cans {
       unsigned char red;
       unsigned char green;
