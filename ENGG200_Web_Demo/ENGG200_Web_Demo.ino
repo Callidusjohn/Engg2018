@@ -3,9 +3,10 @@
 #include <Ethernet.h>
 #include <SoftwareSerial.h>
 #include <AltSoftSerial.h>
+#include <string.h>
 #include "WebServer.h"
 #include "bluetooth_uno.cpp"
-#include <String.h>
+
 
 
 #define USE_DHCP_FOR_IP_ADDRESS
@@ -41,7 +42,7 @@ const char * const page_404[] PROGMEM = { content_404 }; // table with 404 page
 const char content_main_header[] PROGMEM = "HTTP/1.0 200 OK\nServer: arduino\nCache-Control: no-store, no-cache, must-revalidate\nPragma: no-cache\nConnection: close\nContent-Type: text/html\n";
 const char content_main_top[] PROGMEM = "<html><head><title>Arduino Web Server</title><style type=\"text/css\">table{border-collapse:collapse;}td{padding:0.25em 0.5em;border:0.5em solid #C8C8C8;}</style></head><body><h1>Arduino - Tile Runner Web Server</h1>";
 const char content_main_menu[] PROGMEM = "<table width=\"500\"><tr><td align=\"center\"><a href=\"/\">Page 1</a></td><td align=\"center\"><a href=\"page2\">Page 2</a></td><td align=\"center\"><a href=\"page3\">Page 3</a></td><td align=\"center\"><a href=\"page4\">Page 4</a></td></tr></table>";
-const char content_main_footer[] PROGMEM = "<form id=\"canForm\"name=\"canForm\"><input style=\"visibility: hidden\" id=\"4\"type=\"number\"min=\"0\" max=\"8\" step=\"1\" name=\"Red\"><input style=\"visibility:hidden\"id=\"5\"type=\"number\"min=\"0\" max=\"8\"step=\"1\"name=\"Green\"><input style=\"visibility\: hidden\" id=\"6\" type=\"number\"min=\"0\" max=\"8\" step=\"1\" name=\"Blue\"><div class=\"container\"><input type=\"submit\" onclick=\"sanitiseData()\"></div></form></body><script type=\"text/javascript\">alert(\"jsrunning\");document.getElementById('1').value=0;document.getElementById('2').value=0;document.getElementById('3').value=0;function total(){var redCans = document.getElementById('1').value;var greenCans = document.getElementById('2').value;var blueCans = document.getElementById('3').value;var total=parseInt(redCans)+parseInt(greenCans)+parseInt(blueCans);return total;}function greaterThanTen(){if(total()>10){return true;}return false;}function sanitiseData(){var cansValid=true;if(document.getElementById('1').value>8 || document.getElementById('1').value<0){document.getElementById('1').value=0;document.getElementById('4').value=0;cansValid=false;}if(document.getElementById('2').value>8 || document.getElementById('2').value<0){document.getElementById('2').value=0;document.getElementById('5').value=0;cansValid=false;}if(document.getElementById('3').value>8 || document.getElementById('3').value<0){document.getElementById('3').value=0;document.getElementById('6').value=0;cansValid=false;}if(!greaterThanTen() && cansValid==true){console.log(\"test\");document.getElementById('4').value=document.getElementById('1').value;document.getElementById('5').value=document.getElementById('2').value;document.getElementById('6').value=document.getElementById('3').value;document.getElementById('canForm').submit();}else{alert(\"Invalid number of Cans submitted. Please submit a max of 10 total. No greater than 8 cans per colour.\");}}</script></html>";
+const char content_main_footer[] PROGMEM = "</html>";
 const char * const contents_main[] PROGMEM = { content_main_header, content_main_top, content_main_menu, content_main_footer }; // table with 404 page
 #define CONT_HEADER 0
 #define CONT_TOP 1
@@ -52,7 +53,9 @@ const char * const contents_main[] PROGMEM = { content_main_header, content_main
 const char http_uri1[] PROGMEM = "/";
 const char content_title1[] PROGMEM = "<h2>Page 1</h2>";
 const char content_page1[] PROGMEM = "<hr /><div class=\"col col1\"><h2>Red Cans</h2><p>how many red cans would you like to pick up?</p><div class=\"container\"><form><input id=\"1\" type=\"number\"min=\"0\" max=\"8\" step=\"1\" name=\"Red\"></form></div></div><div class=\"col col2\"><h2>Green Cans</h2><p>how many green cans would you like to pick up?</p><div class=\"container\"><form><input id=\"2\" type=\"number\"min=\"0\" max=\"8\" step=\"1\" name=\"Green\"></form></div></div><div class=\"col col3\"><h3>Blue Cans</h3><p>how many blue cans would you like to pick up?</p><div class=\"container\"><form><input id=\"3\" type=\"number\"min=\"0\" max=\"8\" step=\"1\"name=\"Blue\"></form></div></div></form>"
-                                     "<br /><form action=\"/login\" method=\"GET\"><input type=\"text\" name=\"prova2\"><input type=\"submit\" value=\"get\"></form><form action=\"/login\" method=\"POST\"></form>";
+                                      "<form action=\"/login\" id=\"canForm\"name=\"canForm\"><input style=\"visibility: hidden\" id=\"4\"type=\"number\"min=\"0\" max=\"8\" step=\"1\" name=\"Red\"><input style=\"visibility:hidden\"id=\"5\"type=\"number\"min=\"0\" max=\"8\"step=\"1\"name=\"Green\"><input style=\"visibility\: hidden\" id=\"6\" type=\"number\"min=\"0\" max=\"8\" step=\"1\" name=\"Blue\"><div class=\"container\"><input type=\"submit\" onclick=\"sanitiseData()\"></div></form></body><script type=\"text/javascript\">alert(\"jsrunning\");document.getElementById('1').value=0;document.getElementById('2').value=0;document.getElementById('3').value=0;function total(){var redCans = document.getElementById('1').value;var greenCans = document.getElementById('2').value;var blueCans = document.getElementById('3').value;var total=parseInt(redCans)+parseInt(greenCans)+parseInt(blueCans);return total;}function greaterThanTen(){if(total()>10){return true;}return false;}function sanitiseData(){var cansValid=true;if(document.getElementById('1').value>8 || document.getElementById('1').value<0){document.getElementById('1').value=0;document.getElementById('4').value=0;cansValid=false;}if(document.getElementById('2').value>8 || document.getElementById('2').value<0){document.getElementById('2').value=0;document.getElementById('5').value=0;cansValid=false;}if(document.getElementById('3').value>8 || document.getElementById('3').value<0){document.getElementById('3').value=0;document.getElementById('6').value=0;cansValid=false;}if(!greaterThanTen() && cansValid==true){console.log(\"test\");document.getElementById('4').value=document.getElementById('1').value;document.getElementById('5').value=document.getElementById('2').value;document.getElementById('6').value=document.getElementById('3').value;document.getElementById('canForm').submit();}else{alert(\"Invalid number of Cans submitted. Please submit a max of 10 total. No greater than 8 cans per colour.\");}}</script>";
+                                     /*"<br /><form action=\"/login\" method=\"GET\"><input type=\"text\" name=\"prova2\"><input type=\"submit\" value=\"get\"></form><form action=\"/login\" method=\"POST\"></form>";*/
+                                    
 
 // Page 2
 const char http_uri2[] PROGMEM = "/page2";
@@ -123,22 +126,12 @@ void setup()
 /**********************************************************************************************************************
                                                             Main loop
 ***********************************************************************************************************************/
-char[] parsingString(str){
-    char red = str[4];
-    char green = str[12];
-    char blue = str[19];
-    
-    char result[4] = {"0"", red, green, blue};
-    return result;
-}t
 
 String parsingString(String str) {
-  char red = str[4];
-  char green = str[12];
-  char blue = str[19];
-
-  String result = "0" + red + green + blue;
-
+  String result = "0"; //0 for unsuccess & 1 for success. FIXME
+  result.concat(str[4]);
+  result.concat(str[12]);
+  result.concat(str[19]);
   return result;
 }
 
@@ -187,20 +180,13 @@ void loop()
     Serial.println(requestContent);
     
 
-    if (nUriIndex == 0 ) {
-      String str = requestContent;
-      String integer = parsingString(str);
-      //client.println(integer);
-      //Serial.println(str);
-      AltSoftSerial BTSerial;
-      BTSerial.write(12345);
-    }
-
-    if (nUriIndex == 0){
+    if (nUriIndex == 0)
+      if (strlen(requestContent) != 0){
         String str = requestContent;
-        char str_int[] = parsingString();
+        String integer = parsingString(str);
+        Serial.println(integer);
     }
-    Serial.println(str_int);
+    
     
     if (nUriIndex < 0)
     {
@@ -597,5 +583,3 @@ void setLed(bool isOn)
   isLedOn = isOn;
   digitalWrite(ledPin, isLedOn ? HIGH : LOW);
 }
-stContent;
-    }
