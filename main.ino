@@ -13,7 +13,7 @@
 
 // The setup() function runs once each time the micro-controller starts
 void setup() {
-	// call AsyncHandler.addCallback(delay, &function) here to register your initial execution
+	// call AsyncHandler.addCallback(&function, delay) here to register your initial execution
 	// each function may only have ONE delayed callback registered at a time
 	// called functions can register other functions and themselves
 }

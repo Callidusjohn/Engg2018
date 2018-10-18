@@ -4,13 +4,14 @@
 #include <Arduino.h>
 #include <Chrono.h>
 #include "../shared_types.h"
+#include "../shared_utils.h"
 
 static class AsyncHandler {
 public:
 
 	AsyncHandler();
 
-	void addCallback(Chrono::chrono_t delay, void(*callback)());
+	void addCallback(void(*callback)(), Chrono::chrono_t delay = 0);
 
 	void processLoop();
 
@@ -23,7 +24,7 @@ private:
 	struct DelayedCallback {
 		Chrono::chrono_t invoke_at;
 		void(*callback_function)();
-	} registered_callbacks[delay_buffer_size], pending_callbacks[delay_buffer_size];
+	} callbacks[delay_buffer_size];
 
 } AsyncHandler;
 
