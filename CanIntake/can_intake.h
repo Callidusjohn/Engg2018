@@ -3,9 +3,10 @@
 #define CAN_INTAKE_H
 #include <Arduino.h>
 #include "../shared_types.h"
+//#include "arm_controller.h"
 
 struct CanIntake {
-	friend struct ArmController;
+	friend class ArmController;
 
 	static void loopHook();
 
@@ -31,7 +32,8 @@ struct CanIntake {
 	
 private:
 
-	struct ArmController;
+	class ArmController;
+
 	static ArmController armController;
 	static CanQuantities remainingCans;
 	static CanType currentlyCollecting;

@@ -1,6 +1,7 @@
 #include <Arduino.h>
 #include "shared_utils.h"
 #include "shared_types.h"
+#include "MockAsync/async_handler.h"
 #include "CanIntake/can_intake.h"
 
 #define USE_MAGNET_ARM false
@@ -12,11 +13,13 @@
 
 // The setup() function runs once each time the micro-controller starts
 void setup() {
-
+	// call AsyncHandler.addCallback(delay, &function) here to register your initial execution
+	// each function may only have ONE delayed callback registered at a time
+	// called functions can register other functions and themselves
 }
 
 // Add the main program code into the continuous loop() function
 void loop() {
-
-	CanIntake::loopHook(); // only does anything if CanIntake::isCollecting()
+	AsyncHandler.processLoop(); // goes at top
+	// any other stuff that needs to happen
 }

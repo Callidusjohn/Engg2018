@@ -5,6 +5,4 @@
 #include "shared_types.h"
 // commonly re-used cross-module code signatures
 
-
-
 #endif

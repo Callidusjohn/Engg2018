@@ -1,6 +1,9 @@
 #include "can_intake.h"
 #include "arm_controller.h"
 
+CanIntake::ArmController CanIntake::armController = ArmController();
+CanQuantities CanIntake::remainingCans = { 0, 0, 0 };
+
 void CanIntake::loopHook() {
 	if (isCollecting()) armController.loopHook();
 }
@@ -29,18 +32,17 @@ void CanIntake::beginCollection(CanType type) {
 }
 
 bool CanIntake::isCollecting() noexcept {
-	//stub
-	return armController.isCollecting;
+	return armController.is_collecting;
 }
 
 bool CanIntake::lastRowExhausted() noexcept {
-	return armController.lastRowExhausted;
+	return armController.last_row_exhausted;
 }
 
 uint8_t CanIntake::lastCollectedQuantity() noexcept {
-	return armController.lastCollectedQuantity;
+	return armController.last_collected_quantity;
 }
 
 void CanIntake::updateQuantites() noexcept {
-	remainingCans.quantityOf(currentlyCollecting) -= armController.lastCollectedQuantity;
+	remainingCans.quantityOf(currentlyCollecting) -= armController.last_collected_quantity;
 }

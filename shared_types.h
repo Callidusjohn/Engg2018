@@ -2,10 +2,13 @@
 #ifndef SHARED_TYPES_H
 #define SHARED_TYPES_H
 #include <Arduino.h>
+#include <Chrono.h>
 
 enum RemoteError : char {
 
 };
+
+
 
 enum CanType : char {
 	red, green, blue
