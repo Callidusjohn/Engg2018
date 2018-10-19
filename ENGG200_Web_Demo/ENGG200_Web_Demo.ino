@@ -53,8 +53,8 @@ const char * const contents_main[] PROGMEM = { content_main_header, content_main
 const char http_uri1[] PROGMEM = "/";
 const char content_title1[] PROGMEM = "<h2>Page 1</h2>";
 const char content_page1[] PROGMEM = "<hr /><div class=\"col col1\"><h2>Red Cans</h2><p>how many red cans would you like to pfick up?</p><div class=\"container\"><form><input id=\"1\" type=\"number\"min=\"0\" max=\"8\" step=\"1\" name=\"Red\"></form></div></div><div class=\"col col2\"><h2>Green Cans</h2><p>how many green cans would you like to pick up?</p><div class=\"container\"><form><input id=\"2\" type=\"number\"min=\"0\" max=\"8\" step=\"1\" name=\"Green\"></form></div></div><div class=\"col col3\"><h3>Blue Cans</h3><p>how many blue cans would you like to pick up?</p><div class=\"container\"><form><input id=\"3\" type=\"number\"min=\"0\" max=\"8\" step=\"1\"name=\"Blue\"></form></div></div></form><form action=\"/login\" id=\"canForm\"name=\"canForm\"><input style=\"visibility: hidden\" id=\"4\"type=\"number\"min=\"0\" max=\"8\" step=\"1\" name=\"Red\"><input style=\"visibility:hidden\"id=\"5\"type=\"number\"min=\"0\" max=\"8\"step=\"1\"name=\"Green\"><input style=\"visibility: hidden\" id=\"6\" type=\"number\"min=\"0\" max=\"8\" step=\"1\" name=\"Blue\"><div class=\"container\"><input type=\"submit\" onclick=\"sanitiseData()\"></div></form></body><script type=\"text/javascript\">alert(\"jsrunning\");document.getElementById('1').value=0;document.getElementById('2').value=0;document.getElementById('3').value=0;function total(){var redCans = document.getElementById('1').value;var greenCans = document.getElementById('2').value;var blueCans = document.getElementById('3').value;var total=parseInt(redCans)+parseInt(greenCans)+parseInt(blueCans);return total;}function greaterThanTen(){if(total()>10){return true;}return false;}function sanitiseData(){var cansValid=true;if(document.getElementById('1').value>8 || document.getElementById('1').value<0){document.getElementById('1').value=0;document.getElementById('4').value=0;cansValid=false;}if(document.getElementById('2').value>8 || document.getElementById('2').value<0){document.getElementById('2').value=0;document.getElementById('5').value=0;cansValid=false;}if(document.getElementById('3').value>8 || document.getElementById('3').value<0){document.getElementById('3').value=0;document.getElementById('6').value=0;cansValid=false;}if(!greaterThanTen() && cansValid==true){console.log(\"test\");document.getElementById('4').value=document.getElementById('1').value;document.getElementById('5').value=document.getElementById('2').value;document.getElementById('6').value=document.getElementById('3').value;document.getElementById('canForm').submit();}else{alert(\"Invalid number of Cans submitted. Please submit a max of 10 total. No greater than 8 cans per colour.\");}}</script>";
-                                     /*"<br /><form action=\"/login\" method=\"GET\"><input type=\"text\" name=\"prova2\"><input type=\"submit\" value=\"get\"></form><form action=\"/login\" method=\"POST\"></form>";*/
-                                    
+/*"<br /><form action=\"/login\" method=\"GET\"><input type=\"text\" name=\"prova2\"><input type=\"submit\" value=\"get\"></form><form action=\"/login\" method=\"POST\"></form>";*/
+
 
 // Page 2
 const char http_uri2[] PROGMEM = "/page2";
@@ -99,14 +99,14 @@ EthernetServer server(80);
 void setup()
 {
   Serial.begin(9600); // DEBUG
-  Serial.print("Starting Server.");
+  Serial.println("Starting Server.");
   Serial.print("Obtaining Ethernet Address...");
 #ifdef USE_DHCP_FOR_IP_ADDRESS
   Ethernet.begin(mac);  // Use DHCP to get an IP address
 #else
   Ethernet.begin(mac, ip);
 #endif
-  bt.initiateConnToMega();
+  
   //BTSerial.begin(9600);
   //Serial.println("Arduino Uno: Bluetooth Serial started at 9600 Baud.");
   //BTSerial.print("Connection to Uno has been established.");
@@ -115,11 +115,11 @@ void setup()
   server.begin();
   Serial.print("server is at ");
   Serial.println(Ethernet.localIP());
-
+  bt.initiateConnToMega();
   pinMode(ledPin, OUTPUT);
   setLed(true);
 
-  
+
 }
 
 /**********************************************************************************************************************
@@ -141,7 +141,7 @@ void loop()
   //bt.transmitToMega(56);
 
   /**********************************************************************/      /*
-  4  if (BTSerial.available() > 0) {
+    4  if (BTSerial.available() > 0) {
         c = BTSerial.read();
         Serial.write(c);
       }
@@ -177,16 +177,17 @@ void loop()
     Serial.print(nUriIndex);
     Serial.print(" content: ");
     Serial.println(requestContent);
-    
 
-    if (nUriIndex == 0)
-      if (strlen(requestContent) != 0){
+
+    if (nUriIndex == 4)
+      if (strlen(requestContent) != 0) {
         String str = requestContent;
         String integer = parsingString(str);
         Serial.println(integer);
-    }
-    
-    
+        bt.transmitToMega(integer.toInt());
+      }
+
+
     if (nUriIndex < 0)
     {
       // URI not found
