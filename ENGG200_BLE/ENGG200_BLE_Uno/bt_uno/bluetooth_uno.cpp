@@ -18,6 +18,7 @@ void BluetoothUno::initiateConnToMega() {
 	BTSerial.print("Connection to Uno has been established.");
 }
 
+// this function allows transfer using serial monitor
 void BluetoothUno::getInfo() {
 	if (BTSerial.available() > 0) {
 		c = BTSerial.read();
