@@ -1,7 +1,7 @@
 #include <SoftwareSerial.h>
 #include "bluetooth_uno.cpp"
 
-AltSoftSerial BTSerial;
+//AltSoftSerial BTSerial;
 bluetooth_uno bt;
 
 void setup() {
