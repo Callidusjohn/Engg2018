@@ -41,3 +41,25 @@ void BluetoothUno::transmitToMega(int data) {
 	// need some flag to ensure this isnt infinite
 	BTSerial.write(data);
 }
+
+// encrypt data using variation of rot-13
+// call this again to decrypt
+string Bluetooth::encryptData(string data) {
+	string ROT18Msg = data;
+	for (int i = 0; i < message.length(); i++) {
+		// NOTE: we can assume upper case! message[i] = toupper(message[i]);
+		char c = message[i];
+		if (c > 47 && c < 58) {
+			c += 25;
+		} else {
+			c += 18;
+		}
+		if (c > 90) {
+			c -= 43;
+		}
+		if (c > 57 && c < 65) {
+			c -= 7;
+		} ROT18Msg[i] = c;
+	}
+	return ROT18Msg;
+}
