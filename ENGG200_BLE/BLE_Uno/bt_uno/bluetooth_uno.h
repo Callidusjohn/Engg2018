@@ -8,6 +8,9 @@ static struct BluetoothUno {
 	// create a connection between Uno and Mega
 	void initiateConnToMega();
 
+	// transfer data to Mega
+	string transferToMega(int data);
+
 	// encrypt data using ROT-18 (ext of ROT-13)
 	int encryptData(int data);
 
@@ -16,9 +19,6 @@ static struct BluetoothUno {
 
 	// calculate checksum
 	int calcChecksum(int data);
-
-	// transfer data to Mega
-	void transferToMega(int data);
 
 	void transmitToMega(int data);
 
