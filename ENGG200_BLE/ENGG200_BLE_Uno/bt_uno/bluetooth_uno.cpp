@@ -38,24 +38,6 @@ void BluetoothUno::getInfo() {
 }
 
 void BluetoothUno::transmitToMega(int data) {
+	// need some flag to ensure this isnt infinite
 	BTSerial.write(data);
-	if (NL) {
-		Serial.print("\r>");
-		NL = false;
-	}
-	Serial.write(data);
-	if (data == 10) {
-		NL = true;
-	}
-}
-
-void BluetoothUno::transferToMega(int data) {
-	if (Serial.available()) {
-		Serial.write(data);
-	}
-
-	// fix this up?
-	if (data != '\r' && data != '\n') {
-		Serial.write(data);
-	}
 }
