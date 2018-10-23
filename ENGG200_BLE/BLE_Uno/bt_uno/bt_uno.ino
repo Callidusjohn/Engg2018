@@ -6,5 +6,10 @@ void setup() {
 }
 
 void loop() {
+	String message = "RGB123";
+	if (message) {
+		message = BluetoothUno.encryptData(message);
+		BluetoothUno.transmitToMega(message);
+	}
 	BluetoothUno.getInfo();
 }

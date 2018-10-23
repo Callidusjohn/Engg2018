@@ -42,9 +42,11 @@ void BluetoothUno::getInfo() {
 	}
 }
 
-void BluetoothUno::transmitToMega(int data) {
+void BluetoothUno::transmitToMega(String data) {
 	// need some flag to ensure this isnt infinite
-	BTSerial.write(data);
+	for (int i = 0; i < data.length(); i++) {
+		BTSerial.write(data[i]);
+	}
 }
 
 // encrypt data using variation of rot-13
@@ -87,7 +89,7 @@ boolean calcChecksum(String message) {
 String addChecksum(String message) {
 	int sum = 0;
 	String sumChar = "1";
-	for ( int i = 0; i < message.length(); i++) {
+	for (int i = 0; i < message.length(); i++) {
 		char c = message[i];
 		sum += c % 2;
 	}
