@@ -2,16 +2,11 @@
 #include <SPI.h>
 #include <Ethernet.h>
 #include <SoftwareSerial.h>
-#include <AltSoftSerial.h>
 #include <string.h>
 #include "WebServer.h"
-#include "bluetooth_uno.cpp"
-
-
+#include "bluetooth_uno.h"
 
 #define USE_DHCP_FOR_IP_ADDRESS
-
-bluetooth_uno bt;
 
 /**********************************************************************************************************************
                                     MAC address and IP address.
@@ -115,7 +110,7 @@ void setup()
   server.begin();
   Serial.print("server is at ");
   Serial.println(Ethernet.localIP());
-  bt.initiateConnToMega();
+  BluetoothUno.initiateConnToMega();
   pinMode(ledPin, OUTPUT);
   setLed(true);
 
@@ -132,6 +127,7 @@ String parsingString(String str) {
   result.concat(str[12]);
   result.concat(str[19]);
   return result;
+  //Serial.println (result);
 }
 
 void loop()
@@ -139,29 +135,6 @@ void loop()
   EthernetClient client = server.available();
   //bt.getInfo();
   //bt.transmitToMega(56);
-
-  /**********************************************************************/      /*
-    4  if (BTSerial.available() > 0) {
-        c = BTSerial.read();
-        Serial.write(c);
-      }
-      while (Serial.available() > 0) {
-        c = Serial.read();
-
-        if (c != 10 && c != 13) {
-          BTSerial.write(c);
-        }
-
-        if (NL) {
-          Serial.print("\r>");
-          NL = false;
-        }
-        Serial.write(c);
-        if (c == 10) {
-          NL = true;
-        }
-      }
-    /**********************************************************************/
 
   if (client)
   {
@@ -184,7 +157,8 @@ void loop()
         String str = requestContent;
         String integer = parsingString(str);
         Serial.println(integer);
-        bt.transmitToMega(integer.toInt());
+        String encrypted = BluetoothUno.encryptData(integer);
+        BluetoothUno.transmitToMega(encrypted);
       }
 
 
