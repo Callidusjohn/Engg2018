@@ -1,7 +1,7 @@
 #include <Arduino.h>
 #include <SoftwareSerial.h>
 #include <AltSoftSerial.h>
-#include <String.h>
+#include <string.h>
 #include "bluetooth_uno.h"
 
 
@@ -50,11 +50,11 @@ void BluetoothUno::transmitToMega(int data) {
 // encrypt data using variation of rot-13
 // call this again to decrypt
 // any chars should only be uppercase
-string BluetoothUno::encryptData(string data) {
-	string ROT18Msg = data;
-	for (int i = 0; i < message.length(); i++) {
+String BluetoothUno::encryptData(String data) {
+	String ROT18Msg = data;
+	for (int i = 0; i < data.length(); i++) {
 		// NOTE: assume upper case; message[i] = toupper(message[i]);
-		char c = message[i];
+		char c = data[i];
 		if (c > 47 && c < 58) {
 			c += 25;
 		} else {
@@ -71,7 +71,7 @@ string BluetoothUno::encryptData(string data) {
 }
 
 //check the message for even parity
-boolean calcChecksum(string message) {
+boolean calcChecksum(String message) {
 	int sum = 0;
 	for (int i = 0; i < message.length(); i++) {
 		char c = message[i];
@@ -84,18 +84,18 @@ boolean calcChecksum(string message) {
 }
 
 //add a checksum for even parity
-string addChecksum(string message) {
-    int sum = 0;
-    std::string sumChar = "1";
-    for ( int i = 0; i < message.length(); i++) {
-        char c = message[i];
-        sum += c % 2;
-    }
-    if (sum % 2 == 0){
-        sumChar = "0";
-    }
-	string messageOut = message;
-    messageOut.append(sumChar);
-    cout << "message: " + messageOut + "\n";
-    return messageOut;
+String addChecksum(String message) {
+	int sum = 0;
+	String sumChar = "1";
+	for ( int i = 0; i < message.length(); i++) {
+		char c = message[i];
+		sum += c % 2;
+	}
+	if (sum % 2 == 0){
+		sumChar = "0";
+	}
+	String messageOut = message;
+	messageOut += (sumChar);
+	// cout << "message: " + messageOut + "\n";
+	return messageOut;
 }
