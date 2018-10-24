@@ -8,8 +8,6 @@
 struct CanIntake {
 	friend class ArmController;
 
-	static void loopHook();
-
 	// initializes the internal state object for the arm
 	static void initState(const CanQuantities& cans);
 
@@ -34,7 +32,7 @@ private:
 
 	class ArmController;
 
-	static ArmController armController;
+	//static ArmController armController;
 	static CanQuantities remainingCans;
 	static CanType currentlyCollecting;
 

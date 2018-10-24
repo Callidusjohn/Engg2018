@@ -1,12 +1,8 @@
 #include "can_intake.h"
 #include "arm_controller.h"
 
-CanIntake::ArmController CanIntake::armController = ArmController();
+//CanIntake::ArmController CanIntake::armController = ArmController();
 CanQuantities CanIntake::remainingCans = { 0, 0, 0 };
-
-void CanIntake::loopHook() {
-	if (isCollecting()) armController.loopHook();
-}
 
 void CanIntake::initState(const CanQuantities& cans) {
 	if (isCollecting()) {
@@ -28,21 +24,21 @@ bool CanIntake::needsMoreCans(CanType type) noexcept {
 void CanIntake::beginCollection(CanType type) {
 	currentlyCollecting = type;
 
-	armController.beginCollection(remainingCans.quantityOf(type));
+	ArmController::beginCollection(remainingCans.quantityOf(type));
 }
 
 bool CanIntake::isCollecting() noexcept {
-	return armController.is_collecting;
+	return ArmController::isCollecting();
 }
 
 bool CanIntake::lastRowExhausted() noexcept {
-	return armController.last_row_exhausted;
+	return ArmController::lastRowExhausted();
 }
 
 uint8_t CanIntake::lastCollectedQuantity() noexcept {
-	return armController.last_collected_quantity;
+	return ArmController::lastCollectedQuantity();
 }
 
 void CanIntake::updateQuantites() noexcept {
-	remainingCans.quantityOf(currentlyCollecting) -= armController.last_collected_quantity;
+	remainingCans.quantityOf(currentlyCollecting) -= ArmController::lastCollectedQuantity();
 }

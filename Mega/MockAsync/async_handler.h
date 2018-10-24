@@ -23,7 +23,7 @@ private:
 	Chrono::chrono_t next_invoke;
 	struct DelayedCallback {
 		Chrono::chrono_t invoke_at;
-		void(*callback_function)();
+		void (*callback_function)();
 	} callbacks[delay_buffer_size];
 
 } AsyncHandler;

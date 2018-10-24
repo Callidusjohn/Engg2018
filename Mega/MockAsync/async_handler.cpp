@@ -1,5 +1,5 @@
 #include "async_handler.h"
-
+#include "../shared_utils.h"
 Chrono AsyncHandler::chrono = Chrono(Chrono::MILLIS);
 
 AsyncHandler::AsyncHandler() : next_invoke(chrono_t_max) {
