@@ -1,12 +1,37 @@
 <html>
 <head>
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta http-equiv="refresh" content=15>
 <link href="style.css" rel="stylesheet">
 </head>
 <body>
   <div class="container">
     <h1>Your order is being processed</h1>
+    <p id='status'></p>
   </div>
-
+  <!--<input type="button" value="Submit" onclick="test()">-->
 </body>
+
+<script type="text/javascript">
+var timer = 5;
+function getRequest(){
+  const Http = new XMLHttpRequest();
+  Http.open("GET", false);
+  return Http.ressponseText;
+}
+var status = getRequest();
+alert
+if(status!="undefined"){
+  document.getElementById('status').innerHTML="Status="+status;
+}
+else{
+  document.getElementById('status').innerHTML="Await Processing";
+
+}
+function refresh(timer){
+   alert("refresh");
+   return timer;
+}
+
+</script>
+
 </html>
