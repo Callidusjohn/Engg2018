@@ -4,7 +4,6 @@
 #include <string.h>
 #include "bluetooth_uno.h"
 
-
 void BluetoothUno::initiateConnToMega() {
 	Serial.begin(9600);
 	Serial.print("File:   ");

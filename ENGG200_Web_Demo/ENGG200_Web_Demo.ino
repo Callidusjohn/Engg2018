@@ -6,13 +6,18 @@
 #include "WebServer.h"
 #include "bluetooth_uno.h"
 
+/**********************************************************************************************************************
+                                    Error Storage
+***********************************************************************************************************************/
+String feedback = "Connecting...";
+
 #define USE_DHCP_FOR_IP_ADDRESS
 
 /**********************************************************************************************************************
                                     MAC address and IP address.
 ***********************************************************************************************************************/
 byte mac[] = { 0xDE, 0xAD, 0xBE, 0xEF, 0xFE, 0xED };
-String feedback = "Connecting...";
+
 
 #if !defined USE_DHCP_FOR_IP_ADDRESS
 // ip represents the fixed IP address to use if DHCP is disabled.
@@ -28,6 +33,11 @@ const char *pStxDelimiter = "\002";    // STX - ASCII start of text character
 ***********************************************************************************************************************/
 // sample comment
 // HTTP Request message
+const char * const commA[] PROGMEM = {"Waiting", "Failed to connect", "Client disconnect"};
+const char * const commB[] PROGMEM = {"Waiting", "Failed to connect", "Client disconnect"};
+const char * const commC[] PROGMEM = {"Waiting", "Failed to connect", "Client disconnect"};
+const char * const commD[] PROGMEM = {"Waiting", "Failed to connect", "Client disconnect"};
+const char * const commE[] PROGMEM = {"Waiting", "Failed to connect", "Client disconnect"};
 const char content_404[] PROGMEM = "HTTP/1.1 404 Not Found\nServer: arduino\nContent-Type: text/html\n\n<html><head><title>Arduino Web Server - Error 404</title></head><body><h1>Error 404: Sorry, that page cannot be found!</h1></body>";
 const char * const page_404[] PROGMEM = { content_404 }; // table with 404 page
 
@@ -78,6 +88,7 @@ void setup()
   Serial.flush();
   Serial.begin(9600); // DEBUG
   Serial.println("Starting Server.");
+  Serial.println("Obtaining IP...");
 #ifdef USE_DHCP_FOR_IP_ADDRESS
   Ethernet.begin(mac);  // Use DHCP to get an IP address
 #else
@@ -104,11 +115,33 @@ String parsingString(String str) {
   return result;
 }
 
+String getErrorMessage(String str){
+  String result = "";
+  int code = str.substring(1).toInt();
+  switch(str[0]){
+    case 'A':
+      result = commA[code];
+      break;
+    case 'B':
+      result = commB[code];
+      break;
+    case 'C':
+      result = commC[code];
+      break;   
+    case 'D':
+      result = commD[code];
+      break;
+    case 'E':
+      result = commE[code];
+      break;    
+  }
+  return result;
+}
+
 void loop()
 {
   EthernetClient client = server.available();
-  //bt.getInfo();
-  //bt.transmitToMega(56);
+
 
   if (client)
   {
@@ -140,7 +173,7 @@ void loop()
       if (nUriIndex == 2)
         if (strlen(requestContent) != 0) {
           String integer = parsingString(requestContent);
-          message = "<p>Red can: " + String(integer[1]) + "<br>";
+          message = "Red can: " + String(integer[1]) + "<br>";
           message.concat("Green can: " + String(integer[2]) + "<br>");
           message.concat("Blue can: " + String(integer[3]) + "</p>");
           client.println(message);
@@ -149,15 +182,16 @@ void loop()
           BluetoothUno.transmitToMega(integer);
         }
       if (nUriIndex == 1) {
-        if (feedback != "success") {
+        //feedback = getErrorMessage(Bluetooth::feedback());
+        if (feedback != "Success") {
           client.print("<head><meta http-equiv=\"refresh\" content=\"5\"></head>" + feedback);
           Serial.println(millis());
           if (millis() < 20000)
-            feedback = "Waiting";
+            feedback = commD[0];
           else if (millis() < 40000)
-            feedback = "Failing";
+            feedback = commD[1];
           else
-            feedback = "Need fix";
+            feedback = commD[2];
         }
       }
     }
