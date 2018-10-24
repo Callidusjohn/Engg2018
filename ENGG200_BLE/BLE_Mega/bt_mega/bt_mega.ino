@@ -11,7 +11,7 @@ char b = '/';
 void setup() {
   // put your setup code here, to run once:
   Serial.begin(9600);
-  Serial2.begin(9600);
+  //Serial2.begin(9600); need to uncomment whnechange back to Serial2
   //Serial2.println("conn
 
 }
