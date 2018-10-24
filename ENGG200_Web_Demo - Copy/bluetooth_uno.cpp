@@ -6,7 +6,6 @@
 
 
 void BluetoothUno::initiateConnToMega() {
-  Serial.begin(9600);
   Serial.print("File:   ");
   Serial.println(__FILE__);
   Serial.print("Uploaded: ");
@@ -47,21 +46,6 @@ void BluetoothUno::transmitToMega(String data) {
   for (int i = 0; i < data.length(); i++) {
     BTSerial.write(data[i]);
   }
-}
-
-String BluetoothUno::prepareForMega(String data) {
-    for(int i = 0; i < data.length(); i++) {
-        if(i = 1) {
-            data[1] = data[1] + 2;
-        }
-        if(i = 2) {
-            data[2] = data[2] + 11;
-        }
-        if(i = 3) {
-            data[3] = data[3] + 20;
-        }
-        return data;
-    }
 }
 
 // encrypt data using variation of rot-13

@@ -19,8 +19,6 @@ static struct BluetoothUno {
 
   // calculate checksum
   boolean calcChecksum(String message);
-    
-  String prepareForMega(String data);
 
   void transmitToMega(int data);
 
