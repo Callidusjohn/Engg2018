@@ -6,5 +6,5 @@ static struct InterpretData {
 	char interpretGreen(char c, char g);
 	char interpretBlue(char c, char b);
 
-	void inputData ();
+	CanQuantities inputData();
 } InterpretData;
