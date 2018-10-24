@@ -32,6 +32,6 @@ void loop() {
     Serial.println(quantity.green);
     Serial.println(quantity.blue);
     Serial.println("");
-    }
+    
 
 }
