@@ -2,7 +2,7 @@
 #include <Arduino.h>
 #include "interpretData.h"
 #include "shared_types.h"
-#include <SoftwareSerial.h>
+
 
 
 
@@ -11,8 +11,8 @@
 void setup() {
   // put your setup code here, to run once:
   Serial.begin(9600);
-  BTSerial.begin(9600); // added for uno board
-  //Serial2.begin(9600); need to uncomment whnechange back to Serial2
+
+  Serial2.begin(9600); need to uncomment whnechange back to Serial2
   //Serial2.println("conn
 
 }

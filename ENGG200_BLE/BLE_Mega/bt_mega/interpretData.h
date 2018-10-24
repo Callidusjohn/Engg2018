@@ -13,6 +13,5 @@ static struct InterpretData {
 	char r = '/';
 	char g = '/';
 	char b = '/';
-
-	AltSoftSerial BTSerial; // added for uno board
+	
 } InterpretData;

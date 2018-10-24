@@ -36,8 +36,8 @@ char InterpretData::interpretBlue(char c, char b) {
 }
 
 CanQuantities InterpretData::inputData () {
-  if(BTSerial.available()){ //need to change back to Serial2
-    char c = BTSerial.read(); //need to change back tp Serial2
+  if(Serial2.available()){
+    char c = Serial2.read();
     Serial.println(c);
     r = interpretRed(c,r);
     g = interpretGreen(c,g);
