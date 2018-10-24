@@ -1,16 +1,16 @@
 #include <Arduino.h>
 #include "shared_types.h"
+#include "bluetooth_mega.h"
 #include "interpretData.h"
 
 char InterpretData::interpretRed(char c) {
-  //check for red value
-
-if(c >= 50 && c <= 58) {
-  //convert to number
-  c = c-2;
-  return c;
-  }
-  return;
+  	//check for red value
+	if(c >= 50 && c <= 58) {
+		//convert to number
+		c = c-2;
+		return c;
+	}
+	return;
 }
 
 char InterpretData::interpretGreen(char c) {
