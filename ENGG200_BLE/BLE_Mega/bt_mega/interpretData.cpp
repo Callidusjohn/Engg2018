@@ -1,5 +1,6 @@
 #include <Arduino.h>
 #include "shared_types.h"
+#include "bluetooth_mega.h"
 #include "interpretData.h"
 
 char InterpretData::interpretRed(char c) {
