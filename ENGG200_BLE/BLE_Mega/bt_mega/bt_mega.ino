@@ -4,9 +4,7 @@
 #include "shared_types.h"
 
 
-char r = '/';
-char g = '/';
-char b = '/';
+
 //CanQuantities data = {r, g, b};
 void setup() {
   // put your setup code here, to run once:
@@ -32,6 +30,6 @@ void loop() {
     Serial.println(quantity.green);
     Serial.println(quantity.blue);
     Serial.println("");
-    
+
 
 }
