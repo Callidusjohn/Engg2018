@@ -2,10 +2,10 @@
 #include <SoftwareSerial.h>
 #include <AltSoftSerial.h>
 #include <string.h>
-#include "bluetooth_uno.h"
+#include "bluetooth_mega.h"
 
 
-void BluetoothUno::initiateConnToMega() {
+void BluetoothMega::initiateConnToUno() {
 	Serial.begin(9600);
 	Serial.print("File:   ");
 	Serial.println(__FILE__);
@@ -14,12 +14,12 @@ void BluetoothUno::initiateConnToMega() {
 	Serial.println(" ");
 
 	BTSerial.begin(9600);
-	Serial.println("Arduino Uno: Bluetooth Serial started at 9600 Baud.");
-	BTSerial.print("Connection to Uno has been established.");
+	Serial.println("Arduino Mega: Bluetooth Serial started at 9600 Baud.");
+	BTSerial.print("Connection to Mega has been established.");
 }
 
 // this function allows transfer using serial monitor
-void BluetoothUno::getInfo() {
+void BluetoothMega::getInfo() {
 	if (BTSerial.available() > 0) {
 		c = BTSerial.read();
 		Serial.write(c);
@@ -42,32 +42,17 @@ void BluetoothUno::getInfo() {
 	}
 }
 
-void BluetoothUno::transmitToMega(String data) {
+void BluetoothMega::transmitToUno(String data) {
 	// need some flag to ensure this isnt infinite
 	for (int i = 0; i < data.length(); i++) {
 		BTSerial.write(data[i]);
 	}
 }
 
-String BluetoothUno::prepareForMega(String data) {
-    for(int i = 0; i < data.length(); i++) {
-        if(i = 1) {
-            data[1] = data[1] + 2;
-        }
-        if(i = 2) {
-            data[2] = data[2] + 11;
-        }
-        if(i = 3) {
-            data[3] = data[3] + 20;
-        }
-        return data;
-    }
-}
-
 // encrypt data using variation of rot-13
 // call this again to decrypt
 // any chars should only be uppercase
-String BluetoothUno::encryptData(String data) {
+String BluetoothMega::encryptData(String data) {
 	String ROT18Msg = data;
 	for (int i = 0; i < data.length(); i++) {
 		// NOTE: assume upper case; message[i] = toupper(message[i]);

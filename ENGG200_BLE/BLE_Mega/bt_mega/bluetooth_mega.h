@@ -3,13 +3,13 @@
 #include <AltSoftSerial.h>
 //#include <Serial.h>
 
-static struct BluetoothUno {
+static struct BluetoothMega {
 
 	// create a connection between Uno and Mega
-	void initiateConnToMega();
+	void initiateConnToUno();
 
 	// transfer data to Mega
- 	void transmitToMega(String data);
+ 	void transmitToUno(String data);
 
 	// encrypt data using ROT-18 (ext of ROT-13)
 	String encryptData(String data);
@@ -19,8 +19,6 @@ static struct BluetoothUno {
 
 	// calculate checksum
 	boolean calcChecksum(String message);
-    
-    String prepareForMega(String data);
 
 	void transmitToMega(int data);
 
@@ -37,4 +35,4 @@ static struct BluetoothUno {
 		unsigned char green;
 		unsigned char blue;
 	};
-} BluetoothUno;
+} BluetoothMega;
