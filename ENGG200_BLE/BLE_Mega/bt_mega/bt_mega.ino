@@ -1,8 +1,7 @@
 
 #include <Arduino.h>
-#include "shared_types.h"
-#include "bluetooth_mega.h"
 #include "interpretData.h"
+#include "shared_types.h"
 
 //CanQuantities data = {r, g, b};
 void setup() {
@@ -18,10 +17,12 @@ void loop() {
     if(Serial2.available()){
     char c = Serial2.read();
     Serial.println(c);
-    char r = InterpretData.interpretRed(c);
-    char g = InterpretData.interpretGreen(c);
-    char b = InterpretData.interpretBlue(c);
+    char r, g, b = '0';
+    r = InterpretData.interpretRed(c,r);
+    g = InterpretData.interpretGreen(c,g);
+    b = InterpretData.interpretBlue(c,b);
     CanQuantities quantity = {r, g, b};
+
     Serial.println(quantity.red);
     Serial.println(quantity.green);
     Serial.println(quantity.blue);

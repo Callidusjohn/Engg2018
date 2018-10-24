@@ -49,6 +49,21 @@ void BluetoothUno::transmitToMega(String data) {
 	}
 }
 
+String BluetoothUno::prepareForMega(String data) {
+    for(int i = 0; i < data.length(); i++) {
+        if(i = 1) {
+            data[1] = data[1] + 2;
+        }
+        if(i = 2) {
+            data[2] = data[2] + 11;
+        }
+        if(i = 3) {
+            data[3] = data[3] + 20;
+        }
+        return data;
+    }
+}
+
 // encrypt data using variation of rot-13
 // call this again to decrypt
 // any chars should only be uppercase
