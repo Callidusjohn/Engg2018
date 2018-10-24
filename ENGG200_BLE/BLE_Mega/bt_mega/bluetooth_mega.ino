@@ -18,9 +18,9 @@ void loop() {
   // put your main code here, to run repeatedly:
     if(Serial2.available()){
     char c = Serial2.read();
-    char r = interpretRed(c);
-    char g = interpretGreen(c);
-    char b = interpretBlue(c);
+    char r = interpretData.interpretRed(c);
+    char g = interpretData.interpretGreen(c);
+    char b = interpretData.interpretBlue(c);
     CanQuantities quantity = {r, g, b};
     Serial.println(quantity.red);
     Serial.println(quantity.green);
