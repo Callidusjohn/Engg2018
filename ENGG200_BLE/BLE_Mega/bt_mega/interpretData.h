@@ -7,4 +7,4 @@ static struct InterpretData {
 	char interpretBlue(char c);
 
 	void inputData ();
-}
+} InterpretData;
