@@ -5,36 +5,36 @@
 
 static struct BluetoothUno {
 
-  // create a connection between Uno and Mega
-  void initiateConnToMega();
+	// create a connection between Uno and Mega
+	void initiateConnToMega();
 
-  // transfer data to Mega
-  void transmitToMega(String data);
+	// transfer data to Mega
+ 	void transmitToMega(String data);
 
-  // encrypt data using ROT-18 (ext of ROT-13)
-  String encryptData(String data);
+	// encrypt data using ROT-18 (ext of ROT-13)
+	String encryptData(String data);
 
-  // add a checksum to data for transmission
-  int addChecksum(String message);
+	// add a checksum to data for transmission
+	int addChecksum(String message);
 
-  // calculate checksum
-  boolean calcChecksum(String message);
+	// calculate checksum
+	boolean calcChecksum(String message);
     
-  String prepareForMega(String data);
+    String prepareForMega(String data);
 
-  void transmitToMega(int data);
+	void transmitToMega(int data);
 
-  void lcd_errorChecking(int data);
+	void lcd_errorChecking(int data);
 
-  void getInfo();
+	void getInfo();
 
-  int PIN;
-  AltSoftSerial BTSerial;
-  bool NL = true;
-  char c = ' ';
-  struct cans {
-    unsigned char red;
-    unsigned char green;
-    unsigned char blue;
-  };
+	int PIN;
+	AltSoftSerial BTSerial;
+	bool NL = true;
+	char c = ' ';
+	struct cans {
+		unsigned char red;
+		unsigned char green;
+		unsigned char blue;
+	};
 } BluetoothUno;
