@@ -17,7 +17,9 @@ void loop() {
     if(Serial2.available()){
     char c = Serial2.read();
     Serial.println(c);
-    char r, g, b = '0';
+    char r = '0';
+    char g = '0';
+    char b = '0';
     r = InterpretData.interpretRed(c,r);
     g = InterpretData.interpretGreen(c,g);
     b = InterpretData.interpretBlue(c,b);
