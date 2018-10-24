@@ -36,7 +36,7 @@ char InterpretData::interpretBlue(char c, char b) {
 }
 
 CanQuantities InterpretData::inputData () {
-  if(Serial2.available()){
+
     char c = Serial2.read();
     Serial.println(c);
     r = interpretRed(c,r);
@@ -44,9 +44,12 @@ CanQuantities InterpretData::inputData () {
     b = interpretBlue(c,b);
     if(r >= 48 && r <= 56 && g >= 48 && g <= 56 && b >= 48 && b <= 56) {
       return CanQuantities {r, g, b};
-
     }
-  }
+    Serial.println(quantity.red);
+    Serial.println(quantity.green);
+    Serial.println(quantity.blue);
+    Serial.println("");
+
   return;
 }
 
