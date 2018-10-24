@@ -11,7 +11,6 @@ void BluetoothUno::initiateConnToMega() {
 	Serial.println(__FILE__);
 	Serial.print("Uploaded: ");
 	Serial.println(__DATE__);
-	Serial.println(" ");
 
 	BTSerial.begin(9600);
 	Serial.println("Arduino Uno: Bluetooth Serial started at 9600 Baud.");
