@@ -47,14 +47,14 @@ const char * const contents_main[] PROGMEM = { content_main_header, content_main
 // Page 1
 const char http_uri1[] PROGMEM = "/";
 const char content_title1[] PROGMEM = "<h2>Page 1</h2>";
-const char content_page1[] PROGMEM = "<hr /><div class=\"col col1\"><h2>Red Cans</h2><p>how many red cans would you like to pfick up?</p><div class=\"container\"><form><input id=\"1\" type=\"number\"min=\"0\" max=\"8\" step=\"1\" name=\"Red\"></form></div></div><div class=\"col col2\"><h2>Green Cans</h2><p>how many green cans would you like to pick up?</p><div class=\"container\"><form><input id=\"2\" type=\"number\"min=\"0\" max=\"8\" step=\"1\" name=\"Green\"></form></div></div><div class=\"col col3\"><h2>Blue Cans</h2><p>how many blue cans would you like to pick up?</p><div class=\"container\"><form><input id=\"3\" type=\"number\"min=\"0\" max=\"8\" step=\"1\"name=\"Blue\"></form></div></div></form><form action=\"/login\" id=\"canForm\"name=\"canForm\"><input style=\"visibility: hidden\" id=\"4\"type=\"number\"min=\"0\" max=\"8\" step=\"1\" name=\"Red\"><input style=\"visibility:hidden\"id=\"5\"type=\"number\"min=\"0\" max=\"8\"step=\"1\"name=\"Green\"><input style=\"visibility: hidden\" id=\"6\" type=\"number\"min=\"0\" max=\"8\" step=\"1\" name=\"Blue\"><div class=\"container\"><input type=\"submit\" onclick=\"sanitiseData()\"></div></form></body><script type=\"text/javascript\">document.getElementById('1').value=0;document.getElementById('2').value=0;document.getElementById('3').value=0;function total(){var redCans = document.getElementById('1').value;var greenCans = document.getElementById('2').value;var blueCans = document.getElementById('3').value;var total=parseInt(redCans)+parseInt(greenCans)+parseInt(blueCans);return total;}function greaterThanTen(){if(total()>10){return true;}return false;}function sanitiseData(){var cansValid=true;if(document.getElementById('1').value>8 || document.getElementById('1').value<0){document.getElementById('1').value=0;document.getElementById('4').value=0;cansValid=false;}if(document.getElementById('2').value>8 || document.getElementById('2').value<0){document.getElementById('2').value=0;document.getElementById('5').value=0;cansValid=false;}if(document.getElementById('3').value>8 || document.getElementById('3').value<0){document.getElementById('3').value=0;document.getElementById('6').value=0;cansValid=false;}if(!greaterThanTen() && cansValid==true){console.log(\"test\");document.getElementById('4').value=document.getElementById('1').value;document.getElementById('5').value=document.getElementById('2').value;document.getElementById('6').value=document.getElementById('3').value;document.getElementById('canForm').submit();}else{alert(\"Invalid number of Cans submitted. Please submit a max of 10 total. No greater than 8 cans per colour.\");}}</script>";
+const char content_page1[] PROGMEM = "<hr /><div class=\"col col1\"><h2>Red Cans</h2><p>how many red cans would you like to pfick up?</p><div class=\"container\"><form><input id=\"1\" type=\"number\"min=\"0\" max=\"8\" step=\"1\" name=\"Red\"></form></div></div><div class=\"col col2\"><h2>Green Cans</h2><p>how many green cans would you like to pick up?</p><div class=\"container\"><form><input id=\"2\" type=\"number\"min=\"0\" max=\"8\" step=\"1\" name=\"Green\"></form></div></div><div class=\"col col3\"><h2>Blue Cans</h2><p>how many blue cans would you like to pick up?</p><div class=\"container\"><form><input id=\"3\" type=\"number\"min=\"0\" max=\"8\" step=\"1\"name=\"Blue\"></form></div></div></form><form action=\"/result\" id=\"canForm\"name=\"canForm\"><input style=\"visibility: hidden\" id=\"4\"type=\"number\"min=\"0\" max=\"8\" step=\"1\" name=\"Red\"><input style=\"visibility:hidden\"id=\"5\"type=\"number\"min=\"0\" max=\"8\"step=\"1\"name=\"Green\"><input style=\"visibility: hidden\" id=\"6\" type=\"number\"min=\"0\" max=\"8\" step=\"1\" name=\"Blue\"><div class=\"container\"><input type=\"submit\" onclick=\"sanitiseData()\"></div></form></body><script type=\"text/javascript\">document.getElementById('1').value=0;document.getElementById('2').value=0;document.getElementById('3').value=0;function total(){var redCans = document.getElementById('1').value;var greenCans = document.getElementById('2').value;var blueCans = document.getElementById('3').value;var total=parseInt(redCans)+parseInt(greenCans)+parseInt(blueCans);return total;}function greaterThanTen(){if(total()>10){return true;}return false;}function sanitiseData(){var cansValid=true;if(document.getElementById('1').value>8 || document.getElementById('1').value<0){document.getElementById('1').value=0;document.getElementById('4').value=0;cansValid=false;}if(document.getElementById('2').value>8 || document.getElementById('2').value<0){document.getElementById('2').value=0;document.getElementById('5').value=0;cansValid=false;}if(document.getElementById('3').value>8 || document.getElementById('3').value<0){document.getElementById('3').value=0;document.getElementById('6').value=0;cansValid=false;}if(!greaterThanTen() && cansValid==true){console.log(\"test\");document.getElementById('4').value=document.getElementById('1').value;document.getElementById('5').value=document.getElementById('2').value;document.getElementById('6').value=document.getElementById('3').value;document.getElementById('canForm').submit();}else{alert(\"Invalid number of Cans submitted. Please submit a max of 10 total. No greater than 8 cans per colour.\");}}</script>";
 /*"<br /><form action=\"/login\" method=\"GET\"><input type=\"text\" name=\"prova2\"><input type=\"submit\" value=\"get\"></form><form action=\"/login\" method=\"POST\"></form>";*/
 
 
 // Page 2
 const char http_uri2[] PROGMEM = "/page2";
-const char content_title2[] PROGMEM = "<h2>Page 2</h2>";
-const char content_page2[] PROGMEM = "<hr /><h3>Content of Page 2</h3><p>Nothing here. Except '\002' that.</p><p>Oh, and '\002' that.</p><p>Finally '\002' that.</p>";
+const char content_title2[] PROGMEM = "<h2>Status</h2>";
+const char content_page2[] PROGMEM = "";
 
 // Page 3
 const char http_uri3[] PROGMEM = "/page3";
@@ -71,9 +71,9 @@ const char content_title4[] PROGMEM = "<h2>Page 4</h2>";
 const char content_page4[] PROGMEM = "<hr /><h3>Content of Page 4</h3><p>Ehm... no, nothing.</p>";
 
 // Page 5
-const char http_uri5[] PROGMEM = "/login";
-const char content_title5[] PROGMEM = "<h2>Return page from submit page</h2>";
-const char content_page5[] PROGMEM = "<hr /><h3>Content of Page 5</h3><p>received a POST request</p>";
+const char http_uri5[] PROGMEM = "/result";
+const char content_title5[] PROGMEM = "<h2>Order Confirmation</h2>";
+const char content_page5[] PROGMEM = "<hr /><h3><p>Received order</p></h3><button onclick=\"window.location.href='/page2'\">Status</button>";
 
 // declare tables for the pages
 const char * const contents_titles[] PROGMEM = { content_title1, content_title2, content_title3, content_title4, content_title5 }; // titles
@@ -138,6 +138,7 @@ void loop()
     int    nUriIndex;  // Gives the index into table of recognized URIs or -1 for not found.
     BUFFER requestContent;    // Request content as a null-terminated string.
     MethodType eMethod = readHttpRequest(client, nUriIndex, requestContent);
+    String feedback = "";
 
     Serial.print("Read Request type: ");
     Serial.print(eMethod);
@@ -145,17 +146,6 @@ void loop()
     Serial.print(nUriIndex);
     Serial.print(" content: ");
     Serial.println(requestContent);
-
-
-    if (nUriIndex == 4)
-      if (strlen(requestContent) != 0) {
-        String str = requestContent;
-        String integer = parsingString(str);
-        Serial.println(integer);
-        BluetoothUno.prepareForMega(integer);
-        //String encrypted = BluetoothUno.encryptData(integer);
-        BluetoothUno.transmitToMega(integer);
-      }
 
 
     if (nUriIndex < 0)
@@ -166,7 +156,22 @@ void loop()
     else if (nUriIndex < NUM_PAGES)
     {
       // Normal page request, may depend on content of the request
-      sendPage(client, nUriIndex, requestContent);
+      if (nUriIndex == 4)
+        if (strlen(requestContent) != 0) {
+          String integer = parsingString(requestContent);
+          feedback = "Red can: " + String(integer[1]);
+          feedback.concat("<p>Green can: " + String(integer[2]));
+          feedback.concat("</p>Blue can: " + String(integer[3]));
+          Serial.println(feedback);
+          BluetoothUno.prepareForMega(integer);
+          //String encrypted = BluetoothUno.encryptData(integer);
+          BluetoothUno.transmitToMega(integer);
+        }
+      if (nUriIndex == 1) {
+        //feedback = BluetoothUno.feedback();
+        feedback = "Awaiting feedback";
+      }
+      sendPage(client, nUriIndex, requestContent, feedback);
     }
 
     // give the web browser time to receive the data
@@ -395,7 +400,7 @@ void getNextHttpLine(EthernetClient & client, BUFFER & readBuffer)
                       | Expires | Last-Modified | extension-header
 
 ***********************************************************************************************************************/
-void sendPage(EthernetClient & client, int nUriIndex, BUFFER & requestContent)
+void sendPage(EthernetClient & client, int nUriIndex, BUFFER & requestContent, String message)
 {
   // send HTML header
   // sendProgMemAsString(client,(char*)pgm_read_word(&(contents_main[CONT_HEADER])));
@@ -413,7 +418,7 @@ void sendPage(EthernetClient & client, int nUriIndex, BUFFER & requestContent)
   // Append the data sent in the original HTTP request
   client.print("<br />");
   // send POST variables
-  client.print(requestContent);
+  client.print(message);
   Serial.println(requestContent);
 
   // send footer
