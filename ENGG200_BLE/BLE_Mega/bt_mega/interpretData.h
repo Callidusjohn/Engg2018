@@ -7,4 +7,8 @@ static struct InterpretData {
 	char interpretBlue(char c, char b);
 
 	CanQuantities inputData();
+
+	char r = '/';
+	char g = '/';
+	char b = '/';
 } InterpretData;
