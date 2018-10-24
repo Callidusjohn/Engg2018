@@ -35,14 +35,19 @@ char InterpretData::interpretBlue(char c, char b) {
   return b;
 }
 
-void InterpretData::inputData () {
+CanQuantities InterpretData::inputData () {
   if(Serial2.available()){
     char c = Serial2.read();
-    char r, g, b = '0';
+    Serial.println(c);
     r = interpretRed(c,r);
     g = interpretGreen(c,g);
     b = interpretBlue(c,b);
-    struct CanQuantities quantity = {r, g, b};
+    if(r >= 48 && r <= 56 && g >= 48 && g <= 56 && b >= 48 && b <= 56) {
+      return CanQuantities {r, g, b};
+
+    }
   }
   return;
 }
+
+//CanQuantities InterpretData::inputData()
