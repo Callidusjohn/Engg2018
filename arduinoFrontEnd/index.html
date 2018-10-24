@@ -56,7 +56,7 @@
         <input style="visibility: hidden" id="5" type="number"min="0" max="8" step="1" name="Cans">
         <input style="visibility: hidden" id="6" type="number"min="0" max="8" step="1" name="Cans">
         <div class="container">
-        <input type="submit" onclick="sanitiseData()">
+        <input type="button" value="Submit" onclick="sanitiseData()">
       </div>
     </form>
 
@@ -83,6 +83,9 @@ function greaterThanTen(){
   return false;
 }
 
+function redirect(){
+  window.location="processing.html";
+}
 
 function sanitiseData(){
 	var cansValid=true;
@@ -102,17 +105,16 @@ function sanitiseData(){
 	  cansValid=false;
     }
   if(!greaterThanTen() && cansValid==true){
-    console.log("test")
     document.getElementById('4').value=document.getElementById('1').value;
     document.getElementById('5').value=document.getElementById('2').value;
     document.getElementById('6').value=document.getElementById('3').value;
-	document.getElementById('canForm').submit();
+	  document.getElementById('canForm').submit();
+    redirect();
   }
   else{
-	alert("Invalid number of Cans submitted.\nPlease submit a max of 10 total.\nNo greater than 8 cans per colour.")
+	   alert("Invalid number of Cans submitted.\nPlease submit a max of 10 total.\nNo greater than 8 cans per colour.");
   }
 }
-
 </script>
 
 </html>
