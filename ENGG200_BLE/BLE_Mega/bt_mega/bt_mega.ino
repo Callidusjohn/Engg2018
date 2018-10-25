@@ -3,10 +3,6 @@
 #include "interpretData.h"
 #include "shared_types.h"
 
-
-
-
-
 //CanQuantities data = {r, g, b};
 void setup() {
   // put your setup code here, to run once:
@@ -29,8 +25,6 @@ if(Serial2.available()){
     // g = InterpretData.interpretGreen(c,g);
     // b = InterpretData.interpretBlue(c,b);
     // CanQuantities quantity = {r, g, b};
-
-    
 }
 
 }

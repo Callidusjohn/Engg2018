@@ -30,7 +30,10 @@ char InterpretData::interpretBlue(char c, char b) {
 }
 
 CanQuantities InterpretData::inputData () {
-
+	/*
+	 * this function is to ensure that we always get values that are
+	 * 100% representative of their respective field
+	 */
     char c = Serial2.read();
     Serial.println(c);
     r = interpretRed(c,r);
