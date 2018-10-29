@@ -14,16 +14,23 @@ void BluetoothMega::initiateConnToUno() {
 	Serial.println(" ");
 
 	BTSerial.begin(9600);
+	// maybe force a disconnect and reconnect?
+	// even reset to master/slave?
+	BTSerial.write("AT+CONXXXXXX"); // connect to bt chip, replace X with addr
 	Serial.println("Arduino Mega: Bluetooth Serial started at 9600 Baud.");
-	BTSerial.print("Connection to Mega has been established.");
+	BTSerial.print("Connection to Mega (" + Serial.write("AT+ADDR?") + ") has been established."); // might work?
 }
 
 String BluetoothMega::getData() {
+	// TODO: implement checksum and decryption
 	String temp = "";
 	while (BTSerial.available()) {
 		char c = BTSerial.read();
 		temp.concat(c);
 	}
+	if (temp != "") {
+		return temp;
+	} return "2"; // change to error code for no information received
 }
 
 // this function allows transfer using serial monitor
@@ -106,6 +113,5 @@ String addChecksum(String message) {
 	}
 	String messageOut = message;
 	messageOut += (sumChar);
-	// cout << "message: " + messageOut + "\n";
 	return messageOut;
 }
