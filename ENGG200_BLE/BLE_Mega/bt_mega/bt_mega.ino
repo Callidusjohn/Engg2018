@@ -14,17 +14,16 @@ void setup() {
 }
 
 void loop() {
-  // put your main code here, to run repeatedly:
-if(Serial2.available()){
-  CanQuantities quantity = InterpretData.inputData();
+  	// put your main code here, to run repeatedly:
+	if(Serial2.available()){
+	  CanQuantities quantity = InterpretData.inputData();
 
-    // if(Serial2.available()){
-    // char c = Serial2.read();
-    // Serial.println(c);
-    // r = InterpretData.interpretRed(c,r);
-    // g = InterpretData.interpretGreen(c,g);
-    // b = InterpretData.interpretBlue(c,b);
-    // CanQuantities quantity = {r, g, b};
-}
-
+	    // if(Serial2.available()){
+	    // char c = Serial2.read();
+	    // Serial.println(c);
+	    // r = InterpretData.interpretRed(c,r);
+	    // g = InterpretData.interpretGreen(c,g);
+	    // b = InterpretData.interpretBlue(c,b);
+	    // CanQuantities quantity = {r, g, b};
+	}
 }

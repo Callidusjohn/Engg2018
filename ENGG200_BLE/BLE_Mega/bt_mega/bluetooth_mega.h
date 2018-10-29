@@ -8,6 +8,9 @@ static struct BluetoothMega {
 	// create a connection between Uno and Mega
 	void initiateConnToUno();
 
+	// get data sent and return string form
+	String getData();
+
 	// transfer data to Mega
  	void transmitToUno(String data);
 

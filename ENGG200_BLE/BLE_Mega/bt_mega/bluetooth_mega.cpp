@@ -18,6 +18,14 @@ void BluetoothMega::initiateConnToUno() {
 	BTSerial.print("Connection to Mega has been established.");
 }
 
+String BluetoothMega::getData() {
+	String temp = "";
+	while (BTSerial.available()) {
+		char c = BTSerial.read();
+		temp.concat(c);
+	}
+}
+
 // this function allows transfer using serial monitor
 void BluetoothMega::getInfo() {
 	if (BTSerial.available() > 0) {
