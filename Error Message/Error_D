@@ -1,1 +1,6 @@
- 
+00 
+Success
+01
+Failed to start server.
+02
+Link between client and server is broken.
