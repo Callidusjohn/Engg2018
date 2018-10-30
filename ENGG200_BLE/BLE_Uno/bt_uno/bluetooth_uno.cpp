@@ -18,6 +18,18 @@ void BluetoothUno::initiateConnToMega() {
 	BTSerial.print("Connection to Uno has been established.");
 }
 
+String BluetoothUno::getData() {
+	if (BTSerial.available()) {
+		String s = "";
+		while (BTSerial.available()) {
+			char c = BTSerial.read();
+			s.concat(c);
+		}
+		s = BluetoothUno.encryptData(s);
+		return s;
+	} return "";
+}
+
 // this function allows transfer using serial monitor
 void BluetoothUno::getInfo() {
 	if (BTSerial.available() > 0) {
