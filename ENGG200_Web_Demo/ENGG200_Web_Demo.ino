@@ -61,7 +61,7 @@ const char content_page1[] PROGMEM = "<hr /><div class=\"col col1\"><h2>Red Cans
 // Status
 const char http_uri2[] PROGMEM = "/status";
 const char content_title2[] PROGMEM = "<meta http-equiv=\"refresh\" content=15><div class=\"container\"> <h1>Your order is being processed</h1><p id='status'></p></div>";
-const char content_page2[] PROGMEM = "<hr /><script type=\"text/javascript\"> var timer = 5; var status = document.getElementById('feedback').value;if(status!=\"Success\" && status.substring(0,5)!=\"Error\"){ document.getElementById('status').innerHTML=\"Status=\"+status; } else if(status.substring(0,5) == \"Error\"){document.location='/error';} else{document.location='/result'; } function refresh(timer){ alert(\"refresh\"); return timer; }</script>";
+const char content_page2[] PROGMEM = "<hr /><script type=\"text/javascript\"> var timer = 5; var status = document.getElementById('feedback').value;if(status!=\"Success\" && status.substring(0,5)!=\"Error\"){ document.getElementById('status').innerHTML=\"Status=\"+status; } else if(status.substring(0,5) == \"Error\"){document.location='/error';} else{document.location='/success'; } function refresh(timer){ alert(\"refresh\"); return timer; }</script>";
 
 //Error
 const char http_uri3[] PROGMEM = "/error";
@@ -69,7 +69,7 @@ const char content_title3[] PROGMEM = "<h1>Error occurs</h1><p>Please fix error 
 const char content_page3[] PROGMEM = "<hr /><form action=\"/\"> <div style=\"position: absolute; right:25px; bottom:25px;\"> <button type=\"submit\">New Order</button> </div> </form>";
 
 // Success
-const char http_uri5[] PROGMEM = "/result";
+const char http_uri5[] PROGMEM = "/success";
 const char content_title5[] PROGMEM = "<h1>Order Successful</h1><p>Your cans are ready to be picked up</p>";
 const char content_page5[] PROGMEM = "<hr /><form action=\"/\"> <div style=\"position: absolute; right:25px; bottom:25px;\"> <button type=\"submit\">New Order</button> </div> </form>";
 
