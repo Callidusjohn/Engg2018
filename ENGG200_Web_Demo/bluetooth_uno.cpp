@@ -4,16 +4,38 @@
 #include <string.h>
 #include "bluetooth_uno.h"
 
+
 void BluetoothUno::initiateConnToMega() {
 	Serial.begin(9600);
 	Serial.print("File:   ");
 	Serial.println(__FILE__);
 	Serial.print("Uploaded: ");
 	Serial.println(__DATE__);
+	Serial.println(" ");
 
 	BTSerial.begin(9600);
 	Serial.println("Arduino Uno: Bluetooth Serial started at 9600 Baud.");
 	BTSerial.print("Connection to Uno has been established.");
+}
+
+String BluetoothUno::getData() {
+	if (BTSerial.available()) {
+		String s = "";
+		while (BTSerial.available()) {
+			char c = BTSerial.read();
+			s.concat(c);
+		}
+		s = encryptData(s);
+		return s;
+	} return "";
+}
+
+String BluetoothUno::checkForMegaData() {
+	String temp = "";
+	if (BTSerial.available()) {
+		char c = BTSerial.read();
+		temp.concat(c);
+	} return temp;
 }
 
 // this function allows transfer using serial monitor
@@ -40,12 +62,11 @@ void BluetoothUno::getInfo() {
 	}
 }
 
-char BluetoothUno::transmitToMega(String data) {
+void BluetoothUno::transmitToMega(String data) {
 	// need some flag to ensure this isnt infinite
 	for (int i = 0; i < data.length(); i++) {
 		BTSerial.write(data[i]);
 	}
- return 1;
 }
 
 String BluetoothUno::prepareForMega(String data) {
