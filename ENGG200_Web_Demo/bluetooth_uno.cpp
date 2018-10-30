@@ -40,11 +40,12 @@ void BluetoothUno::getInfo() {
 	}
 }
 
-void BluetoothUno::transmitToMega(String data) {
+char BluetoothUno::transmitToMega(String data) {
 	// need some flag to ensure this isnt infinite
 	for (int i = 0; i < data.length(); i++) {
 		BTSerial.write(data[i]);
 	}
+ return 1;
 }
 
 String BluetoothUno::prepareForMega(String data) {

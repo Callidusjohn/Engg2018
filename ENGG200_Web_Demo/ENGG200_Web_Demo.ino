@@ -33,10 +33,11 @@ const char *pStxDelimiter = "\002";    // STX - ASCII start of text character
 ***********************************************************************************************************************/
 // sample comment
 // HTTP Request message
+String integer;
 const char * const commA[] PROGMEM = {"Waiting", "Failed to connect", "Client disconnect"};
 const char * const commB[] PROGMEM = {"Waiting", "Failed to connect", "Client disconnect"};
 const char * const commC[] PROGMEM = {"Waiting", "Failed to connect", "Client disconnect"};
-const char * const commD[] PROGMEM = {"Waiting", "Failed to connect", "Client disconnect"};
+const char * const commD[] PROGMEM = {"Waiting", "Failed_to_connect_000000000000000000", "Client_disconnect"};
 const char * const commE[] PROGMEM = {"Waiting", "Failed to connect", "Client disconnect"};
 const char content_404[] PROGMEM = "HTTP/1.1 404 Not Found\nServer: arduino\nContent-Type: text/html\n\n<html><head><title>Arduino Web Server - Error 404</title></head><body><h1>Error 404: Sorry, that page cannot be found!</h1></body>";
 const char * const page_404[] PROGMEM = { content_404 }; // table with 404 page
@@ -44,7 +45,7 @@ const char * const page_404[] PROGMEM = { content_404 }; // table with 404 page
 // HTML Header for pages
 const char content_main_header[] PROGMEM = "HTTP/1.0 200 OK\nServer: arduino\nCache-Control: no-store, no-cache, must-revalidate\nPragma: no-cache\nConnection: close\nContent-Type: text/html\n";
 const char content_main_top[] PROGMEM = "<html><head><title>Arduino Web Server</title><style type=\"text/css\">body, html, h1, h2, p, div, a, img, header, footer, span { margin: 0; padding: 0; } * { box-sizing: border-box } html { background: #ffffff; } footer, header { background: #ffffff; color: #444444; font-family: Arial, \"Helvetica Neue\", Helvetica, sans-serif; text-align: center; padding: 2em 0; } main { width: 100%; margin: 0 auto; overflow: hidden; } .container { position: relative; text-align: center; font-size: 30px; font-family: Arial, \"Helvetica Neue\", Helvetica, sans-serif; } .col { width: 33.333%; height: 500px; float: left; text-align: center; padding: 1rem; } .col1 { position: relative; background: Red; font-family: Arial, \"Helvetica Neue\", Helvetica, sans-serif; } .col2 { position: relative; background: Green; font-family: Arial, \"Helvetica Neue\", Helvetica, sans-serif; } .col3 { position: relative; background: Blue; font-family: Arial, \"Helvetica Neue\", Helvetica, sans-serif; } footer { clear: both; }</style></head><body><h1>Arduino - Tile Runner Web Server</h1>";
-const char content_main_menu[] PROGMEM = "<table width=\"500\"><tr><td align=\"center\"><a href=\"/\">Main</a></td><td align=\"center\"><a href=\"page2\">Status</a></td></tr></table>";
+const char content_main_menu[] PROGMEM = "<table width=\"500\"><tr><td align=\"center\"><a href=\"/\">Main</a></td><td align=\"center\"><a href=\"status\">Status</a></td></tr></table>";
 const char content_main_footer[] PROGMEM = "</html>";
 const char * const contents_main[] PROGMEM = { content_main_header, content_main_top, content_main_menu, content_main_footer }; // table with 404 page
 #define CONT_HEADER 0
@@ -52,28 +53,33 @@ const char * const contents_main[] PROGMEM = { content_main_header, content_main
 #define CONT_MENU 2
 #define CONT_FOOTER 3
 
-// Page 1
+// Order
 const char http_uri1[] PROGMEM = "/";
 const char content_title1[] PROGMEM = "<h2>Ordering Page</h2>";
-const char content_page1[] PROGMEM = "<hr /><div class=\"col col1\"><h2>Red Cans</h2><p>how many red cans would you like to pfick up?</p><div class=\"container\"><form><input id=\"1\" type=\"number\"min=\"0\" max=\"8\" step=\"1\" name=\"Red\"></form></div></div><div class=\"col col2\"><h2>Green Cans</h2><p>how many green cans would you like to pick up?</p><div class=\"container\"><form><input id=\"2\" type=\"number\"min=\"0\" max=\"8\" step=\"1\" name=\"Green\"></form></div></div><div class=\"col col3\"><h2>Blue Cans</h2><p>how many blue cans would you like to pick up?</p><div class=\"container\"><form><input id=\"3\" type=\"number\"min=\"0\" max=\"8\" step=\"1\"name=\"Blue\"></form></div></div></form><form action=\"/result\" id=\"canForm\"name=\"canForm\"><input style=\"visibility: hidden\" id=\"4\"type=\"number\"min=\"0\" max=\"8\" step=\"1\" name=\"Red\"><input style=\"visibility:hidden\"id=\"5\"type=\"number\"min=\"0\" max=\"8\"step=\"1\"name=\"Green\"><input style=\"visibility: hidden\" id=\"6\" type=\"number\"min=\"0\" max=\"8\" step=\"1\" name=\"Blue\"><div class=\"container\"><input type=\"submit\" onclick=\"sanitiseData()\"></div></form></body><script type=\"text/javascript\">document.getElementById('1').value=0;document.getElementById('2').value=0;document.getElementById('3').value=0;function total(){var redCans = document.getElementById('1').value;var greenCans = document.getElementById('2').value;var blueCans = document.getElementById('3').value;var total=parseInt(redCans)+parseInt(greenCans)+parseInt(blueCans);return total;}function greaterThanTen(){if(total()>10){return true;}return false;}function sanitiseData(){var cansValid=true;if(document.getElementById('1').value>8 || document.getElementById('1').value<0){document.getElementById('1').value=0;document.getElementById('4').value=0;cansValid=false;}if(document.getElementById('2').value>8 || document.getElementById('2').value<0){document.getElementById('2').value=0;document.getElementById('5').value=0;cansValid=false;}if(document.getElementById('3').value>8 || document.getElementById('3').value<0){document.getElementById('3').value=0;document.getElementById('6').value=0;cansValid=false;}if(!greaterThanTen() && cansValid==true){console.log(\"test\");document.getElementById('4').value=document.getElementById('1').value;document.getElementById('5').value=document.getElementById('2').value;document.getElementById('6').value=document.getElementById('3').value;document.getElementById('canForm').submit();}else{alert(\"Invalid number of Cans submitted. Please submit a max of 10 total. No greater than 8 cans per colour.\");}}</script>";
+const char content_page1[] PROGMEM = "<hr /><div class=\"col col1\"><h2>Red Cans</h2><p>how many red cans would you like to pick up?</p><div class=\"container\"><form><input id=\"1\" type=\"number\"min=\"0\" max=\"8\" step=\"1\" name=\"Red\"></form></div></div><div class=\"col col2\"><h2>Green Cans</h2><p>how many green cans would you like to pick up?</p><div class=\"container\"><form><input id=\"2\" type=\"number\"min=\"0\" max=\"8\" step=\"1\" name=\"Green\"></form></div></div><div class=\"col col3\"><h2>Blue Cans</h2><p>how many blue cans would you like to pick up?</p><div class=\"container\"><form><input id=\"3\" type=\"number\"min=\"0\" max=\"8\" step=\"1\"name=\"Blue\"></form></div></div></form><form action=\"/\" id=\"canForm\"name=\"canForm\"><input style=\"visibility: hidden\" id=\"4\"type=\"number\"min=\"0\" max=\"8\" step=\"1\" name=\"Red\"><input style=\"visibility:hidden\"id=\"5\"type=\"number\"min=\"0\" max=\"8\"step=\"1\"name=\"Green\"><input style=\"visibility: hidden\" id=\"6\" type=\"number\"min=\"0\" max=\"8\" step=\"1\" name=\"Blue\"><div class=\"container\"><input type=\"button\" value=\"Submit\" onclick=\"sanitiseData()\"></div></form></body><script type=\"text/javascript\">document.getElementById('1').value=0;document.getElementById('2').value=0;document.getElementById('3').value=0;function total(){var redCans = document.getElementById('1').value;var greenCans = document.getElementById('2').value;var blueCans = document.getElementById('3').value;var total=parseInt(redCans)+parseInt(greenCans)+parseInt(blueCans);return total;}function greaterThanTen(){if(total()>10){return true;}return false;}function sanitiseData(){var cansValid=true;if(document.getElementById('1').value>8 || document.getElementById('1').value<0){document.getElementById('1').value=0;document.getElementById('4').value=0;cansValid=false;}if(document.getElementById('2').value>8 || document.getElementById('2').value<0){document.getElementById('2').value=0;document.getElementById('5').value=0;cansValid=false;}if(document.getElementById('3').value>8 || document.getElementById('3').value<0){document.getElementById('3').value=0;document.getElementById('6').value=0;cansValid=false;}if(!greaterThanTen() && cansValid==true){console.log(\"test\");document.getElementById('4').value=document.getElementById('1').value;document.getElementById('5').value=document.getElementById('2').value;document.getElementById('6').value=document.getElementById('3').value;document.getElementById('canForm').action = \"/status\";document.getElementById('canForm').submit();}else{alert(\"Invalid number of Cans submitted. Please submit a max of 10 total. No greater than 8 cans per colour.\"); return window.location=\"/\";}}</script>";
 
-// Page 2
-const char http_uri2[] PROGMEM = "/page2";
-const char content_title2[] PROGMEM = "<h2>Status</h2>";
-const char content_page2[] PROGMEM = "<hr />";
+// Status
+const char http_uri2[] PROGMEM = "/status";
+const char content_title2[] PROGMEM = "<meta http-equiv=\"refresh\" content=15><div class=\"container\"> <h1>Your order is being processed</h1><p id='status'></p></div>";
+const char content_page2[] PROGMEM = "<hr /><script type=\"text/javascript\"> var timer = 5; var status = document.getElementById('feedback').value;if(status!=\"Success\" && status.substring(0,5)!=\"Error\"){ document.getElementById('status').innerHTML=\"Status=\"+status; } else if(status.substring(0,5) == \"Error\"){document.location='/error';} else{document.location='/result'; } function refresh(timer){ alert(\"refresh\"); return timer; }</script>";
 
-// Page 5
+//Error
+const char http_uri3[] PROGMEM = "/error";
+const char content_title3[] PROGMEM = "<h1>Error occurs</h1><p>Please fix error and order again</p>";
+const char content_page3[] PROGMEM = "<hr /><form action=\"/\"> <div style=\"position: absolute; right:25px; bottom:25px;\"> <button type=\"submit\">New Order</button> </div> </form>";
+
+// Success
 const char http_uri5[] PROGMEM = "/result";
-const char content_title5[] PROGMEM = "<h2>Order Confirmation</h2>";
-const char content_page5[] PROGMEM = "<hr /><h3>Received order</h3><button onclick=\"window.location.href='/page2'\">Status</button>";
+const char content_title5[] PROGMEM = "<h1>Order Successful</h1><p>Your cans are ready to be picked up</p>";
+const char content_page5[] PROGMEM = "<hr /><form action=\"/\"> <div style=\"position: absolute; right:25px; bottom:25px;\"> <button type=\"submit\">New Order</button> </div> </form>";
 
 // declare tables for the pages
-const char * const contents_titles[] PROGMEM = { content_title1, content_title2, content_title5 }; // titles
-const char * const contents_pages [] PROGMEM = { content_page1, content_page2, content_page5 }; // real content
+const char * const contents_titles[] PROGMEM = { content_title1, content_title2, content_title3, content_title5 }; // titles
+const char * const contents_pages [] PROGMEM = { content_page1, content_page2, content_page3, content_page5 }; // real content
 
 
 // declare table for all URIs
-const char * const http_uris[] PROGMEM = { http_uri1, http_uri2, http_uri5 }; // URIs
+const char * const http_uris[] PROGMEM = { http_uri1, http_uri2, http_uri3, http_uri5 }; // URIs
 
 #define NUM_PAGES  sizeof(contents_pages)  / sizeof(contents_pages[0])
 #define NUM_URIS  (NUM_PAGES)  // Pages URIs + favicon URI, etc
@@ -106,6 +112,7 @@ void setup()
 /**********************************************************************************************************************
                                                             Main loop
 ***********************************************************************************************************************/
+char check = 0;
 
 String parsingString(String str) {
   String result = "0"; //0 for unsuccess & 1 for success. FIXME
@@ -115,10 +122,10 @@ String parsingString(String str) {
   return result;
 }
 
-String getErrorMessage(String str){
+String getErrorMessage(String str) {
   String result = "";
   int code = str.substring(1).toInt();
-  switch(str[0]){
+  switch (str[0]) {
     case 'A':
       result = commA[code];
       break;
@@ -127,13 +134,13 @@ String getErrorMessage(String str){
       break;
     case 'C':
       result = commC[code];
-      break;   
+      break;
     case 'D':
       result = commD[code];
       break;
     case 'E':
       result = commE[code];
-      break;    
+      break;
   }
   return result;
 }
@@ -151,6 +158,7 @@ void loop()
     BUFFER requestContent;    // Request content as a null-terminated string.
     MethodType eMethod = readHttpRequest(client, nUriIndex, requestContent);
     String message = "";
+    char check = 0;
 
     Serial.print("Read Request type: ");
     Serial.print(eMethod);
@@ -167,32 +175,34 @@ void loop()
     }
     else if (nUriIndex < NUM_PAGES)
     {
+    
       sendPage(client, nUriIndex, requestContent);
+      
       // Normal page request, may depend on content of the request
-      Serial.println(nUriIndex);
-      if (nUriIndex == 2)
-        if (strlen(requestContent) != 0) {
-          String integer = parsingString(requestContent);
-          message = "Red can: " + String(integer[1]) + "<br>";
-          message.concat("Green can: " + String(integer[2]) + "<br>");
-          message.concat("Blue can: " + String(integer[3]) + "</p>");
-          client.println(message);
+      if (nUriIndex == 1) {
+        String integer = parsingString(requestContent);
+        check = BluetoothUno.transmitToMega(integer);
+        Serial.println(integer);
+        //feedback = getErrorMessage(Bluetooth::feedback());
+        if (check == 0) {
           //BluetoothUno.prepareForMega(integer);
           //String encrypted = BluetoothUno.encryptData(integer);
-          BluetoothUno.transmitToMega(integer);
+          
+          check = BluetoothUno.transmitToMega(integer);
+          feedback = "Attemping to send data...";
+          //message = "<p>Red can: " + String(integer[1]) + "</p>";
+          //message.concat("<p>Green can: " + String(integer[2]) + "</p>");
+          //message.concat("<p>Blue can: " + String(integer[3]) + "</p>");
         }
-      if (nUriIndex == 1) {
-        //feedback = getErrorMessage(Bluetooth::feedback());
-        if (feedback != "Success") {
-          client.print("<head><meta http-equiv=\"refresh\" content=\"5\"></head>" + feedback);
-          Serial.println(millis());
-          if (millis() < 20000)
-            feedback = commD[0];
-          else if (millis() < 40000)
-            feedback = commD[1];
-          else
-            feedback = commD[2];
-        }
+        //else
+          //feedback = BluetoothUno.feedback();
+          if (millis < 20000){
+            feedback = "Error0111";
+          }
+          else if (millis < 40000)
+            feedback = "Error0111";
+          else 
+            feedback = "Success";
       }
     }
 
@@ -278,6 +288,7 @@ MethodType readRequestLine(EthernetClient & client, BUFFER & readBuffer, int & n
 
     Serial.print("Get query string: ");
     Serial.println(requestContent);
+    Serial.println(pMethod);
   }
   if (strcmp(pMethod, "GET") == 0)
     eMethod = MethodGet;
@@ -434,11 +445,15 @@ void sendPage(EthernetClient & client, int nUriIndex, BUFFER & requestContent)
   // send title
   sendProgMemAsString(client, (char*)pgm_read_word(&(contents_titles[nUriIndex])));
 
+  if (nUriIndex == 1){
+    client.println("<input type='hidden' value='" + feedback + "' id='feedback'>");
+  }
+
   // send the body for the requested page
   sendUriContentByIndex(client, nUriIndex, requestContent);
-
+  
   // Append the data sent in the original HTTP request
-  client.print("<br />");
+  //client.println("");
   // send POST variables
   //Serial.println(requestContent);
 

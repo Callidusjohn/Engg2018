@@ -9,7 +9,7 @@ static struct BluetoothUno {
 	void initiateConnToMega();
 
 	// transfer data to Mega
- 	void transmitToMega(String data);
+ 	char transmitToMega(String data);
 
 	// encrypt data using ROT-18 (ext of ROT-13)
 	String encryptData(String data);
