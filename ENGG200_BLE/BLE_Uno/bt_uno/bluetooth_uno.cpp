@@ -25,9 +25,17 @@ String BluetoothUno::getData() {
 			char c = BTSerial.read();
 			s.concat(c);
 		}
-		s = BluetoothUno.encryptData(s);
+		s = encryptData(s);
 		return s;
 	} return "";
+}
+
+String BluetoothUno::checkForMegaData() {
+	String temp = "";
+	if (BTSerial.available()) {
+		char c = BTSerial.read();
+		temp.concat(c);
+	} return temp;
 }
 
 // this function allows transfer using serial monitor

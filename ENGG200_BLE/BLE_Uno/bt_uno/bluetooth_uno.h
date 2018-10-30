@@ -11,6 +11,12 @@ static struct BluetoothUno {
 	// transfer data to Mega
  	void transmitToMega(String data);
 
+	// check if any data is coming in from the Mega
+	String checkForMegaData();
+
+	// get data from the Mega
+	String getData();
+
 	// encrypt data using ROT-18 (ext of ROT-13)
 	String encryptData(String data);
 
@@ -32,9 +38,4 @@ static struct BluetoothUno {
 	AltSoftSerial BTSerial;
 	bool NL = true;
 	char c = ' ';
-	struct cans {
-		unsigned char red;
-		unsigned char green;
-		unsigned char blue;
-	};
 } BluetoothUno;
