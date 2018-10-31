@@ -23,6 +23,10 @@ void loop() {
 	    // CanQuantities quantity = {r, g, b};
 		//BluetoothMega.getInfo();
 		String data = BluetoothMega.getData();
+		BluetoothMega.inputData(data);
 		Serial.println(data);
+		// Serial.println(CanQuantities.red);
+		// Serial.println(quantity.green);
+		// Serial.println(quantity.blue);
 	}
 }

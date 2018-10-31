@@ -3,6 +3,8 @@
 #include <AltSoftSerial.h>
 #include <string.h>
 #include "bluetooth_mega.h"
+#include "shared_types.h"
+
 
 
 void BluetoothMega::initiateConnToUno() {
@@ -69,6 +71,26 @@ void BluetoothMega::transmitToUno(String data) {
 	for (int i = 0; i < data.length(); i++) {
 		BTSerial.write(data[i]);
 	}
+}
+
+CanQuantities BluetoothMega::inputData(String temp) {
+	for(int i = 0; i <= 4; i++) {
+		char r, g, b;
+		if(i == 0) {
+
+		}
+		if(i == 1) {
+			r = temp[i];
+		}
+		if(i == 2) {
+			g = temp[i];
+		}
+		if(i == 3) {
+			b = temp[i];
+		}
+		CanQuantities quantity{r, g, b};
+	}
+	return;
 }
 
 // encrypt data using variation of rot-13
