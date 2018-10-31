@@ -7,15 +7,15 @@
 #include "bluetooth_uno.h"
 
 /**********************************************************************************************************************
-                                    Error Storage
-***********************************************************************************************************************/
-String feedback = "Connecting...";
+                                      Error Storage
+ ***********************************************************************************************************************/
+
 
 #define USE_DHCP_FOR_IP_ADDRESS
 
 /**********************************************************************************************************************
-                                    MAC address and IP address.
-***********************************************************************************************************************/
+                                      MAC address and IP address.
+ ***********************************************************************************************************************/
 byte mac[] = { 0xDE, 0xAD, 0xBE, 0xEF, 0xFE, 0xED };
 
 
@@ -29,23 +29,18 @@ const char *pSpDelimiters = " \r\n";
 const char *pStxDelimiter = "\002";    // STX - ASCII start of text character
 
 /**********************************************************************************************************************
-                                    Strings stored in flash of the HTML we will be transmitting
-***********************************************************************************************************************/
+                                      Strings stored in flash of the HTML we will be transmitting
+ ***********************************************************************************************************************/
 // sample comment
 // HTTP Request message
-String integer;
-const char * const commA[] PROGMEM = {"Waiting", "Failed to connect", "Client disconnect"};
-const char * const commB[] PROGMEM = {"Waiting", "Failed to connect", "Client disconnect"};
-const char * const commC[] PROGMEM = {"Waiting", "Failed to connect", "Client disconnect"};
-const char * const commD[] PROGMEM = {"Waiting", "Failed_to_connect", "Client_disconnect"};
-const char * const commE[] PROGMEM = {"Waiting", "Failed to connect", "Client disconnect"};
+
 const char content_404[] PROGMEM = "HTTP/1.1 404 Not Found\nServer: arduino\nContent-Type: text/html\n\n<html><head><title>Arduino Web Server - Error 404</title></head><body><h1>Error 404: Sorry, that page cannot be found!</h1></body>";
 const char * const page_404[] PROGMEM = { content_404 }; // table with 404 page
 
 // HTML Header for pages
 const char content_main_header[] PROGMEM = "HTTP/1.0 200 OK\nServer: arduino\nCache-Control: no-store, no-cache, must-revalidate\nPragma: no-cache\nConnection: close\nContent-Type: text/html\n";
 const char content_main_top[] PROGMEM = "<html><head><title>Arduino Web Server</title><style type=\"text/css\">body, html, h1, h2, p, div, a, img, header, footer, span { margin: 0; padding: 0; } * { box-sizing: border-box } html { background: #ffffff; } footer, header { background: #ffffff; color: #444444; font-family: Arial, \"Helvetica Neue\", Helvetica, sans-serif; text-align: center; padding: 2em 0; } main { width: 100%; margin: 0 auto; overflow: hidden; } .container { position: relative; text-align: center; font-size: 30px; font-family: Arial, \"Helvetica Neue\", Helvetica, sans-serif; } .col { width: 33.333%; height: 500px; float: left; text-align: center; padding: 1rem; } .col1 { position: relative; background: Red; font-family: Arial, \"Helvetica Neue\", Helvetica, sans-serif; } .col2 { position: relative; background: Green; font-family: Arial, \"Helvetica Neue\", Helvetica, sans-serif; } .col3 { position: relative; background: Blue; font-family: Arial, \"Helvetica Neue\", Helvetica, sans-serif; } footer { clear: both; }</style></head><body><h1>Arduino - Tile Runner Web Server</h1>";
-const char content_main_menu[] PROGMEM = "<table width=\"500\"><tr><td align=\"center\"><a href=\"/\">Main</a></td><td align=\"center\"><a href=\"status\">Status</a></td></tr></table>";
+const char content_main_menu[] PROGMEM = "";//<table width=\"500\"><tr><td align=\"center\"><a href=\"/\">Main</a></td><td align=\"center\"><a href=\"status\">Status</a></td></tr></table>";
 const char content_main_footer[] PROGMEM = "</html>";
 const char * const contents_main[] PROGMEM = { content_main_header, content_main_top, content_main_menu, content_main_footer }; // table with 404 page
 #define CONT_HEADER 0
@@ -56,22 +51,22 @@ const char * const contents_main[] PROGMEM = { content_main_header, content_main
 // Order
 const char http_uri1[] PROGMEM = "/";
 const char content_title1[] PROGMEM = "<h2>Ordering Page</h2>";
-const char content_page1[] PROGMEM = "<hr /><div class=\"col col1\"><h2>Red Cans</h2><p>how many red cans would you like to pick up?</p><div class=\"container\"><form><input id=\"1\" type=\"number\"min=\"0\" max=\"8\" step=\"1\" name=\"Red\"></form></div></div><div class=\"col col2\"><h2>Green Cans</h2><p>how many green cans would you like to pick up?</p><div class=\"container\"><form><input id=\"2\" type=\"number\"min=\"0\" max=\"8\" step=\"1\" name=\"Green\"></form></div></div><div class=\"col col3\"><h2>Blue Cans</h2><p>how many blue cans would you like to pick up?</p><div class=\"container\"><form><input id=\"3\" type=\"number\"min=\"0\" max=\"8\" step=\"1\"name=\"Blue\"></form></div></div></form><form action=\"/\" id=\"canForm\"name=\"canForm\"><input style=\"visibility: hidden\" id=\"4\"type=\"number\"min=\"0\" max=\"8\" step=\"1\" name=\"Red\"><input style=\"visibility:hidden\"id=\"5\"type=\"number\"min=\"0\" max=\"8\"step=\"1\"name=\"Green\"><input style=\"visibility: hidden\" id=\"6\" type=\"number\"min=\"0\" max=\"8\" step=\"1\" name=\"Blue\"><div class=\"container\"><input type=\"button\" value=\"Submit\" onclick=\"sanitiseData()\"></div></form></body><script type=\"text/javascript\">document.getElementById('1').value=0;document.getElementById('2').value=0;document.getElementById('3').value=0;function total(){var redCans = document.getElementById('1').value;var greenCans = document.getElementById('2').value;var blueCans = document.getElementById('3').value;var total=parseInt(redCans)+parseInt(greenCans)+parseInt(blueCans);return total;}function greaterThanTen(){if(total()>10){return true;}return false;}function sanitiseData(){var cansValid=true;if(document.getElementById('1').value>8 || document.getElementById('1').value<0){document.getElementById('1').value=0;document.getElementById('4').value=0;cansValid=false;}if(document.getElementById('2').value>8 || document.getElementById('2').value<0){document.getElementById('2').value=0;document.getElementById('5').value=0;cansValid=false;}if(document.getElementById('3').value>8 || document.getElementById('3').value<0){document.getElementById('3').value=0;document.getElementById('6').value=0;cansValid=false;}if(!greaterThanTen() && cansValid==true){console.log(\"test\");document.getElementById('4').value=document.getElementById('1').value;document.getElementById('5').value=document.getElementById('2').value;document.getElementById('6').value=document.getElementById('3').value;document.getElementById('canForm').action = \"/status\";document.getElementById('canForm').submit();}else{alert(\"Invalid number of Cans submitted. Please submit a max of 10 total. No greater than 8 cans per colour.\"); return window.location=\"/\";}}</script>";
+const char content_page1[] PROGMEM = "<hr /><div class=\"col col1\"><h2>Red Cans</h2><p>how many red cans would you like to pick up?</p><div class=\"container\"><form><input id=\"1\" type=\"number\"min=\"0\" max=\"8\" step=\"1\" name=\"Red\"></form></div></div><div class=\"col col2\"><h2>Green Cans</h2><p>how many green cans would you like to pick up?</p><div class=\"container\"><form><input id=\"2\" type=\"number\"min=\"0\" max=\"8\" step=\"1\" name=\"Green\"></form></div></div><div class=\"col col3\"><h2>Blue Cans</h2><p>how many blue cans would you like to pick up?</p><div class=\"container\"><form><input id=\"3\" type=\"number\"min=\"0\" max=\"8\" step=\"1\"name=\"Blue\"></form></div></div></form><form action=\"/\" id=\"canForm\"name=\"canForm\"><input style=\"visibility: hidden\" id=\"4\"type=\"number\"min=\"0\" max=\"8\" step=\"1\" name=\"Red\"><input style=\"visibility:hidden\"id=\"5\"type=\"number\"min=\"0\" max=\"8\"step=\"1\"name=\"Green\"><input style=\"visibility: hidden\" id=\"6\" type=\"number\"min=\"0\" max=\"8\" step=\"1\" name=\"Blue\"><div class=\"container\"><input type=\"button\" value=\"Submit\" onclick=\"sanitiseData()\"></div></form><script type=\"text/javascript\">document.getElementById('1').value=0;document.getElementById('2').value=0;document.getElementById('3').value=0;function total(){var redCans = document.getElementById('1').value;var greenCans = document.getElementById('2').value;var blueCans = document.getElementById('3').value;var total=parseInt(redCans)+parseInt(greenCans)+parseInt(blueCans);return total;}function greaterThanTen(){if(total()>10){return true;}return false;}function sanitiseData(){var cansValid=true;if(document.getElementById('1').value>8 || document.getElementById('1').value<0){document.getElementById('1').value=0;document.getElementById('4').value=0;cansValid=false;}if(document.getElementById('2').value>8 || document.getElementById('2').value<0){document.getElementById('2').value=0;document.getElementById('5').value=0;cansValid=false;}if(document.getElementById('3').value>8 || document.getElementById('3').value<0){document.getElementById('3').value=0;document.getElementById('6').value=0;cansValid=false;}if(!greaterThanTen() && cansValid==true){console.log(\"test\");document.getElementById('4').value=document.getElementById('1').value;document.getElementById('5').value=document.getElementById('2').value;document.getElementById('6').value=document.getElementById('3').value;document.getElementById('canForm').action = \"/status\";document.getElementById('canForm').submit();}else{alert(\"Invalid number of Cans submitted. Please submit a max of 10 total. No greater than 8 cans per colour.\"); return window.location=\"/\";}}</script></body>";
 
 // Status
 const char http_uri2[] PROGMEM = "/status";
-const char content_title2[] PROGMEM = "<meta http-equiv=\"refresh\" content=10><div class=\"container\"> <h1>Your order is being processed</h1><p id='status'></p></div>";
-const char content_page2[] PROGMEM = "<hr /><script type=\"text/javascript\"> var timer = 5; var status = document.getElementById('feedback').value;if(status!=\"Success\" && status.substring(0,5)!=\"Error\"){ document.getElementById('status').innerHTML=\"Status=\"+status; } else if(status.substring(0,5) == \"Error\"){document.location='/error';} else{document.location='/success'; } function refresh(timer){ alert(\"refresh\"); return timer; }</script>";
+const char content_title2[] PROGMEM = "<meta http-equiv=\"refresh\" content=5><div class=\"container\"> <h1>Your order is being processed</h1><p id='status'></p></div>";
+const char content_page2[] PROGMEM = "<hr /><script type=\"text/javascript\"> var timer = 5; var status = document.getElementById('feedback').value;if(status!=\"Success\" && status.substring(0,5)!=\"Error\"){ document.getElementById('status').innerHTML=status; } else if(status.substring(0,5) == \"Error\"){document.location='/error';} else{document.location='/success'; } function refresh(timer){ alert(\"refresh\"); return timer; }</script></body>";
 
 //Error
 const char http_uri3[] PROGMEM = "/error";
-const char content_title3[] PROGMEM = "<div class=\"container\"><h1>Error occurs</h1><p id='status'></p></div>";
-const char content_page3[] PROGMEM = "<script type=\"text/javascript\">var status = document.getElementById('feedback').value;if(status.substring(0,5)==\"Error\"){document.getElementById('status').innerHTML=\"Please fix = \"+status;}</script><form action=\"/\"> <div style=\"position: absolute; right:25px; bottom:25px;\"> <button type=\"submit\">New Order</button></form></div>";
+const char content_title3[] PROGMEM = "<h1>Please fix </h1><p id='message'>Please fix error and order again</p>";
+const char content_page3[] PROGMEM = "<hr /><form action=\"/\"> <div style=\"position: absolute;\"> <button type=\"submit\">Reorder</button> </div> </form><script type=\"text/javascript\">var error = document.getElementById('error').value;document.getElementById('message').innerHTML=error;</script></body>";
 
 // Success
 const char http_uri5[] PROGMEM = "/success";
-const char content_title5[] PROGMEM = "<div class=\"container\"><h1>Order Successful</h1><p>Your cans are ready to be picked up</p></div>";
-const char content_page5[] PROGMEM = "<hr /><form action=\"/\"> <div style=\"position: absolute; right:25px; bottom:25px;\"> <button type=\"submit\">New Order</button></form></div>";
+const char content_title5[] PROGMEM = "<h1>Order Successful</h1><p>Your cans are ready to be picked up</p>";
+const char content_page5[] PROGMEM = "<hr /><form action=\"/\"> <div style=\"position: absolute;\"> <button type=\"submit\">New Order</button> </div> </form></body>";
 
 // declare tables for the pages
 const char * const contents_titles[] PROGMEM = { content_title1, content_title2, content_title3, content_title5 }; // titles
@@ -84,36 +79,49 @@ const char * const http_uris[] PROGMEM = { http_uri1, http_uri2, http_uri3, http
 #define NUM_PAGES  sizeof(contents_pages)  / sizeof(contents_pages[0])
 #define NUM_URIS  (NUM_PAGES)  // Pages URIs + favicon URI, etc
 
+char check = 0;
+String integer;
+char * commA[] = {"Waiting", "Failed to connect", "Client disconnect"};
+char * commB[] = {"Waiting", "Failed to connect", "Client disconnect"};
+char * commC[] = {"Waiting", "Failed to connect", "Client disconnect"};
+char * commD[] = {"FAILED_TO_START", "FAILED_TO_CONNECT", "FAILED_CONNECT_MEGA"};
+char * commE[] = {"Waiting", "Failed to connect", "Client disconnect"};
+String feedback = "Establising connection...";
+String error;
 /**********************************************************************************************************************
-                                                  Shared variable and Setup()
-***********************************************************************************************************************/
+                                                    Shared variable and Setup()
+ ***********************************************************************************************************************/
 EthernetServer server(80);
 
 void setup()
 {
-  Serial.flush();
+
   Serial.begin(9600); // DEBUG
-  Serial.println("Starting Server.");
-  Serial.println("Obtaining IP...");
+  Serial.flush();
+  //Serial.println("Starting Server.");
+  //Serial.println("Obtaining IP...");
 #ifdef USE_DHCP_FOR_IP_ADDRESS
   Ethernet.begin(mac);  // Use DHCP to get an IP address
 #else
-  Ethernet.begin(mac, ip);
+  Ethernet.begin(mac, statusip);
 #endif
 
   delay(2000);
   server.begin();
-  Serial.print("Server is at ");;
-
+  Serial.print("");
+  Serial.print("Server is at ");
   Serial.println(Ethernet.localIP());
+  if (Ethernet.localIP == "0.0.0.0") {
+    feedback = "ErrorD00";
+  }
   BluetoothUno.initiateConnToMega();
 
 }
 
 /**********************************************************************************************************************
-                                                            Main loop
-***********************************************************************************************************************/
-char checkTransmit = 0;
+                                                              Main loop
+ ***********************************************************************************************************************/
+
 
 String parsingString(String str) {
   String result = "0"; //0 for unsuccess & 1 for success. FIXME
@@ -124,28 +132,24 @@ String parsingString(String str) {
 }
 
 String getErrorMessage(String str) {
-
+  char *message;
   int code = str.substring(6).toInt();
-  char chr = str[5];
-  Serial.println(chr);
-  switch (chr) {
-    case 'A':
-      return commA[code];
-      break;
-    case 'B':
-      return commB[code];
-      break;
-    case 'C':
-      return commC[code];
-      break;
-    case 'D':
-      return commD[code];
-      break;
-    case 'E':
-      return commE[code];
-      break;
+  String result = str + "_";
+  if (str[5] == 'A')
+    message = commA[code];
+  if (str[5] == 'B')
+    message = commB[code];
+  if (str[5] == 'C')
+    message = commC[code];
+  if (str[5] == 'D')
+    message = commD[code];
+  if (str[5] == 'E')
+    message = commE[code];
+  for (int i = 0 ; i < strlen(message); i++) {
+    result.concat(message[i]);
   }
-  return "";
+  //Serial.println(result);
+  return result;
 }
 
 void loop()
@@ -160,15 +164,14 @@ void loop()
     int    nUriIndex;  // Gives the index into table of recognized URIs or -1 for not found.
     BUFFER requestContent;    // Request content as a null-terminated string.
     MethodType eMethod = readHttpRequest(client, nUriIndex, requestContent);
-    String message = "";
+    //     String message = "";
 
-
-    Serial.print("Read Request type: ");
-    Serial.print(eMethod);
-    Serial.print(" Uri index: ");
-    Serial.print(nUriIndex);
-    Serial.print(" content: ");
-    Serial.println(requestContent);
+    //     Serial.print("Read Request type: ");
+    //     Serial.print(eMethod);
+    //     Serial.print(" Uri index: ");
+    //     Serial.print(nUriIndex);
+    //     Serial.print(" content: ");
+    //     Serial.println(requestContent);
 
 
     if (nUriIndex < 0)
@@ -184,16 +187,44 @@ void loop()
         checkTransmit = 0;
       }
       if (nUriIndex == 1) {
+
         String integer = parsingString(requestContent);
-        checkTransmit = BluetoothUno.transmitToMega(integer);  
-        /*if (checkTransmit == 2){
-          feedback = "ErrorD01";      
+        //check = BluetoothUno.transmitToMega(integer);
+        //Serial.println(integer);
+        if (check == 0) {
+          //BluetoothUno.prepareForMega(integer);
+          //String encrypted = BluetoothUno.encryptData(integer);
+          check = BluetoothUno.transmitToMega(integer);
+          //           {
+          //           String temp = ("ErrorD02");
+          //           error = getErrorMessage(temp);
+          //           feedback = temp;
+          //           }
+          //           delay(5);
+          //error = getErrorMessage(feedback);
+          //feedback = getErrorMessage(feedback.substring(5));
+          //message = "<p>Red can: " + String(integer[1]) + "</p>";
+          //message.concat("<p>Green can: " + String(integer[2]) + "</p>");
+          //message.concat("<p>Blue can: " + String(integer[3]) + "</p>");
         }
-        else
-          feedback = "Running...";*/
-      }
-      if (nUriIndex == 2){ 
-        //feedback = getErrorMessage(feedback);
+        else if (check == 1) {
+          String temp = BluetoothUno.getData();
+          if (temp == ""){
+            feedback = "Awaiting for feedback";
+          }
+          else if (temp == "Success"){
+            feedback = "Success";
+          }
+          else{
+            error = getErrorMessage(temp);
+            feedback = temp;
+          }
+        }
+        else {
+          String temp = "ErrorD02";
+          error = getErrorMessage(temp);
+          feedback = temp;
+        }
       }
     }
   }
@@ -204,27 +235,27 @@ client.stop();
 
 
 /**********************************************************************************************************************
-                                               Method for read HTTP Header Request from web client
+                                                 Method for read HTTP Header Request from web client
 
-  The HTTP request format is defined at http://www.w3.org/Protocols/HTTP/1.0/spec.html#Message-Types
-  and shows the following structure:
-   Full-Request and Full-Response use the generic message format of RFC 822 [7] for transferring entities. Both messages may include optional header fields
-   (also known as "headers") and an entity body. The entity body is separated from the headers by a null line (i.e., a line with nothing preceding the CRLF).
-       Full-Request   = Request-Line
-*                       *( General-Header
-                         | Request-Header
-                         | Entity-Header )
-                        CRLF
-                        [ Entity-Body ]
+    The HTTP request format is defined at http://www.w3.org/Protocols/HTTP/1.0/spec.html#Message-Types
+    and shows the following structure:
+     Full-Request and Full-Response use the generic message format of RFC 822 [7] for transferring entities. Both messages may include optional header fields
+     (also known as "headers") and an entity body. The entity body is separated from the headers by a null line (i.e., a line with nothing preceding the CRLF).
+         Full-Request   = Request-Line
+ *                       *( General-Header
+                           | Request-Header
+                           | Entity-Header )
+                          CRLF
+                          [ Entity-Body ]
 
-  The Request-Line begins with a method token, followed by the Request-URI and the protocol version, and ending with CRLF. The elements are separated by SP characters.
-  No CR or LF are allowed except in the final CRLF sequence.
-       Request-Line   = Method SP Request-URI SP HTTP-Version CRLF
-  HTTP header fields, which include General-Header, Request-Header, Response-Header, and Entity-Header fields, follow the same generic format.
-  Each header field consists of a name followed immediately by a colon (":"), a single space (SP) character, and the field value.
-  Field names are case-insensitive. Header fields can be extended over multiple lines by preceding each extra line with at least one SP or HT, though this is not recommended.
-       HTTP-header    = field-name ":" [ field-value ] CRLF
-***********************************************************************************************************************/
+    The Request-Line begins with a method token, followed by the Request-URI and the protocol version, and ending with CRLF. The elements are separated by SP characters.
+    No CR or LF are allowed except in the final CRLF sequence.
+         Request-Line   = Method SP Request-URI SP HTTP-Version CRLF
+    HTTP header fields, which include General-Header, Request-Header, Response-Header, and Entity-Header fields, follow the same generic format.
+    Each header field consists of a name followed immediately by a colon (":"), a single space (SP) character, and the field value.
+    Field names are case-insensitive. Header fields can be extended over multiple lines by preceding each extra line with at least one SP or HT, though this is not recommended.
+         HTTP-header    = field-name ":" [ field-value ] CRLF
+ ***********************************************************************************************************************/
 // Read HTTP request, setting Uri Index, the requestContent and returning the method type.
 MethodType readHttpRequest(EthernetClient & client, int & nUriIndex, BUFFER & requestContent)
 {
@@ -277,9 +308,9 @@ MethodType readRequestLine(EthernetClient & client, BUFFER & readBuffer, int & n
     for (pQuery = requestContent; (pQuery = strchr(pQuery, '+')) != NULL; )
       *pQuery = ' ';    // Found a '+' so replace with a space
 
-    Serial.print("Get query string: ");
-    Serial.println(requestContent);
-    Serial.println(pMethod);
+    //     Serial.print("Get query string: ");
+    //     Serial.println(requestContent);
+    //     Serial.println(pMethod);
   }
   if (strcmp(pMethod, "GET") == 0)
     eMethod = MethodGet;
@@ -369,8 +400,8 @@ int GetUriIndex(char * pUri)
     if (strcmp_P(pUri, (PGM_P)pgm_read_word(&(http_uris[i]))) == 0)
     {
       nUriIndex = i;
-      Serial.print("URI: ");
-      Serial.println(pUri);
+      //       Serial.print("URI: ");
+      //       Serial.println(pUri);
       break;
     }
   }
@@ -383,8 +414,8 @@ int GetUriIndex(char * pUri)
 }
 
 /**********************************************************************************************************************
-  Read the next HTTP header record which is CRLF delimited.  We replace CRLF with string terminating null.
-***********************************************************************************************************************/
+    Read the next HTTP header record which is CRLF delimited.  We replace CRLF with string terminating null.
+ ***********************************************************************************************************************/
 void getNextHttpLine(EthernetClient & client, BUFFER & readBuffer)
 {
   char c;
@@ -409,21 +440,21 @@ void getNextHttpLine(EthernetClient & client, BUFFER & readBuffer)
 }
 
 /**********************************************************************************************************************
-                                                               Send Pages
-       Full-Response  = Status-Line
-                         ( General-Header
-                         | Response-Header
-                         | Entity-Header )
-                        CRLF
-                        [ Entity-Body ]
+                                                                 Send Pages
+         Full-Response  = Status-Line
+                           ( General-Header
+                           | Response-Header
+                           | Entity-Header )
+                          CRLF
+                          [ Entity-Body ]
 
-       Status-Line = HTTP-Version SP Status-Code SP Reason-Phrase CRLF
-       General-Header = Date | Pragma
-       Response-Header = Location | Server | WWW-Authenticate
-       Entity-Header  = Allow | Content-Encoding | Content-Length | Content-Type
-                      | Expires | Last-Modified | extension-header
+         Status-Line = HTTP-Version SP Status-Code SP Reason-Phrase CRLF
+         General-Header = Date | Pragma
+         Response-Header = Location | Server | WWW-Authenticate
+         Entity-Header  = Allow | Content-Encoding | Content-Length | Content-Type
+                        | Expires | Last-Modified | extension-header
 
-***********************************************************************************************************************/
+ ***********************************************************************************************************************/
 void sendPage(EthernetClient & client, int nUriIndex, BUFFER & requestContent)
 {
   // send HTML header
@@ -433,12 +464,15 @@ void sendPage(EthernetClient & client, int nUriIndex, BUFFER & requestContent)
   // send menu
   sendProgMemAsString(client, (char*)pgm_read_word(&(contents_main[CONT_MENU])));
 
+  if (nUriIndex == 1) {
+    client.println("<input type='hidden' value='" + feedback + "' id='feedback'>");
+  }
+
   // send title
   sendProgMemAsString(client, (char*)pgm_read_word(&(contents_titles[nUriIndex])));
 
-  if (nUriIndex == 1 || nUriIndex == 2) {
-    String temp = "<input type='hidden' value='" + feedback + "' id='feedback'>";
-    client.println(temp);
+  if (nUriIndex == 2) {
+    client.println("<input type='hidden' value='" + error + "' id='error'>");
   }
 
   // send the body for the requested page
@@ -454,8 +488,8 @@ void sendPage(EthernetClient & client, int nUriIndex, BUFFER & requestContent)
 }
 
 /**********************************************************************************************************************
-                                                               Send content split by buffer size
-***********************************************************************************************************************/
+                                                                 Send content split by buffer size
+ ***********************************************************************************************************************/
 // If we provide string data then we don't need specify an explicit size and can do a string copy
 void sendProgMemAsString(EthernetClient & client, const char *realword)
 {
@@ -488,8 +522,8 @@ void sendProgMemAsBinary(EthernetClient & client, const char* realword, int real
 }
 
 /**********************************************************************************************************************
-                                                               Send real page content
-***********************************************************************************************************************/
+                                                                 Send real page content
+ ***********************************************************************************************************************/
 // This method takes the contents page identified by nUriIndex, divides it up into buffer-sized
 // strings, passes it on for STX substitution and finally sending to the client.
 void sendUriContentByIndex(EthernetClient client, int nUriIndex, BUFFER & requestContent)
@@ -547,36 +581,36 @@ void sendUriContentByIndex(EthernetClient client, int nUriIndex, BUFFER & reques
 // URI content to send the appropriate replacement text, depending on the URI index and
 // the substitution index within the content.
 /*void sendSubstitute(EthernetClient client, int nUriIndex, int nSubstituteIndex, BUFFER & requestContent)
-  {
-  if (nUriIndex < NUM_PAGES)
-  {
-    // Page request
-    switch (nUriIndex)
     {
-      case 1:  // page 2
-        client.print("<b>Insert #");
-        client.print(nSubstituteIndex);
-        client.print("</b>");
-        break;
-      case 2:  // page 3
-        switch (nSubstituteIndex)
-        {
-          case 0:  // LedOn button send value
-            if (strncmp(requestContent, "LedOn=", 6) == 0)
-              setLed(strncmp(&requestContent[6], "true", 4) == 0);
+    if (nUriIndex < NUM_PAGES)
+    {
+      // Page request
+      switch (nUriIndex)
+      {
+        case 1:  // page 2
+          client.print("<b>Insert #");
+          client.print(nSubstituteIndex);
+          client.print("</b>");
+          break;
+        case 2:  // page 3
+          switch (nSubstituteIndex)
+          {
+            case 0:  // LedOn button send value
+              if (strncmp(requestContent, "LedOn=", 6) == 0)
+                setLed(strncmp(&requestContent[6], "true", 4) == 0);
 
-            client.print(isLedOn ? "false" : "true");
-            break;
-          case 1:  // LedOn button legend
-            client.print(isLedOn ? "Off" : "On");
-            break;
-          case 2:  // LedOn partial image name
-            client.print(isLedOn ? "on" : "off");
-            break;
-          default:
-            break;
-        }
-        break;
+              client.print(isLedOn ? "false" : "true");
+              break;
+            case 1:  // LedOn button legend
+              client.print(isLedOn ? "Off" : "On");
+              break;
+            case 2:  // LedOn partial image name
+              client.print(isLedOn ? "on" : "off");
+              break;
+            default:
+              break;
+          }
+          break;
+      }
     }
-  }
-  }*/
+    }*/
