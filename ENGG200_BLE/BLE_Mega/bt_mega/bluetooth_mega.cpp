@@ -80,15 +80,24 @@ CanQuantities BluetoothMega::inputData(String temp) {
 
 		}
 		if(i == 1) {
+			// Serial.print("TEMP1: ");
+			// Serial.println(temp[i]);
 			r = temp[i];
+			// Serial.print("R: ");
+			// Serial.println(r);
 		}
 		if(i == 2) {
+			// Serial.print("TEMP2: ");
+			// Serial.println(temp[i]);
 			g = temp[i];
 		}
 		if(i == 3) {
+			// Serial.print("TEMP3: ");
+			// Serial.println(temp[i]);
 			b = temp[i];
 		}
-		CanQuantities quantity = {r, g, b};
+		CanQuantities quantity = {r-'0', g-'0', b-'0'};
+		Serial.print(quantity.red);
 	}
 	return quantity;
 }
@@ -117,7 +126,7 @@ String BluetoothMega::encryptData(String data) {
 }
 
 //check the message for even parity
-boolean BluetoothMega::calcChecksum(String message) {
+boolean calcChecksum(String message) {
 	int sum = 0;
 	for (int i = 0; i < message.length(); i++) {
 		char c = message[i];
@@ -130,7 +139,7 @@ boolean BluetoothMega::calcChecksum(String message) {
 }
 
 //add a checksum for even parity
-String BluetoothMega::addChecksum(String message) {
+String addChecksum(String message) {
 	int sum = 0;
 	String sumChar = "1";
 	for (int i = 0; i < message.length(); i++) {
