@@ -9,8 +9,8 @@ bool BluetoothMega::NL = true;
 char BluetoothMega::c = ' ';
 
 BluetoothMega::BluetoothMega() {
-	Serial.begin(9600);
-	Serial2.begin(9600);
+	// Serial.begin(9600);
+	// Serial2.begin(9600);
 	//delay(100);
 	//Serial.print("File:   ");
 	//Serial.println(__FILE__);
@@ -37,8 +37,8 @@ void BluetoothMega::loopHook() {
 }
 
 void BluetoothMega::initBluetoothConnection() {
-	//Serial.begin(9600);
-	//Serial2.begin(9600);
+	Serial.begin(9600);
+	Serial2.begin(9600);
 	Serial.print("File:   ");
 	Serial.println(__FILE__);
 	Serial.print("Uploaded: ");

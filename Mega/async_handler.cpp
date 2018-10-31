@@ -1,7 +1,7 @@
 #include "async_handler.h"
 #include "shared_utils.h"
 
-AsyncHandler::DelayedCallback AsyncHandler::callbacks[];// = { { 0, nullptr },{ 0, nullptr }, { 0, nullptr }, { 0, nullptr }, { 0, nullptr }, { 0, nullptr }, { 0, nullptr }, { 0, nullptr }, { 0, nullptr }, { 0, nullptr }, };
+AsyncHandler::DelayedCallback AsyncHandler::callbacks[delay_buffer_size];// = { { 0, nullptr },{ 0, nullptr }, { 0, nullptr }, { 0, nullptr }, { 0, nullptr }, { 0, nullptr }, { 0, nullptr }, { 0, nullptr }, { 0, nullptr }, { 0, nullptr }, };
 
 AsyncHandler::AsyncHandler() : next_invoke(chrono_t_max) {
 	for (size_t i = 0; i < delay_buffer_size; i++) {
