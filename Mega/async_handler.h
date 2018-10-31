@@ -21,9 +21,9 @@ private:
 
 	static constexpr size_t delay_buffer_size = 10;
 
-	static Chrono chrono; // technically will need to be reset every 24 days
+	//static Chrono chrono; // technically will need to be reset every 24 days
 	Chrono::chrono_t next_invoke;
-	struct DelayedCallback {
+	static struct DelayedCallback {
 		Chrono::chrono_t invoke_at;
 		void (*callback_function)();
 	} callbacks[delay_buffer_size];

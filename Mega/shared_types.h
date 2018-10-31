@@ -4,12 +4,6 @@
 #include <Arduino.h>
 #include <Chrono.h>
 
-enum RemoteError : char {
-
-};
-
-
-
 enum CanType : char {
 	red, green, blue
 };

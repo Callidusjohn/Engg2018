@@ -40,8 +40,6 @@ static struct MotorDrive {
 	//static Metro serialMetro;  // Instantiate an instance
 	//static Metro sensorMetro;
 
-	static Chrono chrono;
-
 	//will come from sensor
 	static CanType detectedColor;
 
@@ -79,6 +77,8 @@ static struct MotorDrive {
 	static AutoPID rightPID;// = AutoPID(&countRight, &driveSetPoint, &outputRDrive, OUTPUT_MIN_IR, OUTPUT_MAX_IR, RIGHT_KP, RIGHT_KI, RIGHT_KD);
 
 	MotorDrive();
+	//~MotorDrive();
+
 
 	static void ISRleft();
 	static void ISRright();

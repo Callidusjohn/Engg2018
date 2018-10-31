@@ -8,7 +8,24 @@
 bool BluetoothMega::NL = true;
 char BluetoothMega::c = ' ';
 
+BluetoothMega::BluetoothMega() {
+	Serial.begin(9600);
+	Serial2.begin(9600);
+	//delay(100);
+	//Serial.print("File:   ");
+	//Serial.println(__FILE__);
+	//Serial.print("Uploaded: ");
+	//Serial.println(__DATE__);
+	//Serial.println(" ");
+	//// maybe force a disconnect and reconnect?
+	//// even reset to master/slave?
+	//Serial2.write("AT+CONXXXXXX"); // connect to bt chip, replace X with addr
+	//Serial.println("Arduino Mega: Bluetooth Serial started at 9600 Baud.");
+	//Serial2.print("Connection to Mega has been established.");
+};
+
 void BluetoothMega::loopHook() {
+	//Serial.println("TEST");
 	if (Serial2.available()) {
 		String data = getData();
 		CanQuantities cans = inputData(data);
@@ -16,12 +33,12 @@ void BluetoothMega::loopHook() {
 		Serial.println(cans.green);
 		Serial.println(cans.blue);
 	}
-	AsyncHandler.addCallback(&loopHook);
+	AsyncHandler.addCallback(BluetoothMega::loopHook);
 }
 
-BluetoothMega::BluetoothMega() {
-	Serial.begin(9600);
-	Serial2.begin(9600);
+void BluetoothMega::initBluetoothConnection() {
+	//Serial.begin(9600);
+	//Serial2.begin(9600);
 	Serial.print("File:   ");
 	Serial.println(__FILE__);
 	Serial.print("Uploaded: ");

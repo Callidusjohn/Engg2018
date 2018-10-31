@@ -1,9 +1,9 @@
 #include "motor_drive.h"
+#include <Servo.h>
+#include <AutoPID.h>
 #include "can_intake.h"
 //Metro MotorDrive::serialMetro = Metro(250);  // Instantiate an instance
 //Metro MotorDrive::sensorMetro = Metro(100);
-
-Chrono MotorDrive::chrono = Chrono(Chrono::MILLIS);
 
 double MotorDrive::countLeft = 0;
 double MotorDrive::countRight = 0;
@@ -12,13 +12,13 @@ int MotorDrive::dir = 1;
 
 int MotorDrive::targetPos = 1000;
 
-double MotorDrive::irRightAddition, MotorDrive::irLeftAddition, MotorDrive::driveLeftPidOutput, MotorDrive::driveRightPidOutput;
-double MotorDrive::inputIR, MotorDrive::setPointIR, MotorDrive::outputFromIR;
+double MotorDrive::irRightAddition, MotorDrive::irLeftAddition, MotorDrive::driveLeftPidOutput, MotorDrive::driveRightPidOutput = 0.0;
+double MotorDrive::inputIR, MotorDrive::setPointIR, MotorDrive::outputFromIR = 0.0;
 
 //DRIVE PIDS
-double MotorDrive::driveSetPoint;
-double MotorDrive::outputRDrive;
-double MotorDrive::outputLDrive;
+double MotorDrive::driveSetPoint = 0.0;
+double MotorDrive::outputRDrive = 0.0;
+double MotorDrive::outputLDrive = 0.0;
 
 
 //rgb stuff
@@ -26,14 +26,14 @@ int MotorDrive::frequency, MotorDrive::redFreq, MotorDrive::greenFreq, MotorDriv
 bool MotorDrive::sensorRed, MotorDrive::sensorGreen, MotorDrive::sensorBlue;
 
 // servos
-Servo MotorDrive::servoLeft;
-Servo MotorDrive::servoRight;
+Servo MotorDrive::servoLeft = Servo();
+Servo MotorDrive::servoRight = Servo();
 
 int MotorDrive::throttleLeft, MotorDrive::throttleRight;
 
-AutoPID MotorDrive::sensorPID = AutoPID(&inputIR, &setPointIR, &outputFromIR, OUTPUT_MIN_IR, OUTPUT_MAX_IR, KP_IR, KI_IR, KD_IR);
-AutoPID MotorDrive::leftPID = AutoPID(&countLeft, &driveSetPoint, &outputLDrive, OUTPUT_MIN_IR, OUTPUT_MAX_IR, LEFT_KP, LEFT_KI, LEFT_KD);
-AutoPID MotorDrive::rightPID = AutoPID(&countRight, &driveSetPoint, &outputRDrive, OUTPUT_MIN_IR, OUTPUT_MAX_IR, RIGHT_KP, RIGHT_KI, RIGHT_KD);
+//AutoPID MotorDrive::sensorPID = AutoPID(&inputIR, &setPointIR, &outputFromIR, OUTPUT_MIN_IR, OUTPUT_MAX_IR, KP_IR, KI_IR, KD_IR);
+//AutoPID MotorDrive::leftPID = AutoPID(&countLeft, &driveSetPoint, &outputLDrive, OUTPUT_MIN_IR, OUTPUT_MAX_IR, LEFT_KP, LEFT_KI, LEFT_KD);
+//AutoPID MotorDrive::rightPID = AutoPID(&countRight, &driveSetPoint, &outputRDrive, OUTPUT_MIN_IR, OUTPUT_MAX_IR, RIGHT_KP, RIGHT_KI, RIGHT_KD);
 
 bool MotorDrive::has_read_a_color;
 bool MotorDrive::color_reading_in_progress;
@@ -41,7 +41,6 @@ Chrono::chrono_t MotorDrive::disable_color_sensor_until;
 
 MotorDrive::MotorDrive() 
 {
-	chrono.start();
 	driveSetPoint = targetPos;
 	pinMode(OUTPUT_PIN, OUTPUT);
 	attachInterrupt(digitalPinToInterrupt(18), ISRleft, RISING);
@@ -93,12 +92,12 @@ void MotorDrive::driveSomewhere() {
 
 void MotorDrive::checkColorSensor() {
 	if (color_reading_in_progress) return;
-	if (chrono.hasPassed(disable_color_sensor_until)) {
+	if (millis() > disable_color_sensor_until) {
 		color_reading_in_progress = true;
 		checkColorSensorPhase1();
 	}
 	else {
-		AsyncHandler.addCallback(&checkColorSensor, disable_color_sensor_until - chrono.elapsed());
+		AsyncHandler.addCallback(&checkColorSensor, disable_color_sensor_until - millis());
 	}
 
 }
@@ -144,7 +143,7 @@ void MotorDrive::checkColorSensorPhase3() {
 	}
 	has_read_a_color = true;
 	color_reading_in_progress = false;
-	disable_color_sensor_until = chrono.elapsed() + 100;
+	disable_color_sensor_until = millis() + 100;
 	AsyncHandler.addCallback(&checkSensedColor);
 }
 

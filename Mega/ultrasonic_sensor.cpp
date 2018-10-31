@@ -1,10 +1,10 @@
 #include "ultrasonic_sensor.h"
 #include <Arduino.h>
+#include <Chrono.h>
 #include "shared_utils.h"
 
-Chrono UltraSonicSensor::chrono = Chrono(Chrono::MILLIS);
-
-UltraSonicSensor::UltraSonicSensor() {
+UltraSonicSensor::UltraSonicSensor() : chrono(Chrono::MILLIS) {
+	chrono.start();
 	pinMode(Pins::ultrasonic_echo, INPUT);
 	pinMode(Pins::ultrasonic_trigger, OUTPUT);
 	for (size_t i = 0; i < sample_buffer_size; i++) {

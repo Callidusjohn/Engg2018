@@ -8,6 +8,8 @@
 static struct BluetoothMega {
 
 	static void loopHook();
+	void initBluetoothConnection();
+
 	BluetoothMega();
 
 	// get data sent and return string form
@@ -35,15 +37,7 @@ static struct BluetoothMega {
 
 	static CanQuantities inputData(String data);
 
-
-
-	static int PIN;
 	static bool NL;
 	static char c;
-	struct cans {
-		unsigned char red;
-		unsigned char green;
-		unsigned char blue;
-	};
-} BluetoothMega;
+}BluetoothMega;
 #endif

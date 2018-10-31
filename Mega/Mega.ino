@@ -7,10 +7,10 @@
 #include <SoftwareSerial.h>
 #include "shared_utils.h"
 #include "shared_types.h"
-#include "async_handler.h"
-#include "can_intake.h"
-#include "motor_drive.h"
-#include "bluetooth_mega.h"
+#include "MockAsync/async_handler.h"
+#include "CanIntake/can_intake.h"
+#include "Drive/motor_drive.h"
+#include "Bluetooth/bluetooth_mega.h"
 
 
 /* Your code, if it does not go here or in a shared file, goes in a namespace or static module object.
@@ -26,7 +26,7 @@ void setup() {
 	// each function may only have ONE delayed callback registered at a time
 	// called functions can register other functions and themselves
 	//AsyncHandler.addCallback(&MotorDrive::updatePIDValues);
-
+	BluetoothMega.initBluetoothConnection();
 	//bluetooth added first
 	// bluetooth inits CanIntake
 	// bluetooth adds MotorDrive callback

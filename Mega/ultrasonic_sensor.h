@@ -23,6 +23,6 @@ private:
 	bool ascending = true;
 	Chrono::chrono_t delay_until;
 
-	static Chrono chrono;
+	Chrono chrono;
 };
 #endif
