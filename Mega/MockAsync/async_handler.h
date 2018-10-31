@@ -13,6 +13,8 @@ public:
 
 	void addCallback(void(*callback)(), Chrono::chrono_t delay = 0);
 
+	void removeCallback(void(*callback)());
+
 	void processLoop();
 
 private:
