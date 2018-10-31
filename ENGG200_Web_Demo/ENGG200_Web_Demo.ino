@@ -182,16 +182,23 @@ void loop()
       if (nUriIndex == 1) {
         
         String integer = parsingString(requestContent);
+<<<<<<< HEAD
         //check = BluetoothUno.transmitToMega(integer);
         
+=======
+        check = 0;
+>>>>>>> 3445914c9a5149c5993ad67b4b436ab09f76c3e6
         Serial.println(integer);
         //feedback = getErrorMessage(Bluetooth::feedback());
         if (check == 1) {
           //BluetoothUno.prepareForMega(integer);
           
           //String encrypted = BluetoothUno.encryptData(integer);
+<<<<<<< HEAD
           //check = 
           
+=======
+>>>>>>> 3445914c9a5149c5993ad67b4b436ab09f76c3e6
           BluetoothUno.transmitToMega(integer);
           feedback = "Attemping to send data...";
           //message = "<p>Red can: " + String(integer[1]) + "</p>";
