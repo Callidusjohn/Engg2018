@@ -36,8 +36,8 @@ String BluetoothMega::getData() {
 		// BTSerial.write(check);
 		// delay(250);
 		//if (BTSerial.read() == check) {
-			temp = encryptData(temp);
-			temp = encryptData(temp);
+		temp = encryptData(temp);
+		temp = encryptData(temp);
 		//}
 	} return temp; // change to error code for no information received
 }
@@ -74,32 +74,7 @@ void BluetoothMega::transmitToUno(String data) {
 }
 
 CanQuantities BluetoothMega::inputData(String temp) {
-	for(int i = 0; i <= 4; i++) {
-		char r, g, b;
-		if(i == 0) {
-
-		}
-		if(i == 1) {
-			// Serial.print("TEMP1: ");
-			// Serial.println(temp[i]);
-			r = temp[i];
-			// Serial.print("R: ");
-			// Serial.println(r);
-		}
-		if(i == 2) {
-			// Serial.print("TEMP2: ");
-			// Serial.println(temp[i]);
-			g = temp[i];
-		}
-		if(i == 3) {
-			// Serial.print("TEMP3: ");
-			// Serial.println(temp[i]);
-			b = temp[i];
-		}
-		CanQuantities quantity = {r-'0', g-'0', b-'0'};
-		Serial.print(quantity.red);
-	}
-	return quantity;
+	return CanQuantities{ temp[1] - '0', temp[2] - '0', temp[3] - '0' };
 }
 
 // encrypt data using variation of rot-13
@@ -112,7 +87,8 @@ String BluetoothMega::encryptData(String data) {
 		char c = data[i];
 		if (c > 47 && c < 58) {
 			c += 25;
-		} else {
+		}
+		else {
 			c += 18;
 		}
 		if (c > 90) {
@@ -146,7 +122,7 @@ String addChecksum(String message) {
 		char c = message[i];
 		sum += c % 2;
 	}
-	if (sum % 2 == 0){
+	if (sum % 2 == 0) {
 		sumChar = "0";
 	}
 	String messageOut = message;
