@@ -37,7 +37,6 @@ String BluetoothMega::getData() {
 		// delay(250);
 		//if (BTSerial.read() == check) {
 		temp = encryptData(temp);
-		temp = encryptData(temp);
 		//}
 	} return temp; // change to error code for no information received
 }
