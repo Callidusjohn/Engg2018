@@ -117,7 +117,7 @@ String BluetoothMega::encryptData(String data) {
 }
 
 //check the message for even parity
-boolean calcChecksum(String message) {
+boolean BluetoothMega::calcChecksum(String message) {
 	int sum = 0;
 	for (int i = 0; i < message.length(); i++) {
 		char c = message[i];
@@ -130,7 +130,7 @@ boolean calcChecksum(String message) {
 }
 
 //add a checksum for even parity
-String addChecksum(String message) {
+String BluetoothMega::addChecksum(String message) {
 	int sum = 0;
 	String sumChar = "1";
 	for (int i = 0; i < message.length(); i++) {
