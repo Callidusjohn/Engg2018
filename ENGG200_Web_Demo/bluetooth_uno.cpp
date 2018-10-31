@@ -30,11 +30,11 @@ String BluetoothUno::getData() {
 	} return "";
 }
 
-// this function allows transfer using serial monitor
+// this fnction allows transfer using serial monitor
 void BluetoothUno::getInfo() {
-	if (BTSerial.available() > 0) {
-		c = BTSerial.read();
-		Serial.write(c);
+ if (BTSerial.available() > 0) {
+    c = BTSerial.read();
+    Serial.write(c);
 	}
 	while (Serial.available() > 0) {
 		c = Serial.read();

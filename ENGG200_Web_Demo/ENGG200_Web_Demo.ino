@@ -158,7 +158,7 @@ void loop()
     BUFFER requestContent;    // Request content as a null-terminated string.
     MethodType eMethod = readHttpRequest(client, nUriIndex, requestContent);
     String message = "";
-    char check = 0;
+    char check = 1;
 
     Serial.print("Read Request type: ");
     Serial.print(eMethod);
@@ -180,14 +180,19 @@ void loop()
 
       // Normal page request, may depend on content of the request
       if (nUriIndex == 1) {
+        
         String integer = parsingString(requestContent);
-        check = BluetoothUno.transmitToMega(integer);
+        //check = BluetoothUno.transmitToMega(integer);
+        
         Serial.println(integer);
         //feedback = getErrorMessage(Bluetooth::feedback());
-        if (check == 0) {
+        if (check == 1) {
           //BluetoothUno.prepareForMega(integer);
+          
           //String encrypted = BluetoothUno.encryptData(integer);
-          check = BluetoothUno.transmitToMega(integer);
+          //check = 
+          
+          BluetoothUno.transmitToMega(integer);
           feedback = "Attemping to send data...";
           //message = "<p>Red can: " + String(integer[1]) + "</p>";
           //message.concat("<p>Green can: " + String(integer[2]) + "</p>");
