@@ -1,9 +1,7 @@
 #ifndef BLUETOOTH_MEGA_H
 #define BLUETOOTH_MEGA_H
 #include <Arduino.h>
-//#include <HardwareSerial.h>
 #include <SoftwareSerial.h>
-//#include <AltSoftSerial.h>
 #include "../shared_types.h"
 //#include <Serial.h>
 

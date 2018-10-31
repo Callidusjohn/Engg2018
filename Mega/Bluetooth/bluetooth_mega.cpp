@@ -1,7 +1,5 @@
 #include <Arduino.h>
 #include <SoftwareSerial.h>
-//#include <AltSoftSerial.h>
-//#include <HardwareSerial.h>
 #include <string.h>
 #include "bluetooth_mega.h"
 #include "../shared_types.h"
