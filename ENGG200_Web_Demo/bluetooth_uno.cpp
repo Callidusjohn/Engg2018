@@ -56,6 +56,7 @@ void BluetoothUno::getInfo() {
 
 void BluetoothUno::transmitToMega(String data) {
 	// need some flag to ensure this isnt infinite
+	data = encryptData(data);
 	for (int i = 0; i < data.length(); i++) {
 		BTSerial.write(data[i]);
 	}
