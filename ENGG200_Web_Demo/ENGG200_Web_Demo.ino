@@ -37,7 +37,7 @@ String integer;
 const char * const commA[] PROGMEM = {"Waiting", "Failed to connect", "Client disconnect"};
 const char * const commB[] PROGMEM = {"Waiting", "Failed to connect", "Client disconnect"};
 const char * const commC[] PROGMEM = {"Waiting", "Failed to connect", "Client disconnect"};
-const char * const commD[] PROGMEM = {"Waiting", "Failed_to_connect_000000000000000000", "Client_disconnect"};
+const char * const commD[] PROGMEM = {"Waiting", "Failed_to_connect", "Client_disconnect"};
 const char * const commE[] PROGMEM = {"Waiting", "Failed to connect", "Client disconnect"};
 const char content_404[] PROGMEM = "HTTP/1.1 404 Not Found\nServer: arduino\nContent-Type: text/html\n\n<html><head><title>Arduino Web Server - Error 404</title></head><body><h1>Error 404: Sorry, that page cannot be found!</h1></body>";
 const char * const page_404[] PROGMEM = { content_404 }; // table with 404 page
@@ -60,18 +60,18 @@ const char content_page1[] PROGMEM = "<hr /><div class=\"col col1\"><h2>Red Cans
 
 // Status
 const char http_uri2[] PROGMEM = "/status";
-const char content_title2[] PROGMEM = "<meta http-equiv=\"refresh\" content=15><div class=\"container\"> <h1>Your order is being processed</h1><p id='status'></p></div>";
+const char content_title2[] PROGMEM = "<meta http-equiv=\"refresh\" content=10><div class=\"container\"> <h1>Your order is being processed</h1><p id='status'></p></div>";
 const char content_page2[] PROGMEM = "<hr /><script type=\"text/javascript\"> var timer = 5; var status = document.getElementById('feedback').value;if(status!=\"Success\" && status.substring(0,5)!=\"Error\"){ document.getElementById('status').innerHTML=\"Status=\"+status; } else if(status.substring(0,5) == \"Error\"){document.location='/error';} else{document.location='/success'; } function refresh(timer){ alert(\"refresh\"); return timer; }</script>";
 
 //Error
 const char http_uri3[] PROGMEM = "/error";
-const char content_title3[] PROGMEM = "<h1>Error occurs</h1><p>Please fix error and order again</p>";
-const char content_page3[] PROGMEM = "<hr /><form action=\"/\"> <div style=\"position: absolute; right:25px; bottom:25px;\"> <button type=\"submit\">New Order</button> </div> </form>";
+const char content_title3[] PROGMEM = "<div class=\"container\"><h1>Error occurs</h1><p id='status'></p></div>";
+const char content_page3[] PROGMEM = "<script type=\"text/javascript\">var status = document.getElementById('feedback').value;if(status.substring(0,5)==\"Error\"){document.getElementById('status').innerHTML=\"Please fix = \"+status;}</script><form action=\"/\"> <div style=\"position: absolute; right:25px; bottom:25px;\"> <button type=\"submit\">New Order</button></form></div>";
 
 // Success
 const char http_uri5[] PROGMEM = "/success";
-const char content_title5[] PROGMEM = "<h1>Order Successful</h1><p>Your cans are ready to be picked up</p>";
-const char content_page5[] PROGMEM = "<hr /><form action=\"/\"> <div style=\"position: absolute; right:25px; bottom:25px;\"> <button type=\"submit\">New Order</button> </div> </form>";
+const char content_title5[] PROGMEM = "<div class=\"container\"><h1>Order Successful</h1><p>Your cans are ready to be picked up</p></div>";
+const char content_page5[] PROGMEM = "<hr /><form action=\"/\"> <div style=\"position: absolute; right:25px; bottom:25px;\"> <button type=\"submit\">New Order</button></form></div>";
 
 // declare tables for the pages
 const char * const contents_titles[] PROGMEM = { content_title1, content_title2, content_title3, content_title5 }; // titles
@@ -103,7 +103,8 @@ void setup()
 
   delay(2000);
   server.begin();
-  Serial.print("Server is at ");
+  Serial.print("Server is at ");;
+
   Serial.println(Ethernet.localIP());
   BluetoothUno.initiateConnToMega();
 
@@ -112,7 +113,7 @@ void setup()
 /**********************************************************************************************************************
                                                             Main loop
 ***********************************************************************************************************************/
-char check = 0;
+char checkTransmit = 0;
 
 String parsingString(String str) {
   String result = "0"; //0 for unsuccess & 1 for success. FIXME
@@ -123,26 +124,28 @@ String parsingString(String str) {
 }
 
 String getErrorMessage(String str) {
-  String result = "";
-  int code = str.substring(1).toInt();
-  switch (str[0]) {
+
+  int code = str.substring(6).toInt();
+  char chr = str[5];
+  Serial.println(chr);
+  switch (chr) {
     case 'A':
-      result = commA[code];
+      return commA[code];
       break;
     case 'B':
-      result = commB[code];
+      return commB[code];
       break;
     case 'C':
-      result = commC[code];
+      return commC[code];
       break;
     case 'D':
-      result = commD[code];
+      return commD[code];
       break;
     case 'E':
-      result = commE[code];
+      return commE[code];
       break;
   }
-  return result;
+  return "";
 }
 
 void loop()
@@ -158,7 +161,7 @@ void loop()
     BUFFER requestContent;    // Request content as a null-terminated string.
     MethodType eMethod = readHttpRequest(client, nUriIndex, requestContent);
     String message = "";
-    char check = 1;
+
 
     Serial.print("Read Request type: ");
     Serial.print(eMethod);
@@ -175,53 +178,30 @@ void loop()
     }
     else if (nUriIndex < NUM_PAGES)
     {
-
       sendPage(client, nUriIndex, requestContent);
-
       // Normal page request, may depend on content of the request
+      if (nUriIndex == 0) {
+        checkTransmit = 0;
+      }
       if (nUriIndex == 1) {
-        
         String integer = parsingString(requestContent);
-<<<<<<< HEAD
-        //check = BluetoothUno.transmitToMega(integer);
-        
-=======
-        check = 0;
->>>>>>> 3445914c9a5149c5993ad67b4b436ab09f76c3e6
-        Serial.println(integer);
-        //feedback = getErrorMessage(Bluetooth::feedback());
-        if (check == 1) {
-          //BluetoothUno.prepareForMega(integer);
-          
-          //String encrypted = BluetoothUno.encryptData(integer);
-<<<<<<< HEAD
-          //check = 
-          
-=======
->>>>>>> 3445914c9a5149c5993ad67b4b436ab09f76c3e6
-          BluetoothUno.transmitToMega(integer);
-          feedback = "Attemping to send data...";
-          //message = "<p>Red can: " + String(integer[1]) + "</p>";
-          //message.concat("<p>Green can: " + String(integer[2]) + "</p>");
-          //message.concat("<p>Blue can: " + String(integer[3]) + "</p>");
+        checkTransmit = BluetoothUno.transmitToMega(integer);  
+        /*if (checkTransmit == 2){
+          feedback = "ErrorD01";      
         }
-        //else
-          //feedback = BluetoothUno.feedback();
-          if (millis < 20000){
-            feedback = "Error0111";
-          }
-          else if (millis < 40000)
-            feedback = "Error0111";
-          else
-            feedback = "Success";
+        else
+          feedback = "Running...";*/
+      }
+      if (nUriIndex == 2){ 
+        //feedback = getErrorMessage(feedback);
       }
     }
-
-    // give the web browser time to receive the data
-    delay(1);
-    client.stop();
   }
+// give the web browser time to receive the data
+delay(1);
+client.stop();
 }
+
 
 /**********************************************************************************************************************
                                                Method for read HTTP Header Request from web client
@@ -456,8 +436,9 @@ void sendPage(EthernetClient & client, int nUriIndex, BUFFER & requestContent)
   // send title
   sendProgMemAsString(client, (char*)pgm_read_word(&(contents_titles[nUriIndex])));
 
-  if (nUriIndex == 1){
-    client.println("<input type='hidden' value='" + feedback + "' id='feedback'>");
+  if (nUriIndex == 1 || nUriIndex == 2) {
+    String temp = "<input type='hidden' value='" + feedback + "' id='feedback'>";
+    client.println(temp);
   }
 
   // send the body for the requested page
