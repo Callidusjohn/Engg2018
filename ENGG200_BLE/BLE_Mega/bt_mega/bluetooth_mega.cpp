@@ -88,9 +88,9 @@ CanQuantities BluetoothMega::inputData(String temp) {
 		if(i == 3) {
 			b = temp[i];
 		}
-		CanQuantities quantity{r, g, b};
+		CanQuantities quantity = {r, g, b};
 	}
-	return;
+	return quantity;
 }
 
 // encrypt data using variation of rot-13
