@@ -8,6 +8,7 @@ void setup() {
 	// put your setup code here, to run once:
 	Serial.begin(9600);
 	Serial2.begin(9600);
+	BluetoothMega.initiateConnToUno();
 }
 
 void loop() {
@@ -20,6 +21,7 @@ void loop() {
 	    // g = InterpretData.interpretGreen(c,g);
 	    // b = InterpretData.interpretBlue(c,b);
 	    // CanQuantities quantity = {r, g, b};
+		//BluetoothMega.getInfo();
 		String data = BluetoothMega.getData();
 		Serial.println(data);
 	}

@@ -16,17 +16,18 @@ void BluetoothMega::initiateConnToUno() {
 	BTSerial.begin(9600);
 	// maybe force a disconnect and reconnect?
 	// even reset to master/slave?
-	BTSerial.write("AT+CONXXXXXX"); // connect to bt chip, replace X with addr
+	Serial2.write("AT+CONXXXXXX"); // connect to bt chip, replace X with addr
 	Serial.println("Arduino Mega: Bluetooth Serial started at 9600 Baud.");
-	BTSerial.print("Connection to Mega has been established.");
+	Serial2.print("Connection to Mega has been established.");
 }
 
 // ##### TODO: TEST THIS #####
 String BluetoothMega::getData() {
 	String temp = "";
-	while (BTSerial.available()) {
-		char c = BTSerial.read();
+	while (Serial2.available()) {
+		char c = Serial2.read();
 		temp.concat(c);
+		delay(100);
 	}
 	if (temp != "") {
 		// boolean check = calcChecksum(temp);
@@ -34,22 +35,22 @@ String BluetoothMega::getData() {
 		// delay(250);
 		//if (BTSerial.read() == check) {
 			temp = encryptData(temp);
-			return temp;
+			temp = encryptData(temp);
 		//}
-	} return "Error"; // change to error code for no information received
+	} return temp; // change to error code for no information received
 }
 
 // this function allows transfer using serial monitor
 void BluetoothMega::getInfo() {
-	if (BTSerial.available() > 0) {
-		c = BTSerial.read();
+	if (Serial2.available() > 0) {
+		c = Serial2.read();
 		Serial.write(c);
 	}
 	while (Serial.available() > 0) {
 		c = Serial.read();
 
 		if (c != 10 && c != 13) {
-			BTSerial.write(c);
+			Serial2.write(c);
 		}
 
 		if (NL) {
