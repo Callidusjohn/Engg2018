@@ -4,9 +4,11 @@
 AsyncHandler::DelayedCallback AsyncHandler::callbacks[delay_buffer_size];// = { { 0, nullptr },{ 0, nullptr }, { 0, nullptr }, { 0, nullptr }, { 0, nullptr }, { 0, nullptr }, { 0, nullptr }, { 0, nullptr }, { 0, nullptr }, { 0, nullptr }, };
 
 AsyncHandler::AsyncHandler() : next_invoke(chrono_t_max) {
-	for (size_t i = 0; i < delay_buffer_size; i++) {
-		callbacks[i] = { 0, nullptr };
-	}
+	//TODO: make sure that this isn't getting called twice for some reason
+	//not required due to default initialization
+	//for (size_t i = 0; i < delay_buffer_size; i++) {
+	//	callbacks[i] = { 0, nullptr };
+	//}
 }
 
 void AsyncHandler::addCallback(void(*callback)(), Chrono::chrono_t millis_delay) {
