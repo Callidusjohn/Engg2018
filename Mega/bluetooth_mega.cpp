@@ -1,21 +1,32 @@
 #include <Arduino.h>
 #include <SoftwareSerial.h>
-#include <AltSoftSerial.h>
 #include <string.h>
 #include "bluetooth_mega.h"
 #include "shared_types.h"
+#include "async_handler.h"
 
+bool BluetoothMega::NL = true;
+char BluetoothMega::c = ' ';
 
+void BluetoothMega::loopHook() {
+	if (Serial2.available()) {
+		String data = getData();
+		CanQuantities cans = inputData(data);
+		Serial.println(cans.red);
+		Serial.println(cans.green);
+		Serial.println(cans.blue);
+	}
+	AsyncHandler.addCallback(&loopHook);
+}
 
-void BluetoothMega::initiateConnToUno() {
+BluetoothMega::BluetoothMega() {
 	Serial.begin(9600);
+	Serial2.begin(9600);
 	Serial.print("File:   ");
 	Serial.println(__FILE__);
 	Serial.print("Uploaded: ");
 	Serial.println(__DATE__);
 	Serial.println(" ");
-
-	BTSerial.begin(9600);
 	// maybe force a disconnect and reconnect?
 	// even reset to master/slave?
 	Serial2.write("AT+CONXXXXXX"); // connect to bt chip, replace X with addr
@@ -36,6 +47,7 @@ String BluetoothMega::getData() {
 		// BTSerial.write(check);
 		// delay(250);
 		//if (BTSerial.read() == check) {
+		temp = encryptData(temp);
 		temp = encryptData(temp);
 		//}
 	} return temp; // change to error code for no information received
@@ -68,7 +80,7 @@ void BluetoothMega::getInfo() {
 void BluetoothMega::transmitToUno(String data) {
 	// need some flag to ensure this isnt infinite
 	for (int i = 0; i < data.length(); i++) {
-		BTSerial.write(data[i]);
+		Serial2.write(data[i]);
 	}
 }
 

@@ -1,6 +1,7 @@
 #include <Arduino.h>
 #include <SoftwareSerial.h>
 #include <AltSoftSerial.h>
+#include "shared_types.h"
 //#include <Serial.h>
 
 static struct BluetoothMega {
@@ -28,6 +29,12 @@ static struct BluetoothMega {
 	void lcd_errorChecking(int data);
 
 	void getInfo();
+
+	CanQuantities quantity;
+
+	CanQuantities inputData(String data);
+
+
 
 	int PIN;
 	AltSoftSerial BTSerial;

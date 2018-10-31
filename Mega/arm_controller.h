@@ -2,7 +2,7 @@
 #ifndef ARM_CONTROLLER_H
 #define ARM_CONTROLLER_H
 #include <Arduino.h>
-#include "../shared_types.h"
+#include "shared_types.h"
 #include "can_intake.h"
 
 struct CanIntake::ArmController {
