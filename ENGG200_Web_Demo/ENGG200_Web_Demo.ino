@@ -175,9 +175,9 @@ void loop()
     }
     else if (nUriIndex < NUM_PAGES)
     {
-    
+
       sendPage(client, nUriIndex, requestContent);
-      
+
       // Normal page request, may depend on content of the request
       if (nUriIndex == 1) {
         String integer = parsingString(requestContent);
@@ -187,7 +187,6 @@ void loop()
         if (check == 0) {
           //BluetoothUno.prepareForMega(integer);
           //String encrypted = BluetoothUno.encryptData(integer);
-          
           check = BluetoothUno.transmitToMega(integer);
           feedback = "Attemping to send data...";
           //message = "<p>Red can: " + String(integer[1]) + "</p>";
@@ -201,7 +200,7 @@ void loop()
           }
           else if (millis < 40000)
             feedback = "Error0111";
-          else 
+          else
             feedback = "Success";
       }
     }
@@ -451,7 +450,7 @@ void sendPage(EthernetClient & client, int nUriIndex, BUFFER & requestContent)
 
   // send the body for the requested page
   sendUriContentByIndex(client, nUriIndex, requestContent);
-  
+
   // Append the data sent in the original HTTP request
   //client.println("");
   // send POST variables

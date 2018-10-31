@@ -30,14 +30,6 @@ String BluetoothUno::getData() {
 	} return "";
 }
 
-String BluetoothUno::checkForMegaData() {
-	String temp = "";
-	if (BTSerial.available()) {
-		char c = BTSerial.read();
-		temp.concat(c);
-	} return temp;
-}
-
 // this function allows transfer using serial monitor
 void BluetoothUno::getInfo() {
 	if (BTSerial.available() > 0) {

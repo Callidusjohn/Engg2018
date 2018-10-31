@@ -29,13 +29,13 @@ String BluetoothMega::getData() {
 		temp.concat(c);
 	}
 	if (temp != "") {
-		boolean check = calcChecksum(temp);
-		BTSerial.write(check);
-		delay(250);
-		if (BTSerial.read() == check) {
+		// boolean check = calcChecksum(temp);
+		// BTSerial.write(check);
+		// delay(250);
+		//if (BTSerial.read() == check) {
 			temp = encryptData(temp);
 			return temp;
-		}
+		//}
 	} return "Error"; // change to error code for no information received
 }
 

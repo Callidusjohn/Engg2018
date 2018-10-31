@@ -11,9 +11,6 @@ static struct BluetoothUno {
 	// transfer data to Mega
  	void transmitToMega(String data);
 
-	// check if any data is coming in from the Mega
-	String checkForMegaData();
-
 	// get data from the Mega
 	String getData();
 

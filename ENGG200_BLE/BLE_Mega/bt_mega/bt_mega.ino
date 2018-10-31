@@ -21,5 +21,6 @@ void loop() {
 	    // b = InterpretData.interpretBlue(c,b);
 	    // CanQuantities quantity = {r, g, b};
 		String data = BluetoothMega.getData();
+		Serial.println(data);
 	}
 }
