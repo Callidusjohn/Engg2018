@@ -1,6 +1,6 @@
 #include "ultrasonic_sensor.h"
 #include <Arduino.h>
-#include "../shared_utils.h"
+#include "shared_utils.h"
 
 Chrono UltraSonicSensor::chrono = Chrono(Chrono::MILLIS);
 

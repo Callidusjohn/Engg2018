@@ -3,8 +3,8 @@
 #define ASYNC_HANDLER_H
 #include <Arduino.h>
 #include <Chrono.h>
-#include "../shared_types.h"
-#include "../shared_utils.h"
+#include "shared_types.h"
+#include "shared_utils.h"
 
 static class AsyncHandler {
 public:

@@ -1,5 +1,5 @@
 #include "motor_drive.h"
-#include "../CanIntake/can_intake.h"
+#include "can_intake.h"
 //Metro MotorDrive::serialMetro = Metro(250);  // Instantiate an instance
 //Metro MotorDrive::sensorMetro = Metro(100);
 

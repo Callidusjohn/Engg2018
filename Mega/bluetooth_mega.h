@@ -2,7 +2,7 @@
 #define BLUETOOTH_MEGA_H
 #include <Arduino.h>
 #include <SoftwareSerial.h>
-#include "../shared_types.h"
+#include "shared_types.h"
 //#include <Serial.h>
 
 static struct BluetoothMega {

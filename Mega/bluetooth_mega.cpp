@@ -2,8 +2,8 @@
 #include <SoftwareSerial.h>
 #include <string.h>
 #include "bluetooth_mega.h"
-#include "../shared_types.h"
-#include "../MockAsync/async_handler.h"
+#include "shared_types.h"
+#include "async_handler.h"
 
 bool BluetoothMega::NL = true;
 char BluetoothMega::c = ' ';

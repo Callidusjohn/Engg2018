@@ -6,8 +6,8 @@
 #include <Chrono.h>
 //#include <Metro.h> // Include the Metro library
 #include <AutoPID.h>
-#include  "../MockAsync/async_handler.h"
-#include "../shared_types.h"
+#include  "async_handler.h"
+#include "shared_types.h"
 
 static struct MotorDrive {
 	static constexpr auto OUTPUT_PIN = A1;
