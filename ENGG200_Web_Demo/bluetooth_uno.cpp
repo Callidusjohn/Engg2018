@@ -6,16 +6,16 @@
 
 
 void BluetoothUno::initiateConnToMega() {
-	Serial.begin(9600);
-	Serial.print("File:   ");
-	Serial.println(__FILE__);
-	Serial.print("Uploaded: ");
-	Serial.println(__DATE__);
-	Serial.println(" ");
+//	Serial.begin(9600);
+// 	Serial.print("File:   ");
+// 	Serial.println(__FILE__);
+// 	Serial.print("Uploaded: ");
+// 	Serial.println(__DATE__);
+// 	Serial.println(" ");
 
 	BTSerial.begin(9600);
-	Serial.println("Arduino Uno: Bluetooth Serial started at 9600 Baud.");
-	BTSerial.print("Connection to Uno has been established.");
+	Serial.println("Established BT connection to Mega.");
+    BTSerial.print("Established BT connection to Uno.");
 }
 
 String BluetoothUno::getData() {
@@ -54,12 +54,16 @@ void BluetoothUno::getInfo() {
 	}
 }
 
-void BluetoothUno::transmitToMega(String data) {
+char BluetoothUno::transmitToMega(String data) {
 	// need some flag to ensure this isnt infinite
-	data = encryptData(data);
-	for (int i = 0; i < data.length(); i++) {
-		BTSerial.write(data[i]);
-	}
+    if (BTSerial.available()){
+        data = encryptData(data);
+        for (int i = 0; i < data.length(); i++) {
+            BTSerial.write(data[i]);
+        return 1;
+        }
+    } else return 2;
+	
 }
 
 String BluetoothUno::prepareForMega(String data) {
