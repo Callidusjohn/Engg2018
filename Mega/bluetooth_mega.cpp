@@ -12,15 +12,26 @@ void BluetoothMega::loopHook() {
 	//Serial.println("TEST");
 	if (Serial2.available()) {
 		String data = getData();
-		CanQuantities cans = inputData(data);
-		Serial.print("Red cans: ");
-		Serial.println(cans.red);
-		Serial.print("Green cans: ");
-		Serial.println(cans.green);
-		Serial.print("Blue cans: ");
-		Serial.println(cans.blue);
-		CanIntake::initState(cans);
-		AsyncHandler.addCallback(MotorDrive::driveSomewhere);
+		CanQuantities cans;
+		if (data.length() == 4) {
+			cans = inputData(data);
+			Serial.print("Red cans: ");
+			Serial.println(cans.red);
+			Serial.print("Green cans: ");
+			Serial.println(cans.green);
+			Serial.print("Blue cans: ");
+			Serial.println(cans.blue);
+			Serial2.print("Red cans: ");
+			Serial2.println(cans.red);
+			Serial2.print("Green cans: ");
+			Serial2.println(cans.green);
+			Serial2.print("Blue cans: ");
+			Serial2.println(cans.blue);
+		}
+		else Serial.println("Received " + String(data.length()) + " bytes of garbage");
+		
+		//CanIntake::initState(cans);
+		//AsyncHandler.addCallback(MotorDrive::driveSomewhere);
 	}
 	AsyncHandler.addCallback(BluetoothMega::loopHook, 100);
 }
