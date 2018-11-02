@@ -9,7 +9,7 @@ static struct BluetoothUno {
 	void initiateConnToMega();
 
 	// transfer data to Mega
- 	char transmitToMega(String data);
+ 	void transmitToMega(String data);
 
 	// get data from the Mega
 	String getData();
@@ -27,7 +27,7 @@ static struct BluetoothUno {
 	// ##### TEST FUNCTIONS #####
 	// ##########################
 
-    String prepareForMega(String data);
+   String prepareForMega(String data);
 
 	void transmitToMega(int data);
 
