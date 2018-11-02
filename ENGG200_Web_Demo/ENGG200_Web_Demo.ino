@@ -39,7 +39,7 @@ const char * const page_404[] PROGMEM = { content_404 }; // table with 404 page
 
 // HTML Header for pages
 const char content_main_header[] PROGMEM = "HTTP/1.0 200 OK\nServer: arduino\nCache-Control: no-store, no-cache, must-revalidate\nPragma: no-cache\nConnection: close\nContent-Type: text/html\n";
-const char content_main_top[] PROGMEM = "<html><head><title>Arduino Web Server</title><style type=\"text/css\">body, html, h1, h2, p, div, a, img, header, footer, span { margin: 0; padding: 0; } * { box-sizing: border-box } html { background: #ffffff; } footer, header { background: #ffffff; color: #444444; font-family: Arial, \"Helvetica Neue\", Helvetica, sans-serif; text-align: center; padding: 2em 0; } main { width: 100%; margin: 0 auto; overflow: hidden; } .container { position: relative; text-align: center; font-size: 30px; font-family: Arial, \"Helvetica Neue\", Helvetica, sans-serif; } .col { width: 33.333%; height: 500px; float: left; text-align: center; padding: 1rem; } .col1 { position: relative; background: Red; font-family: Arial, \"Helvetica Neue\", Helvetica, sans-serif; } .col2 { position: relative; background: Green; font-family: Arial, \"Helvetica Neue\", Helvetica, sans-serif; } .col3 { position: relative; background: Blue; font-family: Arial, \"Helvetica Neue\", Helvetica, sans-serif; } footer { clear: both; }</style></head><body><h1>Arduino - Tile Runner Web Server</h1>";
+const char content_main_top[] PROGMEM = "<html><head><title>Arduino Web Server</title><style type=\"text/css\">footer,header,html{background:#fff}.col,.container,footer,header{text-align:center}.col,.col1,.col2,.col3,.container{position:relative}.col1,.col2,.col3,.container,footer,header{font-family:Arial,\"Helvetica Neue\",Helvetica,sans-serif}a,body,div,footer,h1,h2,header,html,img,p,span{margin:0;padding:0}*{box-sizing:border-box}footer,header{color:#444;padding:2em 0}main{width:100%;margin:0 auto;overflow:hidden}.container{font-size:30px}.col{margin-top:25px;width:33.333%;height:75%;float:left;padding:1rem}.col:hover{z-index:1;box-shadow:0 0 20px rgba(0,0,0,.25)}.col1{background:#e03d31}.col2{background:#92bc46}.col3{background:#40a0d5}h1,h2{text-align:center;font-family:Arial}footer{clear:both}input[type=\"number\"]{position:static;height:60px;width:75px;margin-top:20px;outline:0;border:2px solid #a3a3a3;border-radius:5px;text-align:center;font-size:36px}.header{margin-top:100px}h1{margin-top:20px}input[type=\"button\"]{z-index:2;position:fixed;margin:-180px 0 0 -100px;height:50px;width:200px;outline:0;border:none;box-shadow:0 0 10px rgba(0,0,0,.25);border-radius:5px;background-color:#fff;font-size:16px;transition:ease .25s}input[type=\"button\"]:hover{box-shadow:0 0 20px rgba(0,0,0,.6);cursor:pointer}hr{margin-top:30px;margin-bottom:-28px}</style></head><body><h1>Arduino - Tile Runner Web Server</h1>";
 const char content_main_menu[] PROGMEM = "";//<table width=\"500\"><tr><td align=\"center\"><a href=\"/\">Main</a></td><td align=\"center\"><a href=\"status\">Status</a></td></tr></table>";
 const char content_main_footer[] PROGMEM = "</html>";
 const char * const contents_main[] PROGMEM = { content_main_header, content_main_top, content_main_menu, content_main_footer }; // table with 404 page
@@ -51,7 +51,7 @@ const char * const contents_main[] PROGMEM = { content_main_header, content_main
 // Order
 const char http_uri1[] PROGMEM = "/";
 const char content_title1[] PROGMEM = "<h2>Ordering Page</h2>";
-const char content_page1[] PROGMEM = "<hr /><div class=\"col col1\"><h2>Red Cans</h2><p>how many red cans would you like to pick up?</p><div class=\"container\"><form><input id=\"1\" type=\"number\"min=\"0\" max=\"8\" step=\"1\" name=\"Red\"></form></div></div><div class=\"col col2\"><h2>Green Cans</h2><p>how many green cans would you like to pick up?</p><div class=\"container\"><form><input id=\"2\" type=\"number\"min=\"0\" max=\"8\" step=\"1\" name=\"Green\"></form></div></div><div class=\"col col3\"><h2>Blue Cans</h2><p>how many blue cans would you like to pick up?</p><div class=\"container\"><form><input id=\"3\" type=\"number\"min=\"0\" max=\"8\" step=\"1\"name=\"Blue\"></form></div></div></form><form action=\"/\" id=\"canForm\"name=\"canForm\"><input style=\"visibility: hidden\" id=\"4\"type=\"number\"min=\"0\" max=\"8\" step=\"1\" name=\"Red\"><input style=\"visibility:hidden\"id=\"5\"type=\"number\"min=\"0\" max=\"8\"step=\"1\"name=\"Green\"><input style=\"visibility: hidden\" id=\"6\" type=\"number\"min=\"0\" max=\"8\" step=\"1\" name=\"Blue\"><div class=\"container\"><input type=\"button\" value=\"Submit\" onclick=\"sanitiseData()\"></div></form><script type=\"text/javascript\">document.getElementById('1').value=0;document.getElementById('2').value=0;document.getElementById('3').value=0;function total(){var redCans = document.getElementById('1').value;var greenCans = document.getElementById('2').value;var blueCans = document.getElementById('3').value;var total=parseInt(redCans)+parseInt(greenCans)+parseInt(blueCans);return total;}function greaterThanTen(){if(total()>10){return true;}return false;}function sanitiseData(){var cansValid=true;if(document.getElementById('1').value>8 || document.getElementById('1').value<0){document.getElementById('1').value=0;document.getElementById('4').value=0;cansValid=false;}if(document.getElementById('2').value>8 || document.getElementById('2').value<0){document.getElementById('2').value=0;document.getElementById('5').value=0;cansValid=false;}if(document.getElementById('3').value>8 || document.getElementById('3').value<0){document.getElementById('3').value=0;document.getElementById('6').value=0;cansValid=false;}if(!greaterThanTen() && cansValid==true){console.log(\"test\");document.getElementById('4').value=document.getElementById('1').value;document.getElementById('5').value=document.getElementById('2').value;document.getElementById('6').value=document.getElementById('3').value;document.getElementById('canForm').action = \"/status\";document.getElementById('canForm').submit();}else{alert(\"Invalid number of Cans submitted. Please submit a max of 10 total. No greater than 8 cans per colour.\"); return window.location=\"/\";}}</script></body>";
+const char content_page1[] PROGMEM = "<hr /><div class=\"col col1\"><h2 class=\"header\">Red Cans</h2><p>How many red cans would you like to pick up?</p><div class=\"container\"><form><input id=\"1\" type=\"number\"min=\"0\" max=\"8\" step=\"1\" name=\"Red\"></form></div></div><div class=\"col col2\"><h2 class=\"header\">Green Cans</h2><p>How many green cans would you like to pick up?</p><div class=\"container\"><form><input id=\"2\" type=\"number\"min=\"0\" max=\"8\" step=\"1\" name=\"Green\"></form></div></div><div class=\"col col3\"><h2 class=\"header\">Blue Cans</h2><p>How many blue cans would you like to pick up?</p><div class=\"container\"><form><input id=\"3\" type=\"number\"min=\"0\" max=\"8\" step=\"1\"name=\"Blue\"></form></div></div></form><form action=\"/\" id=\"canForm\"name=\"canForm\"><input style=\"visibility: hidden\" id=\"4\"type=\"number\"min=\"0\" max=\"8\" step=\"1\" name=\"Red\"><input style=\"visibility:hidden\"id=\"5\"type=\"number\"min=\"0\" max=\"8\"step=\"1\"name=\"Green\"><input style=\"visibility: hidden\" id=\"6\" type=\"number\"min=\"0\" max=\"8\" step=\"1\" name=\"Blue\"><div class=\"container\"><input type=\"button\" value=\"Submit\" onclick=\"sanitiseData()\"></div></form><script type=\"text/javascript\">document.getElementById('1').value=0;document.getElementById('2').value=0;document.getElementById('3').value=0;function total(){var redCans = document.getElementById('1').value;var greenCans = document.getElementById('2').value;var blueCans = document.getElementById('3').value;var total=parseInt(redCans)+parseInt(greenCans)+parseInt(blueCans);return total;}function greaterThanTen(){if(total()>10){return true;}return false;}function sanitiseData(){var cansValid=true;if(document.getElementById('1').value>8 || document.getElementById('1').value<0){document.getElementById('1').value=0;document.getElementById('4').value=0;cansValid=false;}if(document.getElementById('2').value>8 || document.getElementById('2').value<0){document.getElementById('2').value=0;document.getElementById('5').value=0;cansValid=false;}if(document.getElementById('3').value>8 || document.getElementById('3').value<0){document.getElementById('3').value=0;document.getElementById('6').value=0;cansValid=false;}if(!greaterThanTen() && cansValid==true){console.log(\"test\");document.getElementById('4').value=document.getElementById('1').value;document.getElementById('5').value=document.getElementById('2').value;document.getElementById('6').value=document.getElementById('3').value;document.getElementById('canForm').action = \"/status\";document.getElementById('canForm').submit();}else{alert(\"Invalid number of Cans submitted. Please submit a max of 10 total. No greater than 8 cans per colour.\"); return window.location=\"/\";}}</script></body>";
 
 // Status
 const char http_uri2[] PROGMEM = "/status";
@@ -76,7 +76,7 @@ const char * const contents_pages [] PROGMEM = { content_page1, content_page2, c
 // declare table for all URIs
 const char * const http_uris[] PROGMEM = { http_uri1, http_uri2, http_uri3, http_uri5 }; // URIs
 
-#define NUM_PAGES  sizeof(contents_pages)  / sizeof(contents_pages[0])
+#define NUM_PAGES  sizeof(contents_pages)/sizeof(contents_pages[0])
 #define NUM_URIS  (NUM_PAGES)  // Pages URIs + favicon URI, etc
 
 char check = 0;
@@ -184,7 +184,7 @@ void loop()
       sendPage(client, nUriIndex, requestContent);
       // Normal page request, may depend on content of the request
       if (nUriIndex == 0) {
-        checkTransmit = 0;
+        int checkTransmit = 0;
       }
       if (nUriIndex == 1) {
 
@@ -194,7 +194,7 @@ void loop()
         if (check == 0) {
           //BluetoothUno.prepareForMega(integer);
           //String encrypted = BluetoothUno.encryptData(integer);
-          check = BluetoothUno.transmitToMega(integer);
+          BluetoothUno.transmitToMega(integer);
           //           {
           //           String temp = ("ErrorD02");
           //           error = getErrorMessage(temp);
@@ -209,13 +209,13 @@ void loop()
         }
         else if (check == 1) {
           String temp = BluetoothUno.getData();
-          if (temp == ""){
+          if (temp == "") {
             feedback = "Awaiting for feedback";
           }
-          else if (temp == "Success"){
+          else if (temp == "Success") {
             feedback = "Success";
           }
-          else{
+          else {
             error = getErrorMessage(temp);
             feedback = temp;
           }
@@ -228,9 +228,9 @@ void loop()
       }
     }
   }
-// give the web browser time to receive the data
-delay(1);
-client.stop();
+  // give the web browser time to receive the data
+  delay(1);
+  client.stop();
 }
 
 
@@ -263,7 +263,7 @@ MethodType readHttpRequest(EthernetClient & client, int & nUriIndex, BUFFER & re
   int nContentLength = 0;
   bool bIsUrlEncoded;
 
-  requestContent[0] = 0;    // Initialize as an empty string
+  requestContent[0] = 0;  // Initialize as an empty string
   // Read the first line: Request-Line setting Uri Index and returning the method type.
   MethodType eMethod = readRequestLine(client, readBuffer, nUriIndex, requestContent);
   // Read any following, non-empty headers setting content length.
@@ -277,7 +277,7 @@ MethodType readHttpRequest(EthernetClient & client, int & nUriIndex, BUFFER & re
     {
       // The '+' encodes for a space, so decode it within the string
       for (char * pChar = requestContent; (pChar = strchr(pChar, '+')) != NULL; )
-        *pChar = ' ';    // Found a '+' so replace with a space
+        *pChar = ' ';  // Found a '+' so replace with a space
     }
   }
 
@@ -581,7 +581,7 @@ void sendUriContentByIndex(EthernetClient client, int nUriIndex, BUFFER & reques
 // URI content to send the appropriate replacement text, depending on the URI index and
 // the substitution index within the content.
 /*void sendSubstitute(EthernetClient client, int nUriIndex, int nSubstituteIndex, BUFFER & requestContent)
-    {
+{
     if (nUriIndex < NUM_PAGES)
     {
       // Page request
@@ -613,4 +613,4 @@ void sendUriContentByIndex(EthernetClient client, int nUriIndex, BUFFER & reques
           break;
       }
     }
-    }*/
+}*/
