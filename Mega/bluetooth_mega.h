@@ -23,12 +23,8 @@ struct BluetoothMega {
 	// calculate checksum
 	static bool calcChecksum(const String& message);
 
-	//static void transmitToMega(int data);
-
 	//TODO: lcd error checking
 	//static void lcd_errorChecking(int data);
-
-	//static void getInfo();
 
 	static CanQuantities inputData(const String& data);
 };

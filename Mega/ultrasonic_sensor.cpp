@@ -14,6 +14,8 @@ void UltraSonicSensor::init() {
 }
 
 void UltraSonicSensor::reset() {
+	chrono.restart();
+	delay_until = 0;
 	count = 0;
 }
 
