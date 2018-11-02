@@ -4,36 +4,32 @@
 #include "bluetooth_mega.h"
 #include "shared_types.h"
 #include "async_handler.h"
+#include "can_intake.h"
+#include "motor_drive.h"
 
-bool BluetoothMega::NL = true;
-char BluetoothMega::c = ' ';
+//struct BluetoothMega BluetoothMega = {}
 
-BluetoothMega::BluetoothMega() {
-	// Serial.begin(9600);
-	// Serial2.begin(9600);
-	//delay(100);
-	//Serial.print("File:   ");
-	//Serial.println(__FILE__);
-	//Serial.print("Uploaded: ");
-	//Serial.println(__DATE__);
-	//Serial.println(" ");
-	//// maybe force a disconnect and reconnect?
-	//// even reset to master/slave?
-	//Serial2.write("AT+CONXXXXXX"); // connect to bt chip, replace X with addr
-	//Serial.println("Arduino Mega: Bluetooth Serial started at 9600 Baud.");
-	//Serial2.print("Connection to Mega has been established.");
-};
+//bool BluetoothMega::NL = true;
+//char BluetoothMega::c = ' ';
+
 
 void BluetoothMega::loopHook() {
 	//Serial.println("TEST");
+	static bool has_received_cans = false;
 	if (Serial2.available()) {
 		String data = getData();
 		CanQuantities cans = inputData(data);
+		Serial.print("Red cans: ");
 		Serial.println(cans.red);
+		Serial.print("Green cans: ");
 		Serial.println(cans.green);
+		Serial.print("Blue cans: ");
 		Serial.println(cans.blue);
+		has_received_cans = true;
+		CanIntake::initState(cans);
+		AsyncHandler.addCallback(MotorDrive::driveSomewhere);
 	}
-	AsyncHandler.addCallback(BluetoothMega::loopHook);
+	AsyncHandler.addCallback(BluetoothMega::loopHook, 100);
 }
 
 void BluetoothMega::initBluetoothConnection() {
@@ -58,41 +54,41 @@ String BluetoothMega::getData() {
 		char c = Serial2.read();
 		temp.concat(c);
 		delay(100);
-	}
-	if (temp != "") {
+	};
+	if (!temp.equals(String(""))) {
 		// boolean check = calcChecksum(temp);
 		// BTSerial.write(check);
 		// delay(250);
 		//if (BTSerial.read() == check) {
 		temp = encryptData(temp);
-		temp = encryptData(temp);
 		//}
-	} return temp; // change to error code for no information received
+	};
+	return temp; // change to error code for no information received
 }
 
 // this function allows transfer using serial monitor
-void BluetoothMega::getInfo() {
-	if (Serial2.available() > 0) {
-		c = Serial2.read();
-		Serial.write(c);
-	}
-	while (Serial.available() > 0) {
-		c = Serial.read();
-
-		if (c != 10 && c != 13) {
-			Serial2.write(c);
-		}
-
-		if (NL) {
-			Serial.print("\r>");
-			NL = false;
-		}
-		Serial.write(c);
-		if (c == 10) {
-			NL = true;
-		}
-	}
-}
+//void BluetoothMega::getInfo() {
+//	if (Serial2.available() > 0) {
+//		c = Serial2.read();
+//		Serial.write(c);
+//	}
+//	while (Serial.available() > 0) {
+//		c = Serial.read();
+//
+//		if (c != 10 && c != 13) {
+//			Serial2.write(c);
+//		}
+//
+//		if (NL) {
+//			Serial.print("\r>");
+//			NL = false;
+//		}
+//		Serial.write(c);
+//		if (c == 10) {
+//			NL = true;
+//		}
+//	}
+//}
 
 void BluetoothMega::transmitToUno(String data) {
 	// need some flag to ensure this isnt infinite
@@ -130,7 +126,7 @@ String BluetoothMega::encryptData(String data) {
 }
 
 //check the message for even parity
-boolean calcChecksum(String message) {
+bool BluetoothMega::calcChecksum(String message) {
 	int sum = 0;
 	for (int i = 0; i < message.length(); i++) {
 		char c = message[i];
@@ -143,7 +139,7 @@ boolean calcChecksum(String message) {
 }
 
 //add a checksum for even parity
-String addChecksum(String message) {
+String BluetoothMega::addChecksum(String message) {
 	int sum = 0;
 	String sumChar = "1";
 	for (int i = 0; i < message.length(); i++) {

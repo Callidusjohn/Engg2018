@@ -5,12 +5,12 @@
 #include "shared_types.h"
 //#include <Serial.h>
 
-static struct BluetoothMega {
+struct BluetoothMega {
 
 	static void loopHook();
-	void initBluetoothConnection();
+	static void initBluetoothConnection();
 
-	BluetoothMega();
+	//BluetoothMega();
 
 	// get data sent and return string form
 	static String getData();
@@ -22,22 +22,18 @@ static struct BluetoothMega {
 	static String encryptData(String data);
 
 	// add a checksum to data for transmission
-	static int addChecksum(String message);
+	static String addChecksum(String message);
 
 	// calculate checksum
-	static boolean calcChecksum(String message);
+	static bool calcChecksum(String message);
 
-	static void transmitToMega(int data);
+	//static void transmitToMega(int data);
 
-	static void lcd_errorChecking(int data);
+	//TODO: lcd error checking
+	//static void lcd_errorChecking(int data);
 
-	static void getInfo();
-
-	static CanQuantities quantity;
+	//static void getInfo();
 
 	static CanQuantities inputData(String data);
-
-	static bool NL;
-	static char c;
-}BluetoothMega;
+};
 #endif

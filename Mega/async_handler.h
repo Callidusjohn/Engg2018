@@ -6,7 +6,7 @@
 #include "shared_types.h"
 #include "shared_utils.h"
 
-static class AsyncHandler {
+struct AsyncHandler {
 public:
 
 	AsyncHandler();
@@ -23,11 +23,12 @@ private:
 
 	//static Chrono chrono; // technically will need to be reset every 24 days
 	Chrono::chrono_t next_invoke;
-	static struct DelayedCallback {
+	struct DelayedCallback {
 		Chrono::chrono_t invoke_at;
 		void (*callback_function)();
 	} callbacks[delay_buffer_size];
 
-} AsyncHandler;
+} extern AsyncHandler;
+//AsyncHandler AsyncHandler;
 
 #endif

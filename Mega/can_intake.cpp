@@ -6,6 +6,7 @@ CanQuantities CanIntake::remainingCans = { 0, 0, 0 };
 
 void CanIntake::initState(const CanQuantities& cans) {
 	if (isCollecting()) {
+		return;
 		//TODO: log error here in debug if we end up doing logging
 	}
 	else {
@@ -28,7 +29,7 @@ void CanIntake::beginCollection(CanType type) {
 }
 
 bool CanIntake::isCollecting() noexcept {
-	return ArmController::isCollecting();
+	return false;//ArmController::isCollecting();
 }
 
 bool CanIntake::lastRowExhausted() noexcept {

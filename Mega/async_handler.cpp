@@ -1,10 +1,15 @@
 #include "async_handler.h"
 #include "shared_utils.h"
 
-AsyncHandler::DelayedCallback AsyncHandler::callbacks[delay_buffer_size];// = { { 0, nullptr },{ 0, nullptr }, { 0, nullptr }, { 0, nullptr }, { 0, nullptr }, { 0, nullptr }, { 0, nullptr }, { 0, nullptr }, { 0, nullptr }, { 0, nullptr }, };
+struct AsyncHandler AsyncHandler = {};
 
+//AsyncHandler::DelayedCallback AsyncHandler::callbacks[delay_buffer_size];// = { { 0, nullptr },{ 0, nullptr }, { 0, nullptr }, { 0, nullptr }, { 0, nullptr }, { 0, nullptr }, { 0, nullptr }, { 0, nullptr }, { 0, nullptr }, { 0, nullptr }, };
+static int init_count = 0;
 AsyncHandler::AsyncHandler() : next_invoke(chrono_t_max) {
+	++init_count;
+	Serial.println(init_count);
 	//TODO: make sure that this isn't getting called twice for some reason
+	//Serial.println("Never, ever");
 	//not required due to default initialization
 	//for (size_t i = 0; i < delay_buffer_size; i++) {
 	//	callbacks[i] = { 0, nullptr };
@@ -66,6 +71,7 @@ void AsyncHandler::removeCallback(void(*callback)()) {
 }
 
 void AsyncHandler::processLoop() {
+	
 	void(*pending_callbacks[delay_buffer_size])();
 	//Serial.println("Handler processing loop");
 	for (size_t i = 0; i < delay_buffer_size; i++) {
