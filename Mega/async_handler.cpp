@@ -1,13 +1,11 @@
 #include "async_handler.h"
+#include "shared_types.h"
 #include "shared_utils.h"
 
 struct AsyncHandler AsyncHandler = {};
 
 //AsyncHandler::DelayedCallback AsyncHandler::callbacks[delay_buffer_size];// = { { 0, nullptr },{ 0, nullptr }, { 0, nullptr }, { 0, nullptr }, { 0, nullptr }, { 0, nullptr }, { 0, nullptr }, { 0, nullptr }, { 0, nullptr }, { 0, nullptr }, };
-static int init_count = 0;
-AsyncHandler::AsyncHandler() : next_invoke(chrono_t_max) {
-	++init_count;
-	Serial.println(init_count);
+AsyncHandler::AsyncHandler() : next_invoke(millis_t_max) {
 	//TODO: make sure that this isn't getting called twice for some reason
 	//Serial.println("Never, ever");
 	//not required due to default initialization
@@ -16,14 +14,14 @@ AsyncHandler::AsyncHandler() : next_invoke(chrono_t_max) {
 	//}
 }
 
-void AsyncHandler::addCallback(void(*callback)(), Chrono::chrono_t millis_delay) {
+void AsyncHandler::addCallback(void(*callback)(), millis_t millis_delay) {
 	//Serial.println("Handler adding callback");
 	if (callback == nullptr) {
 		//Serial.println("This is technically impossible if we've done this well");
 		return;
 	}
 	size_t first_null = delay_buffer_size;
-	Chrono::chrono_t delayed_time = millis() + millis_delay;
+	millis_t delayed_time = millis() + millis_delay;
 	if (delayed_time < next_invoke) next_invoke = delayed_time;
 	for (size_t i = 0; i < delay_buffer_size; i++) {
 		if (callbacks[i].callback_function == nullptr) {
@@ -53,7 +51,7 @@ void AsyncHandler::removeCallback(void(*callback)()) {
 	//Serial.println("Handler removing callback");
 	if (callback == nullptr) return;
 	bool update_next_invoke = false;
-	Chrono::chrono_t temp_next_invoke = chrono_t_max;
+	millis_t temp_next_invoke = millis_t_max;
 	for (size_t i = 0; i < delay_buffer_size; i++) {
 		if (callbacks[i].callback_function == callback) {
 			if (callbacks[i].invoke_at <= next_invoke) {

@@ -3,12 +3,11 @@
 #include <Arduino.h>
 #include <SoftwareSerial.h>
 #include "shared_types.h"
-//#include <Serial.h>
 
 struct BluetoothMega {
 
 	static void loopHook();
-	static void initBluetoothConnection();
+	static void init();
 
 	//BluetoothMega();
 
@@ -16,16 +15,13 @@ struct BluetoothMega {
 	static String getData();
 
 	// transfer data to Mega
-	static void transmitToUno(String data);
+	static void transmitToUno(const String& data);
 
 	// encrypt data using ROT-18 (ext of ROT-13)
-	static String encryptData(String data);
-
-	// add a checksum to data for transmission
-	static String addChecksum(String message);
+	static String encryptData(const String& data);
 
 	// calculate checksum
-	static bool calcChecksum(String message);
+	static bool calcChecksum(const String& message);
 
 	//static void transmitToMega(int data);
 
@@ -34,6 +30,6 @@ struct BluetoothMega {
 
 	//static void getInfo();
 
-	static CanQuantities inputData(String data);
+	static CanQuantities inputData(const String& data);
 };
 #endif

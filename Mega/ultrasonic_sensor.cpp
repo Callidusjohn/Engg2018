@@ -4,12 +4,13 @@
 #include "shared_utils.h"
 
 UltraSonicSensor::UltraSonicSensor() : chrono(Chrono::MILLIS) {
+
+}
+
+void UltraSonicSensor::init() {
 	chrono.start();
 	pinMode(Pins::ultrasonic_echo, INPUT);
 	pinMode(Pins::ultrasonic_trigger, OUTPUT);
-	for (size_t i = 0; i < sample_buffer_size; i++) {
-		samples[i] = 0;
-	}
 }
 
 void UltraSonicSensor::reset() {

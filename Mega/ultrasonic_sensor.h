@@ -7,7 +7,7 @@ struct UltraSonicSensor {
 public:
 
 	UltraSonicSensor();
-
+	void init();
 	int checkDistance(); // Maybe
 	int sample();
 	void reset();

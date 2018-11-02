@@ -4,6 +4,9 @@
 #include <Arduino.h>
 #include <Chrono.h>
 
+typedef Chrono::chrono_t chrono_t;
+typedef decltype(millis()) millis_t;
+
 enum CanType : char {
 	red, green, blue
 };
