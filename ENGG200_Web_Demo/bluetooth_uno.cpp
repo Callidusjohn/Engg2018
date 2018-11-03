@@ -54,7 +54,20 @@ void BluetoothUno::getInfo() {
   }
 }
 
-void BluetoothUno::transmitToMega(String data) {
+// char BluetoothUno::transmitToMega(String data) {
+//     // need some flag to ensure this isnt infinite
+//     data = encryptData(data);
+//     if (BTSerial.available()) {
+//         for (int i = 0; i < data.length(); i++) {
+//             BTSerial.write(data[i]);
+//         }
+//         return 1;
+//     }
+//     else return 2;
+// }
+
+
+void BluetoothUno::transmitToMega(String data) { \\Should you the above function
   // need some flag to ensure this isnt infinite
   data = encryptData(data);
   if (BTSerial.available()) {

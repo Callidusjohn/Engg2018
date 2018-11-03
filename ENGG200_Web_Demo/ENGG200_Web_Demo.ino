@@ -195,25 +195,17 @@ void loop()
         if (check == 0) {
           //BluetoothUno.prepareForMega(integer);
           String encrypted = BluetoothUno.encryptData(integer);
-          BluetoothUno.transmitToMega(integer);
-          
-          //           {
-          //           String temp = ("ErrorD02");
-          //           error = getErrorMessage(temp);
-          //           feedback = temp;
-          //           }
-          //           delay(5);
-          //error = getErrorMessage(feedback);
-          //feedback = getErrorMessage(feedback.substring(5));
-          //message = "<p>Red can: " + String(integer[1]) + "</p>";
-          //message.concat("<p>Green can: " + String(integer[2]) + "</p>");
-          //message.concat("<p>Blue can: " + String(integer[3]) + "</p>");
+          BluetoothUno.transmitToMega(integer); //Should use below
+          //check = BluetoothUno.transmitToMega(integer);
+
           //TODO: log responses to local console
-          /*String response = "";
-          while(response.equals(String(""))) {
-            response = BluetoothUno.getData();
-          }
-          Serial.println(response);*/
+//           String response = "";
+//           while(response.equals(String(""))) {
+//             //response = BluetoothUno.getData();
+//             delay(10000);
+//             response = "Failed";
+//           }
+//           Serial.println(response);
         }
         else if (check == 1) {
           String temp = BluetoothUno.getData();
