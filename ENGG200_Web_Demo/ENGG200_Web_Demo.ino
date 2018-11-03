@@ -189,12 +189,14 @@ void loop()
       if (nUriIndex == 1) {
 
         String integer = parsingString(requestContent);
+        //if(!integer.equals(String("0111")))Serial.println(integer);
         //check = BluetoothUno.transmitToMega(integer);
         //Serial.println(integer);
         if (check == 0) {
           //BluetoothUno.prepareForMega(integer);
-          //String encrypted = BluetoothUno.encryptData(integer);
+          String encrypted = BluetoothUno.encryptData(integer);
           BluetoothUno.transmitToMega(integer);
+          
           //           {
           //           String temp = ("ErrorD02");
           //           error = getErrorMessage(temp);
@@ -206,6 +208,12 @@ void loop()
           //message = "<p>Red can: " + String(integer[1]) + "</p>";
           //message.concat("<p>Green can: " + String(integer[2]) + "</p>");
           //message.concat("<p>Blue can: " + String(integer[3]) + "</p>");
+          //TODO: log responses to local console
+          /*String response = "";
+          while(response.equals(String(""))) {
+            response = BluetoothUno.getData();
+          }
+          Serial.println(response);*/
         }
         else if (check == 1) {
           String temp = BluetoothUno.getData();
@@ -481,7 +489,7 @@ void sendPage(EthernetClient & client, int nUriIndex, BUFFER & requestContent)
   // Append the data sent in the original HTTP request
   //client.println("");
   // send POST variables
-  //Serial.println(requestContent);
+  Serial.println(requestContent);
 
   // send footer
   sendProgMemAsString(client, (char*)pgm_read_word(&(contents_main[CONT_FOOTER])));
@@ -581,7 +589,7 @@ void sendUriContentByIndex(EthernetClient client, int nUriIndex, BUFFER & reques
 // URI content to send the appropriate replacement text, depending on the URI index and
 // the substitution index within the content.
 /*void sendSubstitute(EthernetClient client, int nUriIndex, int nSubstituteIndex, BUFFER & requestContent)
-{
+  {
     if (nUriIndex < NUM_PAGES)
     {
       // Page request
@@ -613,4 +621,4 @@ void sendUriContentByIndex(EthernetClient client, int nUriIndex, BUFFER & reques
           break;
       }
     }
-}*/
+  }*/

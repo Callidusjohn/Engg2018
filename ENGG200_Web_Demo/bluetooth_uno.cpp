@@ -15,7 +15,7 @@ void BluetoothUno::initiateConnToMega() {
 
   BTSerial.begin(9600);
   Serial.println("Arduino Uno: Bluetooth Serial started at 9600 Baud.");
-  BTSerial.print("Connection to Uno has been established.");
+  //BTSerial.print("Connection to Uno has been established.");
 }
 
 String BluetoothUno::getData() {
@@ -55,13 +55,13 @@ void BluetoothUno::getInfo() {
 }
 
 void BluetoothUno::transmitToMega(String data) {
-	// need some flag to ensure this isnt infinite
-	data = encryptData(data);
-	if (BTSerial.available()) {
-		for (int i = 0; i < data.length(); i++) {
-			BTSerial.write(data[i]);
-		}
-	}
+  // need some flag to ensure this isnt infinite
+  data = encryptData(data);
+  if (BTSerial.available()) {
+    for (int i = 0; i < data.length(); i++) {
+      BTSerial.write(data[i]);
+    }
+  }
 }
 
 String BluetoothUno::prepareForMega(String data) {
@@ -87,19 +87,22 @@ String BluetoothUno::encryptData(String data) {
   for (int i = 0; i < data.length(); i++) {
     // NOTE: assume upper case; message[i] = toupper(message[i]);
     char c = data[i];
+
     if (c > 47 && c < 58) {
       c += 25;
     } else {
       c += 18;
-    }
+    };
     if (c > 90) {
       c -= 43;
-    }
+    };
     if (c > 57 && c < 65) {
       c -= 7;
-    } ROT18Msg[i] = c;
+    };
+    ROT18Msg[i] = c;
   }
   return ROT18Msg;
+
 }
 
 //check the message for even parity
