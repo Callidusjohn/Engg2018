@@ -2,16 +2,15 @@
 #ifndef ASYNC_HANDLER_H
 #define ASYNC_HANDLER_H
 #include <Arduino.h>
-#include <Chrono.h>
 #include "shared_types.h"
 #include "shared_utils.h"
 
-static class AsyncHandler {
+struct AsyncHandler {
 public:
 
 	AsyncHandler();
 
-	void addCallback(void(*callback)(), Chrono::chrono_t delay = 0);
+	void addCallback(void(*callback)(), millis_t delay = 0);
 
 	void removeCallback(void(*callback)());
 
@@ -22,12 +21,13 @@ private:
 	static constexpr size_t delay_buffer_size = 10;
 
 	//static Chrono chrono; // technically will need to be reset every 24 days
-	Chrono::chrono_t next_invoke;
-	static struct DelayedCallback {
-		Chrono::chrono_t invoke_at;
+	millis_t next_invoke;
+	struct DelayedCallback {
+		millis_t invoke_at;
 		void (*callback_function)();
 	} callbacks[delay_buffer_size];
 
-} AsyncHandler;
+} extern AsyncHandler;
+//AsyncHandler AsyncHandler;
 
 #endif

@@ -1,5 +1,4 @@
 #define USE_MAGNET_ARM false
-
 #include <Servo.h>
 #include <Chrono.h>
 #include <AutoPID.h>
@@ -11,7 +10,6 @@
 #include "can_intake.h"
 #include "motor_drive.h"
 #include "bluetooth_mega.h"
-
 
 /* Your code, if it does not go here or in a shared file, goes in a namespace or static module object.
  * Prefer namespaces to static objects when possible, as at best a well-written static object is
@@ -26,7 +24,7 @@ void setup() {
 	// each function may only have ONE delayed callback registered at a time
 	// called functions can register other functions and themselves
 	//AsyncHandler.addCallback(&MotorDrive::updatePIDValues);
-	BluetoothMega.initBluetoothConnection();
+	BluetoothMega::init();
 	//bluetooth added first
 	// bluetooth inits CanIntake
 	// bluetooth adds MotorDrive callback

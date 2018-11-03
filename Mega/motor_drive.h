@@ -9,7 +9,7 @@
 #include  "async_handler.h"
 #include "shared_types.h"
 
-static struct MotorDrive {
+struct MotorDrive {
 	static constexpr auto OUTPUT_PIN = A1;
 
 	//main PID consts
@@ -151,6 +151,6 @@ private:
 	static void checkColorSensorPhase2();
 	static void checkColorSensorPhase3();
 	static void checkSensedColor();
-} MotorDrive;
+} extern MotorDrive;
 
 #endif

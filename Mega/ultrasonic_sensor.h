@@ -3,11 +3,11 @@
 #define ULTRASONIC_SENSOR_H
 #include <Chrono.h>
 #include <Arduino.h>
-class UltraSonicSensor {
+struct UltraSonicSensor {
 public:
 
 	UltraSonicSensor();
-
+	void init();
 	int checkDistance(); // Maybe
 	int sample();
 	void reset();

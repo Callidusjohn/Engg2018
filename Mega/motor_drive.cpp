@@ -5,6 +5,12 @@
 //Metro MotorDrive::serialMetro = Metro(250);  // Instantiate an instance
 //Metro MotorDrive::sensorMetro = Metro(100);
 
+
+
+struct MotorDrive MotorDrive = {};
+
+CanType MotorDrive::detectedColor = CanType::red;
+
 double MotorDrive::countLeft = 0;
 double MotorDrive::countRight = 0;
 
@@ -31,15 +37,15 @@ Servo MotorDrive::servoRight = Servo();
 
 int MotorDrive::throttleLeft, MotorDrive::throttleRight;
 
-//AutoPID MotorDrive::sensorPID = AutoPID(&inputIR, &setPointIR, &outputFromIR, OUTPUT_MIN_IR, OUTPUT_MAX_IR, KP_IR, KI_IR, KD_IR);
-//AutoPID MotorDrive::leftPID = AutoPID(&countLeft, &driveSetPoint, &outputLDrive, OUTPUT_MIN_IR, OUTPUT_MAX_IR, LEFT_KP, LEFT_KI, LEFT_KD);
-//AutoPID MotorDrive::rightPID = AutoPID(&countRight, &driveSetPoint, &outputRDrive, OUTPUT_MIN_IR, OUTPUT_MAX_IR, RIGHT_KP, RIGHT_KI, RIGHT_KD);
+AutoPID MotorDrive::sensorPID = AutoPID(&inputIR, &setPointIR, &outputFromIR, OUTPUT_MIN_IR, OUTPUT_MAX_IR, KP_IR, KI_IR, KD_IR);
+AutoPID MotorDrive::leftPID = AutoPID(&countLeft, &driveSetPoint, &outputLDrive, OUTPUT_MIN_IR, OUTPUT_MAX_IR, LEFT_KP, LEFT_KI, LEFT_KD);
+AutoPID MotorDrive::rightPID = AutoPID(&countRight, &driveSetPoint, &outputRDrive, OUTPUT_MIN_IR, OUTPUT_MAX_IR, RIGHT_KP, RIGHT_KI, RIGHT_KD);
 
 bool MotorDrive::has_read_a_color;
 bool MotorDrive::color_reading_in_progress;
 Chrono::chrono_t MotorDrive::disable_color_sensor_until;
 
-MotorDrive::MotorDrive() 
+MotorDrive::MotorDrive()
 {
 	driveSetPoint = targetPos;
 	pinMode(OUTPUT_PIN, OUTPUT);
@@ -73,15 +79,6 @@ bool MotorDrive::inRange(int val, int minimum, int maximum)
 void MotorDrive::driveSomewhere() {
 	if (CanIntake::needsMoreCans()) {
 		dir = 1;
-		if (CanIntake::needsMoreCans(CanType::red)) {
-			requiredColor = CanType::red;
-		}
-		else if (CanIntake::needsMoreCans(CanType::green)) {
-			requiredColor = CanType::green;
-		}
-		else if (CanIntake::needsMoreCans(CanType::blue)) {
-			requiredColor = CanType::blue;
-		}
 		AsyncHandler.addCallback(&checkColorSensor);
 	}
 	else {
@@ -148,12 +145,12 @@ void MotorDrive::checkColorSensorPhase3() {
 }
 
 void MotorDrive::checkSensedColor() {
-	if (requiredColor == detectedColor) {
+	if (has_read_a_color && CanIntake::needsMoreCans(detectedColor)) {
 		servoLeft.write(90);
 		servoRight.write(90);
 		updatePIDValues();
 		AsyncHandler.removeCallback(&updatePIDValues);
-		CanIntake::beginCollection(requiredColor);
+		//CanIntake::beginCollection(detectedColor);
 	}
 	else {
 		AsyncHandler.addCallback(&checkColorSensor);
@@ -194,7 +191,7 @@ void MotorDrive::addLinePidValues(int dir) {
 		//rear sensor
 		inputIR = analogRead(A1);
 	}
-	Serial.print(inputIR);
+	//Serial.print(inputIR);
 	setPointIR = 2.5;
 	sensorPID.run();
 	double out = outputFromIR;
@@ -209,5 +206,5 @@ void MotorDrive::addLinePidValues(int dir) {
 }
 
 void MotorDrive::requestColor(CanType canColor) {
-	requiredColor = canColor;
+//	requiredColor = canColor;
 }
