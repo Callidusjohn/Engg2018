@@ -9,7 +9,7 @@
 /**********************************************************************************************************************
                                       Error Storage
  ***********************************************************************************************************************/
-
+ 
 
 #define USE_DHCP_FOR_IP_ADDRESS
 
@@ -88,6 +88,7 @@ char * commD[] = {"FAILED_TO_START", "FAILED_TO_CONNECT", "FAILED_CONNECT_MEGA"}
 char * commE[] = {"Waiting", "Failed to connect", "Client disconnect"};
 String feedback = "Establising connection...";
 String error;
+
 /**********************************************************************************************************************
                                                     Shared variable and Setup()
  ***********************************************************************************************************************/
@@ -122,7 +123,8 @@ void setup()
                                                               Main loop
  ***********************************************************************************************************************/
 
-
+// data intake from the frontend and extracting the right values to pass onto 
+// the bluetooth module. RGB can numbers.
 String parsingString(String str) {
   String result = "0"; //0 for unsuccess & 1 for success. FIXME
   result.concat(str[4]);
@@ -131,6 +133,8 @@ String parsingString(String str) {
   return result;
 }
 
+// Error code/messages which signify which team the error is from and what
+// errors are being parsed.
 String getErrorMessage(String str) {
   char *message;
   int code = str.substring(6).toInt();
@@ -164,16 +168,7 @@ void loop()
     int    nUriIndex;  // Gives the index into table of recognized URIs or -1 for not found.
     BUFFER requestContent;    // Request content as a null-terminated string.
     MethodType eMethod = readHttpRequest(client, nUriIndex, requestContent);
-    //     String message = "";
-
-    //     Serial.print("Read Request type: ");
-    //     Serial.print(eMethod);
-    //     Serial.print(" Uri index: ");
-    //     Serial.print(nUriIndex);
-    //     Serial.print(" content: ");
-    //     Serial.println(requestContent);
-
-
+    
     if (nUriIndex < 0)
     {
       // URI not found
@@ -233,29 +228,7 @@ void loop()
   client.stop();
 }
 
-
-/**********************************************************************************************************************
-                                                 Method for read HTTP Header Request from web client
-
-    The HTTP request format is defined at http://www.w3.org/Protocols/HTTP/1.0/spec.html#Message-Types
-    and shows the following structure:
-     Full-Request and Full-Response use the generic message format of RFC 822 [7] for transferring entities. Both messages may include optional header fields
-     (also known as "headers") and an entity body. The entity body is separated from the headers by a null line (i.e., a line with nothing preceding the CRLF).
-         Full-Request   = Request-Line
- *                       *( General-Header
-                           | Request-Header
-                           | Entity-Header )
-                          CRLF
-                          [ Entity-Body ]
-
-    The Request-Line begins with a method token, followed by the Request-URI and the protocol version, and ending with CRLF. The elements are separated by SP characters.
-    No CR or LF are allowed except in the final CRLF sequence.
-         Request-Line   = Method SP Request-URI SP HTTP-Version CRLF
-    HTTP header fields, which include General-Header, Request-Header, Response-Header, and Entity-Header fields, follow the same generic format.
-    Each header field consists of a name followed immediately by a colon (":"), a single space (SP) character, and the field value.
-    Field names are case-insensitive. Header fields can be extended over multiple lines by preceding each extra line with at least one SP or HT, though this is not recommended.
-         HTTP-header    = field-name ":" [ field-value ] CRLF
- ***********************************************************************************************************************/
+ 
 // Read HTTP request, setting Uri Index, the requestContent and returning the method type.
 MethodType readHttpRequest(EthernetClient & client, int & nUriIndex, BUFFER & requestContent)
 {
@@ -576,41 +549,3 @@ void sendUriContentByIndex(EthernetClient client, int nUriIndex, BUFFER & reques
     }
   }
 }
-
-// Call this method in response to finding a substitution character '\002' within some
-// URI content to send the appropriate replacement text, depending on the URI index and
-// the substitution index within the content.
-/*void sendSubstitute(EthernetClient client, int nUriIndex, int nSubstituteIndex, BUFFER & requestContent)
-  {
-    if (nUriIndex < NUM_PAGES)
-    {
-      // Page request
-      switch (nUriIndex)
-      {
-        case 1:  // page 2
-          client.print("<b>Insert #");
-          client.print(nSubstituteIndex);
-          client.print("</b>");
-          break;
-        case 2:  // page 3
-          switch (nSubstituteIndex)
-          {
-            case 0:  // LedOn button send value
-              if (strncmp(requestContent, "LedOn=", 6) == 0)
-                setLed(strncmp(&requestContent[6], "true", 4) == 0);
-
-              client.print(isLedOn ? "false" : "true");
-              break;
-            case 1:  // LedOn button legend
-              client.print(isLedOn ? "Off" : "On");
-              break;
-            case 2:  // LedOn partial image name
-              client.print(isLedOn ? "on" : "off");
-              break;
-            default:
-              break;
-          }
-          break;
-      }
-    }
-  }*/
