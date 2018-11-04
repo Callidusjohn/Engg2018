@@ -21,6 +21,7 @@ void BluetoothMega::loopHook() {
 			Serial.println(cans.green);
 			Serial.print("Blue cans: ");
 			Serial.println(cans.blue);
+
 			Serial2.print("Red cans: ");
 			Serial2.println(cans.red);
 			Serial2.print("Green cans: ");
@@ -29,7 +30,7 @@ void BluetoothMega::loopHook() {
 			Serial2.println(cans.blue);
 		}
 		else Serial.println("Received " + String(data.length()) + " bytes of garbage");
-		
+
 		//CanIntake::initState(cans);
 		//AsyncHandler.addCallback(MotorDrive::driveSomewhere);
 	}
@@ -44,8 +45,8 @@ void BluetoothMega::init() {
 	Serial.print("Uploaded: ");
 	Serial.println(__DATE__);
 	Serial.println(" ");
-	// maybe force a disconnect and reconnect?
-	// even reset to master/slave?
+
+	Serial2.write("AT+ROLE0");
 	Serial2.write("AT+CONXXXXXX"); // connect to bt chip, replace X with addr
 	Serial.println("Arduino Mega: Bluetooth Serial started at 9600 Baud.");
 	Serial2.print("Connection to Mega has been established.");
@@ -60,34 +61,12 @@ String BluetoothMega::getData() {
 		delay(100);
 	};
 	if (!temp.equals(String(""))) {
-		temp = encryptData(temp);
+		if (calcChecksum(temp)) {
+			temp = encryptData(temp);
+		}
 	};
 	return temp; // change to error code for no information received
 }
-
-// this function allows transfer using serial monitor
-//void BluetoothMega::getInfo() {
-//	if (Serial2.available() > 0) {
-//		c = Serial2.read();
-//		Serial.write(c);
-//	}
-//	while (Serial.available() > 0) {
-//		c = Serial.read();
-//
-//		if (c != 10 && c != 13) {
-//			Serial2.write(c);
-//		}
-//
-//		if (NL) {
-//			Serial.print("\r>");
-//			NL = false;
-//		}
-//		Serial.write(c);
-//		if (c == 10) {
-//			NL = true;
-//		}
-//	}
-//}
 
 void BluetoothMega::transmitToUno(const String& data) {
 	// need some flag to ensure this isnt infinite
@@ -107,23 +86,23 @@ CanQuantities BluetoothMega::inputData(const String& temp) {
 // encrypt data using variation of rot-13
 // call this again to decrypt
 // any chars should only be uppercase
-String BluetoothMega::encryptData(const String& data) {
+String BluetoothMega::encryptData(String data) {
 	String ROT18Msg = data;
-	for (size_t i = 0; i < data.length(); i++) {
+	for (int i = 0; i < data.length(); i++) {
 		// NOTE: assume upper case; message[i] = toupper(message[i]);
 		char c = data[i];
 		if (c > 47 && c < 58) {
 			c += 25;
-		}
-		else {
-			c += 18;
-		}
+		} else {
+				c += 18;
+		};
 		if (c > 90) {
 			c -= 43;
-		}
+		};
 		if (c > 57 && c < 65) {
 			c -= 7;
-		} ROT18Msg[i] = c;
+		};
+		ROT18Msg[i] = c;
 	}
 	return ROT18Msg;
 }
@@ -136,4 +115,20 @@ bool BluetoothMega::calcChecksum(const String& message) {
 		sum += static_cast<int>(c) & 1;
 	};
 	return !(sum & 1);
+}
+
+//add a checksum for even parity
+String addChecksum(String message) {
+	int sum = 0;
+	String sumChar = "1";
+	for (int i = 0; i < message.length(); i++) {
+		char c = message[i];
+		sum += c % 2;
+	}
+	if (sum % 2 == 0) {
+		sumChar = "0";
+	}
+	String messageOut = message;
+	messageOut += (sumChar);
+	return messageOut;
 }

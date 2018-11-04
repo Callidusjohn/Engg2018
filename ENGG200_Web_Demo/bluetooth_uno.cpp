@@ -14,6 +14,8 @@ void BluetoothUno::initiateConnToMega() {
 	Serial.println(" ");
 
 	BTSerial.begin(9600);
+	BTSerial.write("AT+ROLE1");
+	BTSerial.write("AT+CONXXXXXX"); // connect to bt chip, replace X with addr
 	Serial.println("Arduino Uno: Bluetooth Serial started at 9600 Baud.");
 	// BTSerial.print("Connection to Uno has been established.");
 }

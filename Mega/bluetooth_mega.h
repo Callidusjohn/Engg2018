@@ -9,7 +9,7 @@ struct BluetoothMega {
 	static void loopHook();
 	static void init();
 
-	//BluetoothMega();
+	// BluetoothMega();
 
 	// get data sent and return string form
 	static String getData();
@@ -23,9 +23,10 @@ struct BluetoothMega {
 	// calculate checksum
 	static bool calcChecksum(const String& message);
 
-	//TODO: lcd error checking
-	//static void lcd_errorChecking(int data);
+	// adds checksum to message
+	static String addChecksum(String message);
 
+	// return can quantities in struct for other teams
 	static CanQuantities inputData(const String& data);
 };
 #endif
