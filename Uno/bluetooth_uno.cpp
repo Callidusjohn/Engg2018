@@ -4,6 +4,11 @@
 #include <string.h>
 #include "bluetooth_uno.h"
 
+// IMPORTANT SET UP-INSTRUCTIONS FOR BLE CHIP
+//  * VCC -> 5V
+//  * GRD -> GRD
+//  * PIN 8 -> TX
+//  * PIN 9 -> RX
 
 void BluetoothUno::initiateConnToMega() {
   Serial.begin(9600);
