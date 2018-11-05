@@ -47,7 +47,7 @@ void BluetoothMega::init() {
 	Serial.println(" ");
 
 	Serial2.write("AT+ROLE0");
-	Serial2.write("AT+CONXXXXXX"); // connect to bt chip, replace X with addr
+	Serial2.write("AT+COND43639D8AE8A"); // Uno address: D43639D8AE8A
 	Serial.println("Arduino Mega: Bluetooth Serial started at 9600 Baud.");
 	Serial2.print("Connection to Mega has been established.");
 }
