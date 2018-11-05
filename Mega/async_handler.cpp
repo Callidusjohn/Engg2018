@@ -40,10 +40,7 @@ void AsyncHandler::addCallback(void(*callback)(), millis_t millis_delay) {
 	}
 	callbacks[first_null].callback_function = callback;
 	callbacks[first_null].invoke_at = delayed_time;
-	if (callbacks[first_null].callback_function == nullptr) {
-		//Serial.println("wtf");
-	}
-	//Serial.println("Finished adding");
+	//Serial.println("Finished adding new callback");
 	return;
 }
 
@@ -78,8 +75,10 @@ void AsyncHandler::processLoop() {
 		}
 		if (millis() > callbacks[i].invoke_at) {
 			pending_callbacks[i] = callbacks[i].callback_function;
+			if (callbacks[i].callback_function != nullptr) {
+				next_invoke = millis_t_max;
+			};
 			callbacks[i] = { 0, nullptr };
-			next_invoke = chrono_t_max;
 		}
 		else {
 			pending_callbacks[i] = nullptr;
@@ -89,7 +88,7 @@ void AsyncHandler::processLoop() {
 		if (pending_callbacks[i] == nullptr) continue;
 		else pending_callbacks[i]();
 	}
-	//delay(50);
+	//Serial.println(next_invoke);
 	//auto halt_millis = millis();
 	//if (halt_millis < next_invoke) delay(next_invoke - halt_millis);
 	//for (size_t i = 0; i < delay_buffer_size; i++) {

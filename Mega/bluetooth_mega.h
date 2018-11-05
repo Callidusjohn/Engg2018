@@ -21,12 +21,12 @@ struct BluetoothMega {
 	static String encryptData(String data);
 
 	// calculate checksum
-	static bool calcChecksum(String message);
+	static bool calcChecksum(const String& message);
 
 	// adds checksum to message
 	static String addChecksum(String message);
 
 	// return can quantities in struct for other teams
-	static CanQuantities inputData(String data);
+	static CanQuantities inputData(const String& data);
 };
 #endif

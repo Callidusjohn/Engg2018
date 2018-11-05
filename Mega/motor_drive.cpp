@@ -1,15 +1,11 @@
 #include "motor_drive.h"
-#include <Servo.h>
-#include <AutoPID.h>
+#include "async_handler.h"
 #include "can_intake.h"
-//Metro MotorDrive::serialMetro = Metro(250);  // Instantiate an instance
-//Metro MotorDrive::sensorMetro = Metro(100);
 
 
-
-struct MotorDrive MotorDrive = {};
-
-CanType MotorDrive::detectedColor = CanType::red;
+//Constants
+static constexpr int whiteTape = 863;
+static constexpr int blackTape = 1000;
 
 double MotorDrive::countLeft = 0;
 double MotorDrive::countRight = 0;
@@ -18,13 +14,19 @@ int MotorDrive::dir = 1;
 
 int MotorDrive::targetPos = 1000;
 
-double MotorDrive::irRightAddition, MotorDrive::irLeftAddition, MotorDrive::driveLeftPidOutput, MotorDrive::driveRightPidOutput = 0.0;
-double MotorDrive::inputIR, MotorDrive::setPointIR, MotorDrive::outputFromIR = 0.0;
+double MotorDrive::irRightAddition, MotorDrive::irLeftAddition, MotorDrive::driveLeftPidOutput, MotorDrive::driveRightPidOutput;
+double MotorDrive::inputIR, MotorDrive::setPointIR, MotorDrive::outputFromIR;
 
 //DRIVE PIDS
-double MotorDrive::driveSetPoint = 0.0;
-double MotorDrive::outputRDrive = 0.0;
-double MotorDrive::outputLDrive = 0.0;
+double MotorDrive::driveSetPoint;
+
+
+
+//will come from sensor
+CanType MotorDrive::detectedColor;
+
+//will eventually come from state.
+//CanType MotorDrive::color;
 
 
 //rgb stuff
@@ -32,14 +34,10 @@ int MotorDrive::frequency, MotorDrive::redFreq, MotorDrive::greenFreq, MotorDriv
 bool MotorDrive::sensorRed, MotorDrive::sensorGreen, MotorDrive::sensorBlue;
 
 // servos
-Servo MotorDrive::servoLeft = Servo();
-Servo MotorDrive::servoRight = Servo();
+Servo MotorDrive::servoLeft;
+Servo MotorDrive::servoRight;
 
 int MotorDrive::throttleLeft, MotorDrive::throttleRight;
-
-AutoPID MotorDrive::sensorPID = AutoPID(&inputIR, &setPointIR, &outputFromIR, OUTPUT_MIN_IR, OUTPUT_MAX_IR, KP_IR, KI_IR, KD_IR);
-AutoPID MotorDrive::leftPID = AutoPID(&countLeft, &driveSetPoint, &outputLDrive, OUTPUT_MIN_IR, OUTPUT_MAX_IR, LEFT_KP, LEFT_KI, LEFT_KD);
-AutoPID MotorDrive::rightPID = AutoPID(&countRight, &driveSetPoint, &outputRDrive, OUTPUT_MIN_IR, OUTPUT_MAX_IR, RIGHT_KP, RIGHT_KI, RIGHT_KD);
 
 bool MotorDrive::has_read_a_color;
 bool MotorDrive::color_reading_in_progress;
@@ -89,12 +87,13 @@ void MotorDrive::driveSomewhere() {
 
 void MotorDrive::checkColorSensor() {
 	if (color_reading_in_progress) return;
-	if (millis() > disable_color_sensor_until) {
+	millis_t time_now = millis(); // store to avoid overflow if the times are close
+	if (time_now > disable_color_sensor_until) {
 		color_reading_in_progress = true;
 		checkColorSensorPhase1();
 	}
 	else {
-		AsyncHandler.addCallback(&checkColorSensor, disable_color_sensor_until - millis());
+		AsyncHandler.addCallback(&checkColorSensor, disable_color_sensor_until - time_now);
 	}
 
 }
@@ -145,66 +144,68 @@ void MotorDrive::checkColorSensorPhase3() {
 }
 
 void MotorDrive::checkSensedColor() {
-	if (has_read_a_color && CanIntake::needsMoreCans(detectedColor)) {
+	if (CanIntake::needsMoreCans(detectedColor)) {
 		servoLeft.write(90);
 		servoRight.write(90);
 		updatePIDValues();
 		AsyncHandler.removeCallback(&updatePIDValues);
-		//CanIntake::beginCollection(detectedColor);
+		CanIntake::beginCollection(detectedColor);
 	}
 	else {
 		AsyncHandler.addCallback(&checkColorSensor);
 	}
 }
 
-void MotorDrive::updatePIDValues() {
-	//Serial.print("every100millis");
-	addLeftPidValues();
-	addRightPidValues();
-	addLinePidValues(dir);
-	servoLeft.write(constrain(throttleLeft, 0, 180) * dir);
-	servoRight.write(constrain(throttleRight, 0, 180) * dir);
-	AsyncHandler.addCallback(&updatePIDValues, 100);
-}
-
-
-void MotorDrive::addLeftPidValues() {
-	leftPID.run();
-	//Serial.print(outputLDrive);
-	throttleLeft += outputLDrive;
-}
-void MotorDrive::addRightPidValues() {
-	rightPID.run();
-	//Serial.print(outputRDrive);
-	throttleRight += outputRDrive;
-}
-
 //implements line following PID and adds values to drive
 void MotorDrive::addLinePidValues(int dir) {
-	irLeftAddition = 0;
-	irRightAddition = 0;
-	if (dir == 1) {
-		//front sensor
-		inputIR = analogRead(A0);
+	static constexpr double iZone = 10, kP = 0.1, kI = 0.001, kD = 0.05;
+	static constexpr int leftBaseSpeed = 140, rightBaseSpeed = 140;
+	static int currentPosition;
+	static double previousError = 0;
+	static int mapLower = 90, mapUpper = 90;
+	
+	volatile int targetPosition = (blackTape + whiteTape) / 2;
+	if (dir == 1) { //checks which sensor to read and prepares the mapping values accordingly
+		currentPosition = analogRead(FORWARD_SENSOR);
+		int mapUpper = 180;
+		int mapLower = 90;
 	}
 	else {
-		//rear sensor
-		inputIR = analogRead(A1);
+		currentPosition = analogRead(REVERSE_SENSOR);
+		int mapUpper = 90;
+		int mapLower = 0;
 	}
-	//Serial.print(inputIR);
-	setPointIR = 2.5;
-	sensorPID.run();
-	double out = outputFromIR;
-	if (out > 2.5) {
-		irRightAddition = out;
+	int error = targetPosition - currentPosition;
+	int outputSpeed = error * kP;
+
+	double integral = 0;
+	if (abs(error) < iZone) {
+		integral = (error * kI) + integral;
 	}
-	else if (out < 2.5) {
-		irLeftAddition = out;
-	}
-	throttleLeft += irLeftAddition;
-	throttleRight += irRightAddition;
+
+	double derivative = (error - previousError) * kD;
+	previousError = error;
+
+	outputSpeed = error * kP + integral + derivative;
+
+	//For debugging purposes only
+	int rightMotorSpeed = rightBaseSpeed + outputSpeed; //( + might need to be changed to - )
+	int leftMotorSpeed = leftBaseSpeed - outputSpeed; //( - might need to be changed to + )
+
+	Serial.print(currentPosition);
+	Serial.print("\t");
+	Serial.print(error);
+	Serial.print("\t");
+	Serial.print(outputSpeed);
+	Serial.print("\t");
+	Serial.print(constrain(rightMotorSpeed, 0, 180));
+	Serial.print("\t");
+	Serial.print(constrain(leftMotorSpeed, 0, 180));
+	Serial.print("\n");
+
+	//return outputSpeed;
 }
 
 void MotorDrive::requestColor(CanType canColor) {
-//	requiredColor = canColor;
+	requiredColor = canColor;
 }

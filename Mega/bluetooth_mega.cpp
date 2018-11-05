@@ -11,20 +11,26 @@
 void BluetoothMega::loopHook() {
 	if (Serial2.available()) {
 		String data = getData();
-		CanQuantities cans;
-		cans = inputData(data);
 		Serial.print("\n");
 		Serial.print("Message: ");
 		Serial.println(data);
-		Serial.print("Red cans: ");
-		Serial.println(cans.red);
-		Serial.print("Green cans: ");
-		Serial.println(cans.green);
-		Serial.print("Blue cans: ");
-		Serial.println(cans.blue);
+		if (data[0] == '0') {
 
-		//CanIntake::initState(cans);
-		//AsyncHandler.addCallback(MotorDrive::driveSomewhere);
+			CanQuantities cans;
+			cans = inputData(data);
+			Serial.print("\n");
+			Serial.print("Message: ");
+			Serial.println(data);
+			Serial.print("Red cans: ");
+			Serial.println(cans.red);
+			Serial.print("Green cans: ");
+			Serial.println(cans.green);
+			Serial.print("Blue cans: ");
+			Serial.println(cans.blue);
+
+			//CanIntake::initState(cans);
+			//AsyncHandler.addCallback(MotorDrive::driveSomewhere);
+		}
 	}
 	AsyncHandler.addCallback(BluetoothMega::loopHook, 100);
 }
@@ -51,13 +57,11 @@ String BluetoothMega::getData() {
 		temp.concat(c);
 		delay(100);
 	};
-	if (!temp.equals(String(""))) {
-		temp = encryptData(temp);
-		if (calcChecksum(temp)) {
-			return temp;
-		}
-	};
-	return "Error"; // change to error code for no information received
+	temp = encryptData(temp);
+	if (!calcChecksum(temp)) {
+		//TODO: log or notify of error here
+	}
+	return temp;
 }
 
 void BluetoothMega::transmitToUno(String data) {
@@ -68,7 +72,7 @@ void BluetoothMega::transmitToUno(String data) {
 	}
 }
 
-CanQuantities BluetoothMega::inputData(String temp) {
+CanQuantities BluetoothMega::inputData(const String& temp) {
 	constexpr uint8_t zero_char = '0';
 	uint8_t r = temp[1] - zero_char;
 	uint8_t g = temp[2] - zero_char;
@@ -101,7 +105,7 @@ String BluetoothMega::encryptData(String data) {
 }
 
 // checksum calc to check the message for even parity
-bool BluetoothMega::calcChecksum(String message) {
+bool BluetoothMega::calcChecksum(const String& message) {
 	int sum = 0;
 	for (size_t i = 0; i < message.length(); i++) {
 		char c = message[i];

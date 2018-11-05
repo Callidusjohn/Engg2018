@@ -10,6 +10,8 @@
 #include "shared_types.h"
 
 struct MotorDrive {
+	static constexpr auto FORWARD_SENSOR = A0;
+	static constexpr auto REVERSE_SENSOR = A1;
 	static constexpr auto OUTPUT_PIN = A1;
 
 	//main PID consts
