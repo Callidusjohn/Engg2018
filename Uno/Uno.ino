@@ -9,7 +9,7 @@
 /**********************************************************************************************************************
                                       Error Storage
  ***********************************************************************************************************************/
- 
+
 
 #define USE_DHCP_FOR_IP_ADDRESS
 
@@ -123,7 +123,7 @@ void setup()
                                                               Main loop
  ***********************************************************************************************************************/
 
-// data intake from the frontend and extracting the right values to pass onto 
+// data intake from the frontend and extracting the right values to pass onto
 // the bluetooth module. RGB can numbers.
 String parsingString(String str) {
   String result = "0"; //0 for unsuccess & 1 for success. FIXME
@@ -168,7 +168,7 @@ void loop()
     int    nUriIndex;  // Gives the index into table of recognized URIs or -1 for not found.
     BUFFER requestContent;    // Request content as a null-terminated string.
     MethodType eMethod = readHttpRequest(client, nUriIndex, requestContent);
-    
+
     if (nUriIndex < 0)
     {
       // URI not found
@@ -194,13 +194,13 @@ void loop()
           //check = BluetoothUno.transmitToMega(integer);
 
           //TODO: log responses to local console
-//           String response = "";
-//           while(response.equals(String(""))) {
-//             //response = BluetoothUno.getData();
-//             delay(10000);
-//             response = "Failed";
-//           }
-//           Serial.println(response);
+          String response = "";
+          while (response.equals(String(""))) {
+            //response = BluetoothUno.getData();
+            delay(10000);
+            response = "Failed";
+          }
+          Serial.println(response);
         }
         else if (check == 1) {
           String temp = BluetoothUno.getData();
@@ -228,7 +228,7 @@ void loop()
   client.stop();
 }
 
- 
+
 // Read HTTP request, setting Uri Index, the requestContent and returning the method type.
 MethodType readHttpRequest(EthernetClient & client, int & nUriIndex, BUFFER & requestContent)
 {
