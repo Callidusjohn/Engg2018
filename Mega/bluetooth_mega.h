@@ -15,18 +15,18 @@ struct BluetoothMega {
 	static String getData();
 
 	// transfer data to Mega
-	static void transmitToUno(const String& data);
+	static void transmitToUno(String data);
 
 	// encrypt data using ROT-18 (ext of ROT-13)
-	static String encryptData(const String& data);
+	static String encryptData(String data);
 
 	// calculate checksum
-	static bool calcChecksum(const String& message);
+	static bool calcChecksum(String message);
 
 	// adds checksum to message
 	static String addChecksum(String message);
 
 	// return can quantities in struct for other teams
-	static CanQuantities inputData(const String& data);
+	static CanQuantities inputData(String data);
 };
 #endif

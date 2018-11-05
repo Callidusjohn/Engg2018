@@ -54,7 +54,7 @@ void BluetoothUno::getInfo() {
   }
 }
 
-void BluetoothUno::transmitToMega(String data) { \\Should you the above function
+void BluetoothUno::transmitToMega(String data) {
 	data = encryptData(data);
 	data = addChecksum(data);
 	if (BTSerial.available()) {

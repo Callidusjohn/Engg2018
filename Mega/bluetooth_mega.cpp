@@ -68,14 +68,14 @@ String BluetoothMega::getData() {
 	return temp; // change to error code for no information received
 }
 
-void BluetoothMega::transmitToUno(const String& data) {
+void BluetoothMega::transmitToUno(String data) {
 	// need some flag to ensure this isnt infinite
 	for (size_t i = 0; i < data.length(); i++) {
 		Serial2.write(data[i]);
 	}
 }
 
-CanQuantities BluetoothMega::inputData(const String& temp) {
+CanQuantities BluetoothMega::inputData(String temp) {
 	constexpr uint8_t zero_char = '0';
 	uint8_t r = temp[1] - zero_char;
 	uint8_t g = temp[2] - zero_char;
@@ -108,7 +108,7 @@ String BluetoothMega::encryptData(String data) {
 }
 
 //check the message for even parity
-bool BluetoothMega::calcChecksum(const String& message) {
+bool BluetoothMega::calcChecksum(String message) {
 	int sum = 0;
 	for (size_t i = 0; i < message.length(); i++) {
 		char c = message[i];
