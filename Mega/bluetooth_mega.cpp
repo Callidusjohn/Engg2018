@@ -118,7 +118,7 @@ bool BluetoothMega::calcChecksum(String message) {
 }
 
 //add a checksum for even parity
-String addChecksum(String message) {
+String BluetoothMega::addChecksum(String message) {
 	int sum = 0;
 	String sumChar = "1";
 	for (int i = 0; i < message.length(); i++) {
