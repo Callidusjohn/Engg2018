@@ -15,7 +15,7 @@ void BluetoothUno::initiateConnToMega() {
 
 	BTSerial.begin(9600);
 	BTSerial.write("AT+ROLE1");
-	BTSerial.write("AT+COND43639D8A14C"); // mega address: D43639D8A14C 
+	BTSerial.write("AT+COND43639D8A14C"); // mega address: D43639D8A14C
 	Serial.println("Arduino Uno: Bluetooth Serial started at 9600 Baud.");
 	// BTSerial.print("Connection to Uno has been established.");
 }
@@ -104,7 +104,7 @@ String BluetoothUno::encryptData(String data) {
 }
 
 //add a checksum for even parity
-String addChecksum(String message) {
+String BluetoothUno::addChecksum(String message) {
 	int sum = 0;
 	String sumChar = "1";
 	for (int i = 0; i < message.length(); i++) {
@@ -120,7 +120,7 @@ String addChecksum(String message) {
 }
 
 //check the message for even parity
-boolean calcChecksum(String message) {
+boolean BluetoothUno::calcChecksum(String message) {
 	int sum = 0;
 	for (int i = 0; i < message.length(); i++) {
 		char c = message[i];
