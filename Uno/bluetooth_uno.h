@@ -23,20 +23,17 @@ static struct BluetoothUno {
 	// calculate checksum
 	boolean calcChecksum(String message);
 
+	int PIN;
+	AltSoftSerial BTSerial;
+	bool NL = true;
+	char c = '';
+
 	// ##########################
 	// ##### TEST FUNCTIONS #####
 	// ##########################
-
-	String prepareForMega(String data);
-
-	void transmitToMega(int data);
 
 	void lcd_errorChecking(int data);
 
 	void getInfo();
 
-	int PIN;
-	AltSoftSerial BTSerial;
-	bool NL = true;
-	char c = ' ';
 } BluetoothUno;

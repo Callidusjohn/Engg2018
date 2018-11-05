@@ -9,7 +9,6 @@
 
 
 void BluetoothMega::loopHook() {
-	//Serial.println("TEST");
 	if (Serial2.available()) {
 		String data = getData();
 		CanQuantities cans;
@@ -45,7 +44,6 @@ void BluetoothMega::init() {
 	Serial2.print(encryptData("Connection to Mega has been established."));
 }
 
-// ##### TODO: TEST THIS #####
 String BluetoothMega::getData() {
 	String temp = "";
 	while (Serial2.available()) {
@@ -53,7 +51,6 @@ String BluetoothMega::getData() {
 		temp.concat(c);
 		delay(100);
 	};
-	transmitToUno(temp);
 	if (!temp.equals(String(""))) {
 		temp = encryptData(temp);
 		if (calcChecksum(temp)) {
@@ -64,7 +61,6 @@ String BluetoothMega::getData() {
 }
 
 void BluetoothMega::transmitToUno(String data) {
-	// need some flag to ensure this isnt infinite
 	data = addChecksum(data);
 	data = encryptData(data);
 	for (int i = 0; i < data.length(); i++) {
@@ -104,7 +100,7 @@ String BluetoothMega::encryptData(String data) {
 	return ROT18Msg;
 }
 
-//check the message for even parity
+// checksum calc to check the message for even parity
 bool BluetoothMega::calcChecksum(String message) {
 	int sum = 0;
 	for (size_t i = 0; i < message.length(); i++) {
@@ -114,7 +110,7 @@ bool BluetoothMega::calcChecksum(String message) {
 	return !(sum & 1);
 }
 
-//add a checksum for even parity
+// add a checksum for even parity
 String BluetoothMega::addChecksum(String message) {
 	int sum = 0;
 	String sumChar = "1";
