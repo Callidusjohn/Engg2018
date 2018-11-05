@@ -18,7 +18,7 @@ static struct BluetoothUno {
 	String encryptData(String data);
 
 	// add a checksum to data for transmission
-	int addChecksum(String message);
+	String addChecksum(String message);
 
 	// calculate checksum
 	boolean calcChecksum(String message);
