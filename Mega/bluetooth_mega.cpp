@@ -12,19 +12,17 @@ void BluetoothMega::loopHook() {
 	//Serial.println("TEST");
 	if (Serial2.available()) {
 		String data = getData();
-		if (data.length() == 5) {
-			CanQuantities cans;
-			cans = inputData(data);
-			Serial.print("\n");
-			Serial.print("Message: ");
-			Serial.println(data);
-			Serial.print("Red cans: ");
-			Serial.println(cans.red);
-			Serial.print("Green cans: ");
-			Serial.println(cans.green);
-			Serial.print("Blue cans: ");
-			Serial.println(cans.blue);
-		} Serial.println(data);
+		CanQuantities cans;
+		cans = inputData(data);
+		Serial.print("\n");
+		Serial.print("Message: ");
+		Serial.println(data);
+		Serial.print("Red cans: ");
+		Serial.println(cans.red);
+		Serial.print("Green cans: ");
+		Serial.println(cans.green);
+		Serial.print("Blue cans: ");
+		Serial.println(cans.blue);
 
 		//CanIntake::initState(cans);
 		//AsyncHandler.addCallback(MotorDrive::driveSomewhere);
@@ -55,26 +53,22 @@ String BluetoothMega::getData() {
 		temp.concat(c);
 		delay(100);
 	};
+	transmitToUno(temp);
 	if (!temp.equals(String(""))) {
 		temp = encryptData(temp);
 		if (calcChecksum(temp)) {
-			transmitToUno(temp);
 			return temp;
 		}
 	};
-	if (temp == "") {
-		return "Error"; // change to error code for no information received
-	} return temp;
+	return "Error"; // change to error code for no information received
 }
 
 void BluetoothMega::transmitToUno(String data) {
 	// need some flag to ensure this isnt infinite
 	data = addChecksum(data);
 	data = encryptData(data);
-	if (Serial2.available()) {
-		for (int i = 0; i < data.length(); i++) {
-			Serial2.write(data[i]);
-		}
+	for (int i = 0; i < data.length(); i++) {
+		Serial2.write(data[i]);
 	}
 }
 
