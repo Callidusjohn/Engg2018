@@ -12,17 +12,19 @@ void BluetoothMega::loopHook() {
 	//Serial.println("TEST");
 	if (Serial2.available()) {
 		String data = getData();
-		CanQuantities cans;
-		cans = inputData(data);
-		Serial.print("\n");
-		Serial.print("Message: ");
-		Serial.println(data);
-		Serial.print("Red cans: ");
-		Serial.println(cans.red);
-		Serial.print("Green cans: ");
-		Serial.println(cans.green);
-		Serial.print("Blue cans: ");
-		Serial.println(cans.blue);
+		if (data.length() == 5) {
+			CanQuantities cans;
+			cans = inputData(data);
+			Serial.print("\n");
+			Serial.print("Message: ");
+			Serial.println(data);
+			Serial.print("Red cans: ");
+			Serial.println(cans.red);
+			Serial.print("Green cans: ");
+			Serial.println(cans.green);
+			Serial.print("Blue cans: ");
+			Serial.println(cans.blue);
+		} Serial.println(data);
 
 		//CanIntake::initState(cans);
 		//AsyncHandler.addCallback(MotorDrive::driveSomewhere);
@@ -56,16 +58,23 @@ String BluetoothMega::getData() {
 	if (!temp.equals(String(""))) {
 		temp = encryptData(temp);
 		if (calcChecksum(temp)) {
+			transmitToUno(temp);
 			return temp;
 		}
 	};
-	return "Error"; // change to error code for no information received
+	if (temp == "") {
+		return "Error"; // change to error code for no information received
+	} return temp;
 }
 
 void BluetoothMega::transmitToUno(String data) {
 	// need some flag to ensure this isnt infinite
-	for (size_t i = 0; i < data.length(); i++) {
-		Serial2.write(data[i]);
+	data = addChecksum(data);
+	data = encryptData(data);
+	if (Serial2.available()) {
+		for (int i = 0; i < data.length(); i++) {
+			Serial2.write(data[i]);
+		}
 	}
 }
 

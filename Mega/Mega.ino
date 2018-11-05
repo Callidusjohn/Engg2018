@@ -30,6 +30,7 @@ void setup() {
 	// bluetooth adds MotorDrive callback
 	//	motor driveSomewhere() registers a callback for updatePIDValues which drives
 	//  when motor gets to somewhere, adds callback for CanIntake
+	BluetoothMega::transmitToUno("0123");
 	AsyncHandler.addCallback(BluetoothMega::loopHook);
 }
 
