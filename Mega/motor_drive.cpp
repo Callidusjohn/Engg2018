@@ -3,9 +3,20 @@
 #include "can_intake.h"
 
 
-//Constants
-static constexpr int whiteTape = 863;
-static constexpr int blackTape = 1000;
+
+//IR PID consts
+static constexpr int whiteTapeFwd = 563;
+static constexpr int blackTapeFwd = 981;
+static constexpr int whiteTapeRwd = 570;
+static constexpr int blackTapeRwd = 970;
+static constexpr int currentPosition = 0;
+static constexpr int error = 0;
+static constexpr double integral = 0;
+static constexpr double derivative = 0;
+static constexpr double previousError = 0;
+static constexpr int outputSpeed = 0;
+static constexpr int mapLower = 90;
+static constexpr int mapUpper = 90;
 
 double MotorDrive::countLeft = 0;
 double MotorDrive::countRight = 0;
@@ -165,7 +176,7 @@ void MotorDrive::checkSensedColor() {
 
 //implements line following PID and adds values to drive
 void MotorDrive::addLinePidValues(int dir) {
-	static constexpr double iZone = 10, kP = 0.1, kI = 0.001, kD = 0.05;
+	static constexpr double kP = 0.02, kI = 0.0, kD = 0.0;
 	static constexpr int leftBaseSpeed = 140, rightBaseSpeed = 140;
 	static int currentPosition;
 	static double previousError = 0;
@@ -174,20 +185,19 @@ void MotorDrive::addLinePidValues(int dir) {
 	int targetPosition = (blackTape + whiteTape) / 2;
 	if (dir == 1) { //checks which sensor to read and prepares the mapping values accordingly
 		currentPosition = analogRead(Pins::drive_forward_sensor);
-		int mapUpper = 180;
-		int mapLower = 90;
+		targetPosition = (blackTapeFwd + whiteTapeFwd)/2;
 	}
 	else {
 		currentPosition = analogRead(Pins::drive_reverse_sensor);
-		int mapUpper = 90;
-		int mapLower = 0;
+		targetPosition = (blackTapeRwd + whiteTapeRwd)/2;
 	}
 	int error = targetPosition - currentPosition;
-	int outputSpeed = error * kP;
 
 	double integral = 0;
 	if (abs(error) < iZone) {
 		integral = (error * kI) + integral;
+	}else{
+		integral = 0
 	}
 
 	double derivative = (error - previousError) * kD;
@@ -195,22 +205,35 @@ void MotorDrive::addLinePidValues(int dir) {
 
 	outputSpeed = error * kP + integral + derivative;
 
-	//For debugging purposes only
-	int rightMotorSpeed = rightBaseSpeed + outputSpeed; //( + might need to be changed to - )
-	int leftMotorSpeed = leftBaseSpeed - outputSpeed; //( - might need to be changed to + )
+	// Serial.print(currentPosition);
+	// Serial.print("\t");
+	// Serial.print(error);
+	// Serial.print("\t");
+	// Serial.print(outputSpeed);
+	// Serial.print("\t");
+	// Serial.print(constrain(rightMotorSpeed, 0, 180));
+	// Serial.print("\t");
+	// Serial.print(constrain(leftMotorSpeed, 0, 180));
+	// Serial.print("\n");
 
-	Serial.print(currentPosition);
+	if (dir == 1){ //moving forwards
+		leftBaseSpeed = 75;
+		rightBaseSpeed = 105;
+		int leftWrite = constrain(leftBaseSpeed - outputSpeed, 0, 80);
+		int rightWrite = constrain(rightBaseSpeed - outputSpeed, 100, 180);
+	}else{
+		leftBaseSpeed = 112;
+		rightBaseSpeed = 75;
+		int leftWrite = constrain(leftBaseSpeed + outputSpeed, 100, 180);
+		int rightWrite = constrain(rightBaseSpeed + outputSpeed, 0, 80);
+ 	}
+
+	Serial.print(leftWrite);
 	Serial.print("\t");
-	Serial.print(error);
-	Serial.print("\t");
-	Serial.print(outputSpeed);
-	Serial.print("\t");
-	Serial.print(constrain(rightMotorSpeed, 0, 180));
-	Serial.print("\t");
-	Serial.print(constrain(leftMotorSpeed, 0, 180));
+	Serial.print(rightWrite);
+	servoLeft.write(leftWrite);
+	servoRight.write(rightWrite);
 	Serial.print("\n");
-
-	//return outputSpeed;
 }
 
 void MotorDrive::requestColor(CanType canColor) {
