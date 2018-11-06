@@ -112,7 +112,7 @@ void setup()
   Serial.print("");
   Serial.print("Server is at ");
   Serial.println(Ethernet.localIP());
-  if (Ethernet.localIP == "0.0.0.0") {
+  if (Ethernet.localIP() == "0.0.0.0") {
     feedback = "ErrorD00";
   }
   BluetoothUno.initiateConnToMega();
@@ -194,20 +194,21 @@ void loop()
           //check = BluetoothUno.transmitToMega(integer);
 
           //TODO: log responses to local console
-          String response = "";
-          while (response.equals(String(""))) {
-            //response = BluetoothUno.getData();
-            delay(10000);
-            response = "Failed";
-          }
-          Serial.println(response);
+          // String response = "";
+          // // while (response.equals(String(""))) {
+			// delay(50);
+			// response = BluetoothUno.getData();
+          //   // response = "Failed";
+          // }
+          // Serial.println(response);
         }
         else if (check == 1) {
+		  Serial.print("Check is 1");
           String temp = BluetoothUno.getData();
           if (temp == "") {
             feedback = "Awaiting for feedback";
           }
-          else if (temp == "Success") {
+          else if (temp.equals("Success")) {
             feedback = "Success";
           }
           else {
@@ -220,7 +221,7 @@ void loop()
           error = getErrorMessage(temp);
           feedback = temp;
         }
-      }
+      // }
     }
   }
   // give the web browser time to receive the data

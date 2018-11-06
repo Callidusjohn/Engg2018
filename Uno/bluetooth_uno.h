@@ -26,7 +26,7 @@ static struct BluetoothUno {
 	int PIN;
 	AltSoftSerial BTSerial;
 	bool NL = true;
-	char c = '';
+	char c = ' ';
 
 	// ##########################
 	// ##### TEST FUNCTIONS #####

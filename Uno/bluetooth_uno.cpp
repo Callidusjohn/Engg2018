@@ -27,14 +27,18 @@ void BluetoothUno::initiateConnToMega() {
 
 String BluetoothUno::getData() {
     if (BTSerial.available()) {
-    String s = "";
-    while (BTSerial.available()) {
-      char c = BTSerial.read();
-      s.concat(c);
-    }
-    s = encryptData(s);
-    return s;
-  } return "";
+	    String s = "";
+	    while (BTSerial.available()) {
+			delay(10);
+			char c = BTSerial.read();
+			s.concat(c);
+	  	};
+	    s = encryptData(s);
+		Serial.println("RECEIVED: ");
+		Serial.print(s);
+	    return s;
+  	};
+	return "";
 }
 
 // this fnction allows transfer using serial monitor
