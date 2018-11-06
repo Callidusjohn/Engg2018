@@ -15,7 +15,6 @@ void BluetoothMega::loopHook() {
 		Serial.print("Message: ");
 		Serial.println(data);
 		if (data[0] == '0') {
-
 			CanQuantities cans;
 			cans = inputData(data);
 			Serial.print("\n");
@@ -51,15 +50,17 @@ void BluetoothMega::init() {
 }
 
 String BluetoothMega::getData() {
-	String temp = "";
-	while (Serial2.available()) {
-		char c = Serial2.read();
-		temp.concat(c);
-		delay(100);
-	};
-	temp = encryptData(temp);
-	if (!calcChecksum(temp)) {
-		//TODO: log or notify of error here
+	if (Serial2.available()) {
+		String temp = "";
+		while (Serial2.available()) {
+			delay(100);
+			char c = Serial2.read();
+			temp.concat(c);
+		};
+		temp = encryptData(temp);
+		if (!calcChecksum(temp)) {
+			return "Error"; // fix this to be error code
+		}
 	}
 	return temp;
 }
@@ -69,7 +70,7 @@ void BluetoothMega::transmitToUno(String data) {
 	data = encryptData(data);
 	for (int i = 0; i < data.length(); i++) {
 		Serial2.write(data[i]);
-	}
+	};
 }
 
 CanQuantities BluetoothMega::inputData(const String& temp) {
@@ -91,7 +92,7 @@ String BluetoothMega::encryptData(String data) {
 		if (c > 47 && c < 58) {
 			c += 25;
 		} else {
-				c += 18;
+			c += 18;
 		};
 		if (c > 90) {
 			c -= 43;
@@ -102,16 +103,6 @@ String BluetoothMega::encryptData(String data) {
 		ROT18Msg[i] = c;
 	}
 	return ROT18Msg;
-}
-
-// checksum calc to check the message for even parity
-bool BluetoothMega::calcChecksum(const String& message) {
-	int sum = 0;
-	for (size_t i = 0; i < message.length(); i++) {
-		char c = message[i];
-		sum += static_cast<int>(c) & 1;
-	};
-	return !(sum & 1);
 }
 
 // add a checksum for even parity
@@ -128,4 +119,14 @@ String BluetoothMega::addChecksum(String message) {
 	String messageOut = message;
 	messageOut += (sumChar);
 	return messageOut;
+}
+
+// checksum calc to check the message for even parity
+bool BluetoothMega::calcChecksum(const String& message) {
+	int sum = 0;
+	for (size_t i = 0; i < message.length(); i++) {
+		char c = message[i];
+		sum += static_cast<int>(c) & 1;
+	};
+	return !(sum & 1);
 }
