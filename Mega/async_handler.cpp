@@ -4,60 +4,40 @@
 
 struct AsyncHandler AsyncHandler = {};
 
-//AsyncHandler::DelayedCallback AsyncHandler::callbacks[delay_buffer_size];// = { { 0, nullptr },{ 0, nullptr }, { 0, nullptr }, { 0, nullptr }, { 0, nullptr }, { 0, nullptr }, { 0, nullptr }, { 0, nullptr }, { 0, nullptr }, { 0, nullptr }, };
-AsyncHandler::AsyncHandler() : next_invoke(millis_t_max) {
-	//TODO: make sure that this isn't getting called twice for some reason
-	//Serial.println("Never, ever");
-	//not required due to default initialization
-	//for (size_t i = 0; i < delay_buffer_size; i++) {
-	//	callbacks[i] = { 0, nullptr };
-	//}
-}
-
-void AsyncHandler::addCallback(void(*callback)(), millis_t millis_delay) {
-	//Serial.println("Handler adding callback");
-	if (callback == nullptr) {
-		//Serial.println("This is technically impossible if we've done this well");
-		return;
-	}
+void AsyncHandler::addCallback(void(*func_to_add)(), millis_t millis_delay) {
+	if (func_to_add == nullptr) return;
 	size_t first_null = delay_buffer_size;
 	millis_t delayed_time = millis() + millis_delay;
 	if (delayed_time < next_invoke) next_invoke = delayed_time;
 	for (size_t i = 0; i < delay_buffer_size; i++) {
-		if (callbacks[i].callback_function == nullptr) {
+		auto& callback = callbacks[i];
+		if (callback.callback_function == nullptr) {
 			if (first_null > i) {
 				first_null = i;
-				//Serial.print("First null at ");
-				//Serial.println(first_null);
 			}
 		}
-		else if(callbacks[i].callback_function == callback) {
-			//Serial.print("Found existing callback, updating time to ");
-			//Serial.println(delayed_time);
-			callbacks[i].invoke_at = delayed_time;
+		else if (callback.callback_function == func_to_add) {
+			callback.delay_until = delayed_time;
 			return;
 		}
 	}
-	callbacks[first_null].callback_function = callback;
-	callbacks[first_null].invoke_at = delayed_time;
-	//Serial.println("Finished adding new callback");
-	return;
+	callbacks[first_null].callback_function = func_to_add;
+	callbacks[first_null].delay_until = delayed_time;
 }
 
-void AsyncHandler::removeCallback(void(*callback)()) {
-	//Serial.println("Handler removing callback");
-	if (callback == nullptr) return;
+// removes callback and updates next_invoke
+void AsyncHandler::removeCallback(void(*func_to_remove)()) {
+	if (func_to_remove == nullptr) return;
 	bool update_next_invoke = false;
 	millis_t temp_next_invoke = millis_t_max;
 	for (size_t i = 0; i < delay_buffer_size; i++) {
-		if (callbacks[i].callback_function == callback) {
-			if (callbacks[i].invoke_at <= next_invoke) {
-				update_next_invoke = true;
-			}
-			callbacks[i] = { 0, nullptr };
+		auto& callback = callbacks[i];
+		if (callback.callback_function == func_to_remove) {
+			update_next_invoke |= callback.delay_until <= next_invoke;
+			callback = { 0, nullptr };
 		}
-		else if(callbacks[i].callback_function != nullptr && callbacks[i].invoke_at < temp_next_invoke) {
-			temp_next_invoke = callbacks[i].invoke_at;
+		else if (callback.callback_function != nullptr && callback.delay_until < temp_next_invoke) {
+			temp_next_invoke = callback.delay_until;
 		}
 	}
 	if (update_next_invoke) {
@@ -66,35 +46,38 @@ void AsyncHandler::removeCallback(void(*callback)()) {
 }
 
 void AsyncHandler::processLoop() {
-	
+	auto start_time = millis();
+	if (start_time < next_invoke) return;
+	// cache to prevent callbacks overwriting eachother
 	void(*pending_callbacks[delay_buffer_size])();
-	//Serial.println("Handler processing loop");
+	bool has_any_callbacks = false;
+	// populate cache with callbacks to be called this iteration
 	for (size_t i = 0; i < delay_buffer_size; i++) {
-		if (callbacks[i].callback_function != nullptr) {
-		//	Serial.println("There is indeed a function");
+		auto func = callbacks[i].callback_function;
+		has_any_callbacks |= func != nullptr;
+		if (func != nullptr && millis() > callbacks[i].delay_until) {
+			pending_callbacks[i] = func;
+			this->removeCallback(func);
 		}
-		if (millis() > callbacks[i].invoke_at) {
-			pending_callbacks[i] = callbacks[i].callback_function;
-			if (callbacks[i].callback_function != nullptr) {
-				next_invoke = millis_t_max;
-			};
-			callbacks[i] = { 0, nullptr };
-		}
-		else {
-			pending_callbacks[i] = nullptr;
-		}
+		// ensure this is set to something as we read it later
+		else pending_callbacks[i] = nullptr;
 	}
 	for (size_t i = 0; i < delay_buffer_size; i++) {
-		if (pending_callbacks[i] == nullptr) continue;
-		else pending_callbacks[i]();
+		if (pending_callbacks[i] != nullptr) {
+			pending_callbacks[i]();
+		}
+	}
+	if (!has_any_callbacks) {
+		// this indicates a serious issue
+		Serial.println("No callbacks registered!");
+	}
+	else if (next_invoke - start_time > 10000) {
+		// this indicates a notable but less serious issue
+		Serial.println("More than 10s between async runs!");
+	}
+	if (millis() - start_time > 2000) {
+		// may be problematic
+		Serial.println("Loop run took more than 2s!");
 	}
 	//Serial.println(next_invoke);
-	//auto halt_millis = millis();
-	//if (halt_millis < next_invoke) delay(next_invoke - halt_millis);
-	//for (size_t i = 0; i < delay_buffer_size; i++) {
-	//	if (callbacks[i].callback_function != nullptr) {
-	//		//Serial.println("Callback added during processing");
-	//	}
-	//}
-	//Serial.println("Loop processing finished");
 }

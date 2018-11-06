@@ -8,8 +8,6 @@
 struct AsyncHandler {
 public:
 
-	AsyncHandler();
-
 	void addCallback(void(*callback)(), millis_t delay = 0);
 
 	void removeCallback(void(*callback)());
@@ -21,9 +19,9 @@ private:
 	static constexpr size_t delay_buffer_size = 10;
 
 	//static Chrono chrono; // technically will need to be reset every 24 days
-	millis_t next_invoke;
+	millis_t next_invoke = millis_t_max;
 	struct DelayedCallback {
-		millis_t invoke_at;
+		millis_t delay_until;
 		void (*callback_function)();
 	} callbacks[delay_buffer_size];
 
