@@ -44,23 +44,23 @@ String BluetoothUno::getData() {
 // this fnction allows transfer using serial monitor
 void BluetoothUno::getInfo() {
     if (BTSerial.available() > 0) {
-      c = BTSerial.read();
-      Serial.write(c);
+		c = BTSerial.read();
+		Serial.write(c);
     }
     while (Serial.available() > 0) {
-    c = Serial.read();
-    if (c != 10 && c != 13) {
-    BTSerial.write(c);
-    }
-    if (NL) {
-    Serial.print("\r>");
-    NL = false;
-    }
-    Serial.write(c);
-    if (c == 10) {
-      NL = true;
-    }
-  }
+	    c = Serial.read();
+	    if (c != 10 && c != 13) {
+	    	BTSerial.write(c);
+	    }
+	    if (NL) {
+	    	Serial.print("\r>");
+	    	NL = false;
+	    }
+	    Serial.write(c);
+	    if (c == 10) {
+			NL = true;
+	    }
+	}
 }
 
 void BluetoothUno::transmitToMega(String data) {
