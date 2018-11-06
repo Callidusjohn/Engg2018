@@ -92,31 +92,28 @@ String error;
 /**********************************************************************************************************************
                                                     Shared variable and Setup()
  ***********************************************************************************************************************/
+
 EthernetServer server(80);
 
-void setup()
-{
-
-  Serial.begin(9600); // DEBUG
-  Serial.flush();
-  //Serial.println("Starting Server.");
-  //Serial.println("Obtaining IP...");
+void setup() {
+	Serial.begin(9600);
+	Serial.flush();
+	Serial.println("Starting Server.");
+	Serial.println("Obtaining IP...");
 #ifdef USE_DHCP_FOR_IP_ADDRESS
-  Ethernet.begin(mac);  // Use DHCP to get an IP address
+	Ethernet.begin(mac);  // Use DHCP to get an IP address
 #else
-  Ethernet.begin(mac, statusip);
+	Ethernet.begin(mac, statusip);
 #endif
-
-  delay(2000);
-  server.begin();
-  Serial.print("");
-  Serial.print("Server is at ");
-  Serial.println(Ethernet.localIP());
-  if (Ethernet.localIP() == "0.0.0.0") {
-    feedback = "ErrorD00";
-  }
-  BluetoothUno.initiateConnToMega();
-
+	delay(2000);
+	server.begin();
+	Serial.print("");
+	Serial.print("Server is at ");
+	Serial.println(Ethernet.localIP());
+	if (Ethernet.localIP() == "0.0.0.0") {
+		feedback = "ErrorD00"; // this right?
+	}
+	BluetoothUno.initiateConnToMega();
 }
 
 /**********************************************************************************************************************
@@ -126,39 +123,45 @@ void setup()
 // data intake from the frontend and extracting the right values to pass onto
 // the bluetooth module. RGB can numbers.
 String parsingString(String str) {
-  String result = "0"; //0 for unsuccess & 1 for success. FIXME
-  result.concat(str[4]);
-  result.concat(str[12]);
-  result.concat(str[19]);
-  return result;
+	String result = "0"; //0 for unsuccess & 1 for success. FIXME
+	result.concat(str[4]);
+	result.concat(str[12]);
+	result.concat(str[19]);
+	return result;
 }
 
 // Error code/messages which signify which team the error is from and what
 // errors are being parsed.
 String getErrorMessage(String str) {
-  char *message;
-  int code = str.substring(6).toInt();
-  String result = str + "_";
-  if (str[5] == 'A')
-    message = commA[code];
-  if (str[5] == 'B')
-    message = commB[code];
-  if (str[5] == 'C')
-    message = commC[code];
-  if (str[5] == 'D')
-    message = commD[code];
-  if (str[5] == 'E')
-    message = commE[code];
-  for (int i = 0 ; i < strlen(message); i++) {
-    result.concat(message[i]);
-  }
-  //Serial.println(result);
-  return result;
+	char *message;
+	int code = str.substring(6).toInt();
+	String result = str + "_";
+	if (str[5] == 'A')
+		message = commA[code];
+	if (str[5] == 'B')
+		message = commB[code];
+	if (str[5] == 'C')
+		message = commC[code];
+	if (str[5] == 'D')
+		message = commD[code];
+	if (str[5] == 'E')
+		message = commE[code];
+	for (int i = 0 ; i < strlen(message); i++) {
+		result.concat(message[i]);
+	}
+	//Serial.println(result);
+	return result;
 }
 
 void loop()
 {
   EthernetClient client = server.available();
+
+  // TODO: test this works
+  String data = BluetoothUno.getData();
+  if (data != "") {
+	  Serial.println(data);
+  }
 
 
   if (client)
@@ -188,19 +191,18 @@ void loop()
         //check = BluetoothUno.transmitToMega(integer);
         //Serial.println(integer);
         if (check == 0) {
-          //BluetoothUno.prepareForMega(integer);
-          String encrypted = BluetoothUno.encryptData(integer);
-          BluetoothUno.transmitToMega(integer); //Should use below
-          //check = BluetoothUno.transmitToMega(integer);
+			String encrypted = BluetoothUno.encryptData(integer);
+			BluetoothUno.transmitToMega(integer);
+			//check = BluetoothUno.transmitToMega(integer); // redundant?
 
-          //TODO: log responses to local console
-          String response = "";
-          while (response.equals(String(""))) {
-            //response = BluetoothUno.getData();
-            delay(10000);
-            response = "Failed";
-          }
-          Serial.println(response);
+			//TODO: log responses to local console
+			String response = "";
+			while (response.equals(String(""))) {
+				delay(1000);
+				response = BluetoothUno.getData();
+				// response = "Failed";
+			}
+			Serial.println(response);
         }
         else if (check == 1) {
           String temp = BluetoothUno.getData();
