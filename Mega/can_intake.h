@@ -6,10 +6,9 @@
 //#include "arm_controller.h"
 
 struct CanIntake {
-	friend class ArmController;
 
 	// initializes the internal state object for the arm
-	static void initState(const CanQuantities& cans);
+	static void init(const CanQuantities& cans);
 
 	// true if insufficient cans have been collected
 	static bool needsMoreCans() noexcept;
@@ -35,7 +34,5 @@ private:
 	//static ArmController armController;
 	static CanQuantities remainingCans;
 	static CanType currentlyCollecting;
-
-	static void updateQuantites() noexcept;
 };
 #endif

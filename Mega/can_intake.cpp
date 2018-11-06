@@ -3,8 +3,9 @@
 
 //CanIntake::ArmController CanIntake::armController = ArmController();
 CanQuantities CanIntake::remainingCans = { 0, 0, 0 };
+CanType CanIntake::currentlyCollecting;
 
-void CanIntake::initState(const CanQuantities& cans) {
+void CanIntake::init(const CanQuantities& cans) {
 	if (isCollecting()) {
 		return;
 		//TODO: log error here in debug if we end up doing logging
@@ -24,12 +25,11 @@ bool CanIntake::needsMoreCans(CanType type) noexcept {
 
 void CanIntake::beginCollection(CanType type) {
 	currentlyCollecting = type;
-
 	ArmController::beginCollection(remainingCans.quantityOf(type));
 }
 
 bool CanIntake::isCollecting() noexcept {
-	return false;//ArmController::isCollecting();
+	return ArmController::isCollecting();
 }
 
 bool CanIntake::lastRowExhausted() noexcept {
@@ -38,8 +38,4 @@ bool CanIntake::lastRowExhausted() noexcept {
 
 uint8_t CanIntake::lastCollectedQuantity() noexcept {
 	return ArmController::lastCollectedQuantity();
-}
-
-void CanIntake::updateQuantites() noexcept {
-	remainingCans.quantityOf(currentlyCollecting) -= ArmController::lastCollectedQuantity();
 }

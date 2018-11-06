@@ -10,9 +10,6 @@
 #include "shared_types.h"
 
 struct MotorDrive {
-	static constexpr auto FORWARD_SENSOR = A0;
-	static constexpr auto REVERSE_SENSOR = A1;
-	static constexpr auto OUTPUT_PIN = A1;
 
 	//main PID consts
 	static constexpr auto OUTPUT_MIN_IR = 0;
@@ -30,11 +27,11 @@ struct MotorDrive {
 	static constexpr auto LEFT_KD = 0.0;
 
 	//rgb sensor
-	static constexpr auto S0 = 4;
-	static constexpr auto S1 = 5;
-	static constexpr auto S2 = 6;
-	static constexpr auto S3 = 7;
-	static constexpr auto sensorOut = 8;
+	//static constexpr auto S0 = 4;
+	//static constexpr auto S1 = 5;
+	//static constexpr auto S2 = 6;
+	//static constexpr auto S3 = 7;
+	//static constexpr auto sensorOut = 8;
 
 	static double countLeft;
 	static double countRight;
@@ -147,7 +144,7 @@ struct MotorDrive {
 private:
 	static bool has_read_a_color;
 	static bool color_reading_in_progress;
-	static Chrono::chrono_t disable_color_sensor_until;
+	static millis_t disable_color_sensor_until;
 
 	static void checkColorSensorPhase1();
 	static void checkColorSensorPhase2();

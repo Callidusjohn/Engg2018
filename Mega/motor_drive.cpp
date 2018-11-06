@@ -41,36 +41,38 @@ int MotorDrive::throttleLeft, MotorDrive::throttleRight;
 
 bool MotorDrive::has_read_a_color;
 bool MotorDrive::color_reading_in_progress;
-Chrono::chrono_t MotorDrive::disable_color_sensor_until;
+millis_t MotorDrive::disable_color_sensor_until;
 
 MotorDrive::MotorDrive()
 {
 	driveSetPoint = targetPos;
-	pinMode(OUTPUT_PIN, OUTPUT);
-	attachInterrupt(digitalPinToInterrupt(18), ISRleft, RISING);
-	attachInterrupt(digitalPinToInterrupt(19), ISRright, RISING);
-	pinMode(22, INPUT); // 18 and 22 come from left
-	pinMode(23, INPUT); // 19 and 23 come from right
-	pinMode(6, INPUT); //enable pin
+	attachInterrupt(digitalPinToInterrupt(Pins::drive_ir_leftInterrupt), ISRleft, RISING);
+	attachInterrupt(digitalPinToInterrupt(Pins::drive_ir_rightInterrupt), ISRright, RISING);
+	pinMode(Pins::drive_ir_leftSensor, INPUT); // 18 and 22 come from left
+	pinMode(Pins::drive_ir_rightSensor, INPUT); // 19 and 23 come from right
+	pinMode(Pins::drive_rgb_s3, INPUT);//pinMode(6, INPUT); //enable pin
 	servoLeft.attach(4);  // attaches the servo on pin 9 to the servo object
 	servoRight.attach(5);  // attaches the servo on pin 9 to the servo object
 }
 
 void MotorDrive::ISRleft() {
-	if (digitalRead(22) == LOW) {
+	if (digitalRead(Pins::drive_ir_leftSensor) == LOW) {
 		countLeft = countLeft + 1;
 	}
-	else { countLeft = countLeft - 1; }
+	else {
+		countLeft = countLeft - 1;
+	};
 }
 void MotorDrive::ISRright() {
-	if (digitalRead(23) == HIGH) {
+	if (digitalRead(Pins::drive_ir_rightSensor) == HIGH) {
 		countRight = countRight + 1;
 	}
-	else { countRight = countRight - 1; }
+	else {
+		countRight = countRight - 1;
+	};
 }
 
-bool MotorDrive::inRange(int val, int minimum, int maximum)
-{
+bool MotorDrive::inRange(int val, int minimum, int maximum) {
 	return ((minimum <= val) && (val <= maximum));
 }
 
@@ -81,7 +83,12 @@ void MotorDrive::driveSomewhere() {
 	}
 	else {
 		dir = -1;
-	}
+	};
+	AsyncHandler.addCallback(&updatePIDValues, 100);
+}
+
+void MotorDrive::updatePIDValues() {
+	addLinePidValues(dir);
 	AsyncHandler.addCallback(&updatePIDValues, 100);
 }
 
@@ -99,9 +106,9 @@ void MotorDrive::checkColorSensor() {
 }
 
 void MotorDrive::checkColorSensorPhase1() {
-	digitalWrite(S2, LOW);
-	digitalWrite(S3, LOW);
-	redFreq = pulseIn(sensorOut, LOW);
+	digitalWrite(Pins::drive_rgb_s2, LOW);
+	digitalWrite(Pins::drive_rgb_s3, LOW);
+	redFreq = pulseIn(Pins::drive_rgb_sensorOut, LOW);
 	redFreq = map(redFreq, 130, 555, 0, 255);
 	if (redFreq < 50 && (redFreq < redFreq && redFreq < blueFreq)) {
 		sensorRed = true;
@@ -113,9 +120,9 @@ void MotorDrive::checkColorSensorPhase1() {
 }
 
 void MotorDrive::checkColorSensorPhase2() {
-	digitalWrite(S2, HIGH);
-	digitalWrite(S3, HIGH);
-	greenFreq = pulseIn(sensorOut, LOW);
+	digitalWrite(Pins::drive_rgb_s2, HIGH);
+	digitalWrite(Pins::drive_rgb_s3, HIGH);
+	greenFreq = pulseIn(Pins::drive_rgb_sensorOut, LOW);
 	greenFreq = map(greenFreq, 190, 1300, 0, 255);
 	if (greenFreq < 50 && (greenFreq < redFreq && greenFreq < blueFreq)) {
 		sensorGreen = true;
@@ -127,9 +134,9 @@ void MotorDrive::checkColorSensorPhase2() {
 }
 
 void MotorDrive::checkColorSensorPhase3() {
-	digitalWrite(S2, LOW);
-	digitalWrite(S3, HIGH);
-	blueFreq = pulseIn(sensorOut, LOW);
+	digitalWrite(Pins::drive_rgb_s2, LOW);
+	digitalWrite(Pins::drive_rgb_s3, HIGH);
+	blueFreq = pulseIn(Pins::drive_rgb_sensorOut, LOW);
 	blueFreq = map(blueFreq, 55, 370, 0, 255);
 	if (blueFreq < 50 && (blueFreq < greenFreq && blueFreq < redFreq)) {
 		sensorBlue = true;
@@ -163,15 +170,15 @@ void MotorDrive::addLinePidValues(int dir) {
 	static int currentPosition;
 	static double previousError = 0;
 	static int mapLower = 90, mapUpper = 90;
-	
-	volatile int targetPosition = (blackTape + whiteTape) / 2;
+
+	int targetPosition = (blackTape + whiteTape) / 2;
 	if (dir == 1) { //checks which sensor to read and prepares the mapping values accordingly
-		currentPosition = analogRead(FORWARD_SENSOR);
+		currentPosition = analogRead(Pins::drive_forward_sensor);
 		int mapUpper = 180;
 		int mapLower = 90;
 	}
 	else {
-		currentPosition = analogRead(REVERSE_SENSOR);
+		currentPosition = analogRead(Pins::drive_reverse_sensor);
 		int mapUpper = 90;
 		int mapLower = 0;
 	}
