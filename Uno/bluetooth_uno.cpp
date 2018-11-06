@@ -27,6 +27,10 @@ void BluetoothUno::initiateConnToMega() {
 String BluetoothUno::getData() {
 	String temp = "";
     if (BTSerial.available()) {
+<<<<<<< HEAD
+=======
+	    String temp = "";
+>>>>>>> b53d184a0e289a1be245228f8aca1c5adfcd352f
 	    while (BTSerial.available()) {
 			delay(10);
 			char c = BTSerial.read();
@@ -76,7 +80,11 @@ String BluetoothUno::encryptData(String data) {
 }
 
 // add a checksum for even parity
+<<<<<<< HEAD
 String BluetoothUno::addChecksum(String message) {
+=======
+String BluetoothMega::addChecksum(String message) {
+>>>>>>> b53d184a0e289a1be245228f8aca1c5adfcd352f
 	int sum = 0;
 	String sumChar = "1";
 	for (int i = 0; i < message.length(); i++) {
@@ -92,7 +100,11 @@ String BluetoothUno::addChecksum(String message) {
 }
 
 // checksum calc to check the message for even parity
+<<<<<<< HEAD
 boolean BluetoothUno::calcChecksum(String message) {
+=======
+bool BluetoothMega::calcChecksum(const String& message) {
+>>>>>>> b53d184a0e289a1be245228f8aca1c5adfcd352f
 	int sum = 0;
 	for (size_t i = 0; i < message.length(); i++) {
 		char c = message[i];
