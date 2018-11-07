@@ -25,6 +25,7 @@ void setup() {
 	// called functions can register other functions and themselves
 	//AsyncHandler.addCallback(&MotorDrive::updatePIDValues);
 	BluetoothMega::init();
+	MotorDrive::init();
 	//bluetooth added first
 	// bluetooth inits CanIntake
 	// bluetooth adds MotorDrive callback
