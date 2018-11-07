@@ -60,7 +60,7 @@ String BluetoothMega::getData() {
 			char c = Serial2.read();
 			temp.concat(c);
 		};
-		temp = encryptData(temp)
+		temp = encryptData(temp);
 		if (!calcChecksum(temp)) {
 			Serial.println("Something is " + temp);
 			return temp; // fix this to be error code
