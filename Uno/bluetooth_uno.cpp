@@ -21,12 +21,12 @@ void BluetoothUno::initiateConnToMega() {
 	BTSerial.write("AT+ROLE1");
 	BTSerial.write("AT+COND43639D8A14C"); // Mega address: D43639D8A14C
 	Serial.println("Arduino Uno: Bluetooth Serial started at 9600 Baud.");
-	BTSerial.print(encryptData("Connection to Uno has been established."));
+	BTSerial.print(calcChecksum(encryptData("Connection to Uno has been established.")));
 }
 
 String BluetoothUno::getData() {
-	String temp = "";
     if (BTSerial.available()) {
+		String temp = "";
 	    while (BTSerial.available()) {
 			delay(10);
 			char c = BTSerial.read();
@@ -36,10 +36,10 @@ String BluetoothUno::getData() {
 		Serial.print("RECEIVED: ");
 		Serial.print(temp + "\n");
 		if (!calcChecksum(temp)) {
-			return "Error"; // fix this to be error code
+			return "Anything"; // fix this to be error code
 		}
   	};
-	return temp;
+	return "";
 }
 
 void BluetoothUno::transmitToMega(String data) {
