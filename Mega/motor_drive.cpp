@@ -18,16 +18,8 @@ double MotorDrive::driveSetPoint;
 
 
 
-//will come from sensor
-CanType MotorDrive::detectedColor;
-
-//will eventually come from state.
-//CanType MotorDrive::color;
-
-
 //rgb stuff
 int MotorDrive::frequency, MotorDrive::redFreq, MotorDrive::greenFreq, MotorDrive::blueFreq;
-//bool MotorDrive::sensorRed, MotorDrive::sensorGreen, MotorDrive::sensorBlue;
 
 // servos
 Servo MotorDrive::servoLeft;
@@ -35,19 +27,20 @@ Servo MotorDrive::servoRight;
 
 int MotorDrive::throttleLeft, MotorDrive::throttleRight;
 
-bool MotorDrive::has_read_a_color;
 bool MotorDrive::color_reading_in_progress;
 millis_t MotorDrive::disable_color_sensor_until;
 
 void MotorDrive::init() {
+	pinMode(Pins::drive_door_solenoid, OUTPUT); // setup the solenoid
 	driveSetPoint = targetDistance;
 	attachInterrupt(digitalPinToInterrupt(Pins::drive_ir_leftInterrupt), ISRleft, RISING);
 	attachInterrupt(digitalPinToInterrupt(Pins::drive_ir_rightInterrupt), ISRright, RISING);
 	pinMode(Pins::drive_ir_leftSensor, INPUT); // 18 and 22 come from left
 	pinMode(Pins::drive_ir_rightSensor, INPUT); // 19 and 23 come from right
 	pinMode(Pins::drive_rgb_s3, INPUT);//pinMode(6, INPUT); //enable pin
-	servoLeft.attach(4);  // attaches the servo on pin 9 to the servo object
-	servoRight.attach(5);  // attaches the servo on pin 9 to the servo object
+	servoLeft.attach(Pins::drive_motor_left);  // attaches the servo on pin 9 to the servo object
+	servoRight.attach(Pins::drive_motor_right);  // attaches the servo on pin 9 to the servo object
+	digitalWrite(Pins::drive_door_solenoid, LOW); // lock the door
 }
 
 void MotorDrive::ISRleft() {
@@ -74,32 +67,38 @@ bool MotorDrive::inRange(int val, int minimum, int maximum) {
 void MotorDrive::driveSomewhere() {
 	if (CanIntake::needsMoreCans()) {
 		dir = 1;
-		AsyncHandler.addCallback(&checkColorSensor);
+		AsyncHandler.addCallback(checkColorSensor);
 	}
 	else {
 		dir = -1;
 	};
-	AsyncHandler.addCallback(&updatePIDValues, 100);
+	// TODO: determine a distance to drive before stopping again if we need more cans from the
+	// ... same color shelf but have exhausted the last row
+	AsyncHandler.addCallback(driveLoop, 100);
 }
 
-void MotorDrive::updatePIDValues() {
-	addLinePidValues();
-	if (countLeft <= 0 || countRight <= 0) {
-		AsyncHandler.addCallback(&updatePIDValues, 100);
+void MotorDrive::driveLoop() {
+	if (CanIntake::needsMoreCans() || (countLeft <= 0 || countRight <= 0)) {
+		addLinePidValues();
+		AsyncHandler.addCallback(driveLoop, 100);
 	}
+	else {
+		digitalWrite(Pins::drive_door_solenoid, HIGH); // open can holder door
+		//TODO: figure out control transition from here
+		// door takes about 30? seconds to come back up to closed
+	};
 }
 
 void MotorDrive::checkColorSensor() {
 	if (color_reading_in_progress) return;
 	millis_t time_now = millis(); // store to avoid overflow if the times are close
 	if (time_now > disable_color_sensor_until) {
-		has_read_a_color = false;
 		color_reading_in_progress = true;
 		checkColorSensorPhase1();
 	}
 	else {
-		AsyncHandler.addCallback(&checkColorSensor, disable_color_sensor_until - time_now);
-	}
+		AsyncHandler.addCallback(checkColorSensor, disable_color_sensor_until - time_now);
+	};
 
 }
 
@@ -108,11 +107,7 @@ void MotorDrive::checkColorSensorPhase1() {
 	digitalWrite(Pins::drive_rgb_s3, LOW);
 	redFreq = pulseIn(Pins::drive_rgb_sensorOut, LOW);
 	redFreq = map(redFreq, 130, 555, 0, 255);
-	if (redFreq < 50 && (redFreq < redFreq && redFreq < blueFreq)) {
-		has_read_a_color = true;
-		detectedColor = CanType::red;
-	}
-	AsyncHandler.addCallback(&checkColorSensorPhase2, 100);
+	AsyncHandler.addCallback(checkColorSensorPhase2, 100);
 }
 
 void MotorDrive::checkColorSensorPhase2() {
@@ -120,11 +115,7 @@ void MotorDrive::checkColorSensorPhase2() {
 	digitalWrite(Pins::drive_rgb_s3, HIGH);
 	greenFreq = pulseIn(Pins::drive_rgb_sensorOut, LOW);
 	greenFreq = map(greenFreq, 190, 1300, 0, 255);
-	if (greenFreq < 50 && (greenFreq < redFreq && greenFreq < blueFreq)) {
-		has_read_a_color = true;
-		detectedColor = CanType::green;
-	}
-	AsyncHandler.addCallback(&checkColorSensorPhase3, 100);
+	AsyncHandler.addCallback(checkColorSensorPhase3, 100);
 }
 
 void MotorDrive::checkColorSensorPhase3() {
@@ -132,28 +123,40 @@ void MotorDrive::checkColorSensorPhase3() {
 	digitalWrite(Pins::drive_rgb_s3, HIGH);
 	blueFreq = pulseIn(Pins::drive_rgb_sensorOut, LOW);
 	blueFreq = map(blueFreq, 55, 370, 0, 255);
-	if (blueFreq < 50 && (blueFreq < greenFreq && blueFreq < redFreq)) {
-		has_read_a_color = true;
-		detectedColor = CanType::blue;
-	}
 	color_reading_in_progress = false;
 	disable_color_sensor_until = millis() + 100;
-	AsyncHandler.addCallback(&checkSensedColor);
+	AsyncHandler.addCallback(checkSensedColor);
 }
 
 void MotorDrive::checkSensedColor() {
-	if (has_read_a_color && CanIntake::needsMoreCans(detectedColor)) {
-		servoLeft.write(90);
-		servoRight.write(90);
-		updatePIDValues();
-		AsyncHandler.removeCallback(&updatePIDValues);
-		CanIntake::beginCollection(detectedColor);
+	CanType detectedColor;
+	if (blueFreq < 50 && blueFreq < greenFreq && blueFreq < redFreq) {
+		detectedColor = CanType::blue;
+	}
+	else if (greenFreq < 50 && greenFreq < redFreq && greenFreq < blueFreq) {
+		detectedColor = CanType::green;
+	}
+	else if (redFreq < 50 && redFreq < greenFreq && redFreq < blueFreq) {
+		detectedColor = CanType::red;
 	}
 	else {
-		AsyncHandler.addCallback(&checkColorSensor);
-	}
+		AsyncHandler.addCallback(checkColorSensor, 100);
+		return;
+	};
+	// we know we've read a color if we get here
+	if (CanIntake::needsMoreCans(detectedColor)) {
+		stopMovement();
+		CanIntake::beginCollection(detectedColor);
+	};
 }
 
+
+void MotorDrive::stopMovement() {
+	servoLeft.write(90);
+	servoRight.write(90);
+	driveLoop();
+	AsyncHandler.removeCallback(driveLoop);
+}
 //IR PID consts
 
 
@@ -189,16 +192,6 @@ void MotorDrive::addLinePidValues() {
 
 	int outputSpeed = error * kP + integral + derivative;
 
-	// Serial.print(currentPosition);
-	// Serial.print("\t");
-	// Serial.print(error);
-	// Serial.print("\t");
-	// Serial.print(outputSpeed);
-	// Serial.print("\t");
-	// Serial.print(constrain(rightMotorSpeed, 0, 180));
-	// Serial.print("\t");
-	// Serial.print(constrain(leftMotorSpeed, 0, 180));
-	// Serial.print("\n");
 	int leftBaseSpeed, rightBaseSpeed;
 	int leftWrite, rightWrite;
 	if (dir == 1) { //moving forwards

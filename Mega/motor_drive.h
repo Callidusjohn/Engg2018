@@ -12,21 +12,6 @@
 struct MotorDrive {
 
 	static void init();
-	//~MotorDrive();
-
-
-	static void ISRleft();
-	static void ISRright();
-
-	static bool inRange(int val, int minimum, int maximum);
-
-	//implements line following PID and adds values to drive
-	static void addLinePidValues();
-
-	static void checkColorSensor();
-
-	static void updatePIDValues();
-
 	static void driveSomewhere();
 
 private:
@@ -58,11 +43,6 @@ private:
 	//static Metro serialMetro;  // Instantiate an instance
 	//static Metro sensorMetro;
 
-	//will come from sensor
-	static CanType detectedColor;
-
-	//will eventually come from state.
-	static CanType requiredColor;
 
 	//-1 is reverse, 1 is forward
 	static int dir;
@@ -94,7 +74,6 @@ private:
 	static AutoPID leftPID;// = AutoPID(&countLeft, &driveSetPoint, &outputLDrive, OUTPUT_MIN_IR, OUTPUT_MAX_IR, LEFT_KP, LEFT_KI, LEFT_KD);
 	static AutoPID rightPID;// = AutoPID(&countRight, &driveSetPoint, &outputRDrive, OUTPUT_MIN_IR, OUTPUT_MAX_IR, RIGHT_KP, RIGHT_KI, RIGHT_KD);
 
-	static bool has_read_a_color;
 	static bool color_reading_in_progress;
 	static millis_t disable_color_sensor_until;
 
@@ -103,6 +82,19 @@ private:
 	static void checkColorSensorPhase3();
 	static void checkSensedColor();
 
+	static void stopMovement();
+
+	static void ISRleft();
+	static void ISRright();
+
+	static bool inRange(int val, int minimum, int maximum);
+
+	//implements line following PID and adds values to drive
+	static void addLinePidValues();
+
+	static void checkColorSensor();
+
+	static void driveLoop();
 
 };
 

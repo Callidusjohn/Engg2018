@@ -22,7 +22,7 @@ private:
 
 	struct DelayedCallback {
 		millis_t delay_until;
-		void (*callback_function)();
+		void(*callback_function)();
 	} callbacks[delay_buffer_size];
 
 } extern AsyncHandler;

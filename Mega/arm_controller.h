@@ -15,8 +15,6 @@ public:
 private:
 	static int checkCount();
 	static void reset();
-	//static void impl_reset();
-	//static void impl_init();
 	static void extendArm();
 	static void retractArm();
 	static bool is_collecting;

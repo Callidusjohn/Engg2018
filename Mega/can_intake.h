@@ -8,7 +8,7 @@
 struct CanIntake {
 
 	// initializes the internal state object for the arm
-	static void init(const CanQuantities& cans);
+	static void setQuantities(const CanQuantities& cans);
 
 	// true if insufficient cans have been collected
 	static bool needsMoreCans() noexcept;
@@ -25,8 +25,11 @@ struct CanIntake {
 	// checks if the last row the arm fed from was exhausted
 	static bool lastRowExhausted() noexcept;
 
+
 	static uint8_t lastCollectedQuantity() noexcept;
-	
+
+	static void init();
+
 private:
 
 	class ArmController;

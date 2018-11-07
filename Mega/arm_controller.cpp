@@ -27,7 +27,6 @@ void CanIntake::ArmController::beginCollection(uint8_t cans) {
 	reset();
 	quantity_to_collect = cans;
 	is_collecting = true;
-	//auto t = (this->continueCollection);
 	AsyncHandler.addCallback(extendArm, 500); // TODO: determine good delay, probably per arm (meaning this would go in an impl file)
 	// delay could potentially stay zero due to the implementation of the async handler
 }
@@ -141,7 +140,7 @@ namespace Magnets {
 	static UltraSonicSensor sensor = UltraSonicSensor();
 
 	struct MagnetArm {
-		void init() {
+		void setQuantities() {
 			pinMode(Pins::magnet_trigger, OUTPUT);
 			pinMode(Pins::magnet_button, INPUT);
 			digitalWrite(Pins::magnet_trigger, LOW);
@@ -163,7 +162,7 @@ int CanIntake::ArmController::checkCount() {
 }
 
 void impl_init() {
-	MagnetArm::sensor.init();
+	MagnetArm::sensor.setQuantities();
 }
 
 void impl_reset() {

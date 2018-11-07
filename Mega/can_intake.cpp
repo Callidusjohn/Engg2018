@@ -5,7 +5,11 @@
 CanQuantities CanIntake::remainingCans = { 0, 0, 0 };
 CanType CanIntake::currentlyCollecting;
 
-void CanIntake::init(const CanQuantities& cans) {
+void CanIntake::init() {
+	ArmController::init();
+}
+
+void CanIntake::setQuantities(const CanQuantities& cans) {
 	if (isCollecting()) {
 		return;
 		//TODO: log error here in debug if we end up doing logging

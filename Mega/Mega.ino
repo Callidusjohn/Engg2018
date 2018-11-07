@@ -16,20 +16,21 @@
  * as efficient as a namespace but in general will use more memory and storage.
  */
 
-// The setup() function runs once each time the micro-controller starts
+ // The setup() function runs once each time the micro-controller starts
 void setup() {
 	// initialize here
 
 	// call AsyncHandler.addCallback(&function, delay) here to register your initial execution
 	// each function may only have ONE delayed callback registered at a time
 	// called functions can register other functions and themselves
-	//AsyncHandler.addCallback(&MotorDrive::updatePIDValues);
+	//AsyncHandler.addCallback(&MotorDrive::driveLoop);
 	BluetoothMega::init();
 	MotorDrive::init();
+	CanIntake::init();
 	//bluetooth added first
 	// bluetooth inits CanIntake
 	// bluetooth adds MotorDrive callback
-	//	motor driveSomewhere() registers a callback for updatePIDValues which drives
+	//	motor driveSomewhere() registers a callback for driveLoop which drives
 	//  when motor gets to somewhere, adds callback for CanIntake
 	AsyncHandler.addCallback(BluetoothMega::loopHook);
 }

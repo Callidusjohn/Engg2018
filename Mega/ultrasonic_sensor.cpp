@@ -3,10 +3,6 @@
 #include <Chrono.h>
 #include "shared_utils.h"
 
-UltraSonicSensor::UltraSonicSensor() : chrono(Chrono::MILLIS) {
-
-}
-
 void UltraSonicSensor::init() {
 	chrono.start();
 	pinMode(Pins::ultrasonic_echo, INPUT);

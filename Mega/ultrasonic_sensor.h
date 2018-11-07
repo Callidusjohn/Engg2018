@@ -6,9 +6,7 @@
 struct UltraSonicSensor {
 public:
 
-	UltraSonicSensor();
 	void init();
-	int checkDistance(); // Maybe
 	int sample();
 	void reset();
 
@@ -23,6 +21,6 @@ private:
 	bool ascending = true;
 	Chrono::chrono_t delay_until;
 
-	Chrono chrono;
+	Chrono chrono = Chrono(Chrono::MILLIS);
 };
 #endif

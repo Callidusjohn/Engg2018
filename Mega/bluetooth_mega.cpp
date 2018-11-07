@@ -27,7 +27,7 @@ void BluetoothMega::loopHook() {
 			Serial.print("Blue cans: ");
 			Serial.println(cans.blue);
 
-			//CanIntake::init(cans);
+			//CanIntake::setQuantities(cans);
 			//AsyncHandler.addCallback(MotorDrive::driveSomewhere);
 		}
 	}
@@ -42,9 +42,10 @@ void BluetoothMega::init() {
 	Serial.print("Uploaded: ");
 	Serial.println(__DATE__);
 	Serial.println(" ");
-
-	// Serial2.write("AT+ROLE0");
-	// Serial2.write("AT+COND43639D8AE8A"); // Uno address: D43639D8AE8A
+	if (!(Serial2.available() || Serial2.availableForWrite())) {
+		Serial2.write("AT+ROLE0");
+		Serial2.write("AT+COND43639D8AE8A"); // Uno address: D43639D8AE8A
+	}
 	Serial.println("Arduino Mega: Bluetooth Serial started at 9600 Baud.");
 	Serial2.print(encryptData("Connection to Mega has been established."));
 }
