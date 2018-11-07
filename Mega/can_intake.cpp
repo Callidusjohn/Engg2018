@@ -13,10 +13,8 @@ void CanIntake::setQuantities(const CanQuantities& cans) {
 	if (isCollecting()) {
 		return;
 		//TODO: log error here in debug if we end up doing logging
-	}
-	else {
-		remainingCans = cans;
-	}
+	};
+	remainingCans = cans;
 }
 
 bool CanIntake::needsMoreCans() noexcept {
