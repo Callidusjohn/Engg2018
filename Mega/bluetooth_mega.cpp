@@ -73,7 +73,7 @@ String BluetoothMega::getData() {
 void BluetoothMega::transmitToUno(String data) {
 	data = addChecksum(data);
 	data = encryptData(data);
-	for (int i = 0; i < data.length(); i++) {
+	for (size_t i = 0; i < data.length(); i++) {
 		Serial2.write(data[i]);
 	};
 }
@@ -91,7 +91,7 @@ CanQuantities BluetoothMega::inputData(const String& temp) {
 // any chars should only be uppercase
 String BluetoothMega::encryptData(String data) {
 	String ROT18Msg = data;
-	for (int i = 0; i < data.length(); i++) {
+	for (size_t i = 0; i < data.length(); i++) {
 		// NOTE: assume upper case; message[i] = toupper(message[i]);
 		char c = data[i];
 		if (c > 47 && c < 58) {
@@ -114,7 +114,7 @@ String BluetoothMega::encryptData(String data) {
 String BluetoothMega::addChecksum(String message) {
 	int sum = 0;
 	String sumChar = "1";
-	for (int i = 0; i < message.length(); i++) {
+	for (size_t i = 0; i < message.length(); i++) {
 		char c = message[i];
 		sum += c % 2;
 	}

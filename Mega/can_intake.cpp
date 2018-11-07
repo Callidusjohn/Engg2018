@@ -2,7 +2,7 @@
 #include "arm_controller.h"
 
 //CanIntake::ArmController CanIntake::armController = ArmController();
-CanQuantities CanIntake::remainingCans = { 0, 0, 0 };
+CanQuantities CanIntake::remainingCans;// = { 0, 0, 0 };
 CanType CanIntake::currentlyCollecting;
 
 void CanIntake::init() {
