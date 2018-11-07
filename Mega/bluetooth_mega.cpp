@@ -12,13 +12,13 @@ void BluetoothMega::loopHook() {
 	if (Serial2.available()) {
 		String data = getData();
 		Serial.print("\n");
-		Serial.print("Message: ");
-		Serial.println(data);
+		Serial.print("Data received: ");
+		Serial.print(data);
 		if (data[0] == '0') {
 			CanQuantities cans;
 			cans = inputData(data);
 			Serial.print("\n");
-			Serial.print("Message: ");
+			Serial.print("Whole message: ");
 			Serial.println(data);
 			Serial.print("Red cans: ");
 			Serial.println(cans.red);
@@ -29,6 +29,9 @@ void BluetoothMega::loopHook() {
 
 			//CanIntake::init(cans);
 			//AsyncHandler.addCallback(MotorDrive::driveSomewhere);
+		} else {
+			String data = getData();
+			Serial.println(data);
 		}
 	}
 	AsyncHandler.addCallback(BluetoothMega::loopHook, 100);
@@ -46,7 +49,7 @@ void BluetoothMega::init() {
 	// Serial2.write("AT+ROLE0");
 	// Serial2.write("AT+COND43639D8AE8A"); // Uno address: D43639D8AE8A
 	Serial.println("Arduino Mega: Bluetooth Serial started at 9600 Baud.");
-	Serial2.print(encryptData("Connection to Mega has been established."));
+	//Serial2.print(encryptData("Connection to Mega has been established."));
 }
 
 String BluetoothMega::getData() {
@@ -59,7 +62,8 @@ String BluetoothMega::getData() {
 		};
 		temp = encryptData(temp);
 		if (!calcChecksum(temp)) {
-			return "Checksum incorrect."; // fix this to be error code
+			Serial.println("Something is " + temp);
+			return temp; // fix this to be error code
 		};
 	};
 	return temp;
