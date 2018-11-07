@@ -25,7 +25,6 @@ struct CanIntake {
 	// checks if the last row the arm fed from was exhausted
 	static bool lastRowExhausted() noexcept;
 
-
 	static uint8_t lastCollectedQuantity() noexcept;
 
 	static void init();

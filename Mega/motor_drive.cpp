@@ -17,6 +17,9 @@ double MotorDrive::inputIR, MotorDrive::setPointIR, MotorDrive::outputFromIR;
 double MotorDrive::driveSetPoint;
 
 
+bool MotorDrive::is_driving = false;
+bool MotorDrive::trip_in_progress = false;
+
 
 //rgb stuff
 int MotorDrive::frequency, MotorDrive::redFreq, MotorDrive::greenFreq, MotorDrive::blueFreq;
@@ -43,6 +46,14 @@ void MotorDrive::init() {
 	digitalWrite(Pins::drive_door_solenoid, LOW); // lock the door
 }
 
+bool MotorDrive::isDriving() noexcept {
+	return is_driving;
+}
+
+bool MotorDrive::tripInProgress() noexcept {
+	return trip_in_progress;
+}
+
 void MotorDrive::ISRleft() {
 	if (digitalRead(Pins::drive_ir_leftSensor) == LOW) {
 		countLeft = countLeft + 1;
@@ -65,6 +76,7 @@ bool MotorDrive::inRange(int val, int minimum, int maximum) {
 }
 
 void MotorDrive::driveSomewhere() {
+	trip_in_progress = true;
 	if (CanIntake::needsMoreCans()) {
 		dir = 1;
 		AsyncHandler.addCallback(checkColorSensor);
@@ -79,13 +91,16 @@ void MotorDrive::driveSomewhere() {
 
 void MotorDrive::driveLoop() {
 	if (CanIntake::needsMoreCans() || (countLeft <= 0 || countRight <= 0)) {
+		is_driving = true;
 		addLinePidValues();
 		AsyncHandler.addCallback(driveLoop, 100);
 	}
 	else {
+		stopMovement();
 		digitalWrite(Pins::drive_door_solenoid, HIGH); // open can holder door
 		//TODO: figure out control transition from here
 		// door takes about 30? seconds to come back up to closed
+		trip_in_progress = false;
 	};
 }
 
@@ -152,9 +167,10 @@ void MotorDrive::checkSensedColor() {
 
 
 void MotorDrive::stopMovement() {
+	is_driving = false;
 	servoLeft.write(90);
 	servoRight.write(90);
-	driveLoop();
+	addLinePidValues();
 	AsyncHandler.removeCallback(driveLoop);
 }
 //IR PID consts

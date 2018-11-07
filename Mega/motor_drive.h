@@ -13,6 +13,8 @@ struct MotorDrive {
 
 	static void init();
 	static void driveSomewhere();
+	static bool isDriving() noexcept;
+	static bool tripInProgress() noexcept;
 
 private:
 	//main PID consts
@@ -62,6 +64,9 @@ private:
 	//rgb stuff
 	static int frequency, redFreq, greenFreq, blueFreq;
 	static bool sensorRed, sensorGreen, sensorBlue;
+
+	static bool is_driving;
+	static bool trip_in_progress;
 
 	// servos
 	static Servo servoLeft;
