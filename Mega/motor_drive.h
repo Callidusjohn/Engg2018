@@ -67,7 +67,7 @@ private:
 	//-1 is reverse, 1 is forward
 	static int dir;
 
-	static int targetPos;
+	static int targetDistance;
 
 	//IR PID
 	static double irRightAddition, irLeftAddition, driveLeftPidOutput, driveRightPidOutput;
