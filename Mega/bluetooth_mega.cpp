@@ -26,9 +26,10 @@ void BluetoothMega::loopHook() {
 			Serial.println(cans.green);
 			Serial.print("Blue cans: ");
 			Serial.println(cans.blue);
-			if(!CanIntake::needsMoreCans() && !MotorDrive::tripInProgress())
-			CanIntake::setQuantities(cans);
-			AsyncHandler.addCallback(MotorDrive::driveSomewhere);
+			if (!CanIntake::needsMoreCans() && !MotorDrive::tripInProgress()) {
+				CanIntake::setQuantities(cans);
+				AsyncHandler.addCallback(MotorDrive::driveSomewhere);
+			}
 		};
 	};
 	AsyncHandler.addCallback(BluetoothMega::loopHook, 100);

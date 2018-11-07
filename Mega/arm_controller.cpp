@@ -27,6 +27,7 @@ void CanIntake::ArmController::reset() {
 }
 
 void CanIntake::ArmController::beginCollection(uint8_t cans) {
+	Serial.println("Arm going");
 	reset();
 	quantity_to_collect = cans;
 	is_collecting = true;
@@ -63,13 +64,14 @@ void CanIntake::ArmController::init() {
 	pinMode(Pins::arm_motor_stepper, OUTPUT);
 	pinMode(Pins::arm_motor_direction, OUTPUT);
 	pinMode(Pins::arm_limit_button, INPUT_PULLUP);
-	pinMode(Pins::arm_start_button, INPUT_PULLUP);
+	//pinMode(Pins::arm_start_button, INPUT_PULLUP);
 	impl_init();
 
 }
 
 
 int motorOneRevExt() {
+	//Serial.println("Extending by one revolution");
 	digitalWrite(Pins::arm_motor_direction, LOW); // Sets direction of rotation to EXTEND the arm
 	// Sends a Square Wave to the stepper pin, where for period results in a step
 	// on the motor
@@ -84,6 +86,7 @@ int motorOneRevExt() {
 }
 
 int motorOneRevRetract() {
+	//Serial.println("Retracting by one revolution");
 	digitalWrite(Pins::arm_motor_direction, HIGH); // Sets direction of rotation to RETRACT the arm
 	// Sends a Square Wave to the stepper pin, where for period results in a step
 	// on the motor
@@ -102,6 +105,7 @@ inline bool checkLimitButton() {
 
 void CanIntake::ArmController::extendArm() {
 	//delay(500);
+	//Serial.println("Trying to extend arm");
 	if (!impl_shouldRetract() && current_revolutions < revolutions_to_end) {
 		motorOneRevExt();
 		AsyncHandler.addCallback(extendArm);
@@ -114,6 +118,7 @@ void CanIntake::ArmController::extendArm() {
 }
 
 void CanIntake::ArmController::retractArm() {
+	//Serial.println("Trying to retract arm");
 	if (current_revolutions > 0) {
 		motorOneRevRetract();
 		AsyncHandler.addCallback(retractArm);
@@ -163,8 +168,8 @@ void CanIntake::ArmController::impl_reset() {
 bool CanIntake::ArmController::impl_shouldRetract() {
 	int count = checkCount();
 	bool limit_triggered = checkLimitButton();
-	if (limit_triggered || count >= maxCount || count == quantity_to_collect || count > can_count) {
-		can_count = count;
+	if (limit_triggered || count >= maxCount || count == quantity_to_collect || count > MagnetArm::can_count) {
+		MagnetArm::can_count = count;
 		return true;
 	}
 	return false;
@@ -173,11 +178,11 @@ bool CanIntake::ArmController::impl_shouldRetract() {
 void CanIntake::ArmController::impl_beforeRetracting() {
 	bool limit_triggered = checkLimitButton();
 	last_row_exhausted = limit_triggered || checkCount() >= maxCount;
-	toggleMagnets(limit_triggered);
+	MagnetArm::toggleMagnets(limit_triggered);
 }
 
 void CanIntake::ArmController::impl_afterRetracting() {
-	toggleMagnets(false);
+	MagnetArm::toggleMagnets(false);
 	if (checkCount() < quantity_to_collect && !last_row_exhausted) {
 		AsyncHandler.addCallback(extendArm, 500);
 	}

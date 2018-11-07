@@ -35,7 +35,7 @@ millis_t MotorDrive::disable_color_sensor_until;
 
 void MotorDrive::init() {
 	pinMode(Pins::drive_door_solenoid, OUTPUT); // setup the solenoid
-	pinMode(Pins::drive_door_switch, OUTPUT); // switch for something
+	pinMode(Pins::drive_door_switch, INPUT); // switch for something
 	driveSetPoint = targetDistance;
 	attachInterrupt(digitalPinToInterrupt(Pins::drive_ir_leftInterrupt), ISRleft, RISING);
 	attachInterrupt(digitalPinToInterrupt(Pins::drive_ir_rightInterrupt), ISRright, RISING);
@@ -44,7 +44,8 @@ void MotorDrive::init() {
 	pinMode(Pins::drive_rgb_s3, INPUT);//pinMode(6, INPUT); //enable pin
 	servoLeft.attach(Pins::drive_motor_left);  // attaches the servo on pin 9 to the servo object
 	servoRight.attach(Pins::drive_motor_right);  // attaches the servo on pin 9 to the servo object
-	digitalWrite(Pins::drive_door_solenoid, LOW); // lock the door
+	digitalWrite(Pins::drive_door_solenoid, HIGH); // lock the door
+	digitalWrite(Pins::drive_door_solenoid, HIGH); // lock the door
 }
 
 bool MotorDrive::isDriving() noexcept {
@@ -93,7 +94,8 @@ void MotorDrive::driveSomewhere() {
 
 void monitorDoorSwitchState() {
 	if (digitalRead(Pins::drive_door_switch) == LOW) {
-		digitalWrite(Pins::drive_door_solenoid, LOW);
+		digitalWrite(Pins::drive_door_solenoid, HIGH);
+		digitalWrite(Pins::drive_door_solenoid, HIGH);
 	}
 	else {
 		AsyncHandler.addCallback(monitorDoorSwitchState);
@@ -101,15 +103,15 @@ void monitorDoorSwitchState() {
 }
 
 void MotorDrive::driveLoop() {
-	if (CanIntake::needsMoreCans() || (countLeft <= 0 || countRight <= 0)) {
+	if (CanIntake::needsMoreCans() || (countLeft > 0 || countRight > 0)) {
 		is_driving = true;
 		addLinePidValues();
 		AsyncHandler.addCallback(driveLoop, 100);
 	}
 	else {
 		stopMovement();
-		digitalWrite(Pins::drive_door_solenoid, HIGH); // open can holder door
-		digitalWrite(Pins::drive_door_switch, HIGH);
+		digitalWrite(Pins::drive_door_solenoid, LOW); // open can holder door
+		//digitalWrite(Pins::drive_door_switch, HIGH);
 		AsyncHandler.addCallback(monitorDoorSwitchState, 10);
 		//TODO: figure out control transition from here
 		// door takes about 30? seconds to come back up to closed
@@ -175,6 +177,7 @@ void MotorDrive::checkSensedColor() {
 	};
 	// we know we've read a color if we get here
 	if (CanIntake::needsMoreCans(detectedColor)) {
+		Serial.println("Stopping movement due to sensed color");
 		stopMovement();
 		CanIntake::beginCollection(detectedColor);
 	};
@@ -185,7 +188,7 @@ void MotorDrive::stopMovement() {
 	is_driving = false;
 	servoLeft.write(90);
 	servoRight.write(90);
-	addLinePidValues();
+	//addLinePidValues();
 	AsyncHandler.removeCallback(driveLoop);
 }
 //IR PID consts
@@ -226,8 +229,9 @@ void MotorDrive::addLinePidValues() {
 	int leftBaseSpeed, rightBaseSpeed;
 	int leftWrite, rightWrite;
 	if (dir == 1) { //moving forwards
-		leftBaseSpeed = 75;
-		rightBaseSpeed = 105;
+		int adjustment = 0;
+		leftBaseSpeed = 75 - adjustment;
+		rightBaseSpeed = 105 + adjustment * 2;
 		leftWrite = constrain(leftBaseSpeed - outputSpeed, 0, 80);
 		rightWrite = constrain(rightBaseSpeed - outputSpeed, 100, 180);
 	}

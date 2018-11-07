@@ -1,4 +1,4 @@
-#define USE_MAGNET_ARM true
+#define USE_MAGNET_ARM false
 #include <Servo.h>
 #include <Chrono.h>
 #include <AutoPID.h>
@@ -27,12 +27,17 @@ void setup() {
 	BluetoothMega::init();
 	MotorDrive::init();
 	CanIntake::init();
+
+
 	//bluetooth added first
 	// bluetooth inits CanIntake
 	// bluetooth adds MotorDrive callback
 	//	motor driveSomewhere() registers a callback for driveLoop which drives
 	//  when motor gets to somewhere, adds callback for CanIntake
 	AsyncHandler.addCallback(BluetoothMega::loopHook);
+	//CanQuantities cans = { 1, 0, 0 };
+	//CanIntake::setQuantities(cans);
+	//CanIntake::beginCollection(CanType::red);
 }
 
 // Add the main program code into the continuous loop() function
