@@ -14,6 +14,11 @@ public:
 	static uint8_t lastCollectedQuantity() noexcept;
 private:
 	static int checkCount();
+	static bool impl_shouldRetract();
+	static void impl_init();
+	static void impl_reset();
+	static void impl_beforeRetracting();
+	static void impl_afterRetracting();
 	static void reset();
 	static void extendArm();
 	static void retractArm();

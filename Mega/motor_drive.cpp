@@ -35,6 +35,7 @@ millis_t MotorDrive::disable_color_sensor_until;
 
 void MotorDrive::init() {
 	pinMode(Pins::drive_door_solenoid, OUTPUT); // setup the solenoid
+	pinMode(Pins::drive_door_switch, OUTPUT); // switch for something
 	driveSetPoint = targetDistance;
 	attachInterrupt(digitalPinToInterrupt(Pins::drive_ir_leftInterrupt), ISRleft, RISING);
 	attachInterrupt(digitalPinToInterrupt(Pins::drive_ir_rightInterrupt), ISRright, RISING);
@@ -90,6 +91,15 @@ void MotorDrive::driveSomewhere() {
 	AsyncHandler.addCallback(driveLoop, 100);
 }
 
+void monitorDoorSwitchState() {
+	if (digitalRead(Pins::drive_door_switch) == LOW) {
+		digitalWrite(Pins::drive_door_solenoid, LOW);
+	}
+	else {
+		AsyncHandler.addCallback(monitorDoorSwitchState);
+	}
+}
+
 void MotorDrive::driveLoop() {
 	if (CanIntake::needsMoreCans() || (countLeft <= 0 || countRight <= 0)) {
 		is_driving = true;
@@ -99,11 +109,15 @@ void MotorDrive::driveLoop() {
 	else {
 		stopMovement();
 		digitalWrite(Pins::drive_door_solenoid, HIGH); // open can holder door
+		digitalWrite(Pins::drive_door_switch, HIGH);
+		AsyncHandler.addCallback(monitorDoorSwitchState, 10);
 		//TODO: figure out control transition from here
 		// door takes about 30? seconds to come back up to closed
 		trip_in_progress = false;
 	};
 }
+
+
 
 void MotorDrive::checkColorSensor() {
 	if (color_reading_in_progress) return;

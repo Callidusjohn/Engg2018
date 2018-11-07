@@ -35,6 +35,7 @@ enum Pins : uint8_t { // not the *best* way to manage these, but it is simple an
 	drive_motor_left = 2,
 	drive_motor_right = 3,
 	drive_door_solenoid = 6,
+	drive_door_switch = 42,
 };
 
 #endif

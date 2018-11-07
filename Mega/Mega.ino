@@ -1,4 +1,4 @@
-#define USE_MAGNET_ARM false
+#define USE_MAGNET_ARM true
 #include <Servo.h>
 #include <Chrono.h>
 #include <AutoPID.h>
