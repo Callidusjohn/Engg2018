@@ -11,6 +11,8 @@ enum CanType : char {
 	red, green, blue
 };
 
+
+
 typedef struct CanQuantities {
 	uint8_t red;
 	uint8_t green;

@@ -8,7 +8,7 @@ double MotorDrive::countRight = 0;
 //
 int MotorDrive::dir = 1;
 
-int MotorDrive::targetPos = 1000;
+int MotorDrive::targetDistance = 1000; // in revolutions
 
 double MotorDrive::irRightAddition, MotorDrive::irLeftAddition, MotorDrive::driveLeftPidOutput, MotorDrive::driveRightPidOutput;
 double MotorDrive::inputIR, MotorDrive::setPointIR, MotorDrive::outputFromIR;
@@ -27,7 +27,7 @@ CanType MotorDrive::detectedColor;
 
 //rgb stuff
 int MotorDrive::frequency, MotorDrive::redFreq, MotorDrive::greenFreq, MotorDrive::blueFreq;
-bool MotorDrive::sensorRed, MotorDrive::sensorGreen, MotorDrive::sensorBlue;
+//bool MotorDrive::sensorRed, MotorDrive::sensorGreen, MotorDrive::sensorBlue;
 
 // servos
 Servo MotorDrive::servoLeft;
@@ -40,7 +40,7 @@ bool MotorDrive::color_reading_in_progress;
 millis_t MotorDrive::disable_color_sensor_until;
 
 void MotorDrive::init() {
-	driveSetPoint = targetPos;
+	driveSetPoint = targetDistance;
 	attachInterrupt(digitalPinToInterrupt(Pins::drive_ir_leftInterrupt), ISRleft, RISING);
 	attachInterrupt(digitalPinToInterrupt(Pins::drive_ir_rightInterrupt), ISRright, RISING);
 	pinMode(Pins::drive_ir_leftSensor, INPUT); // 18 and 22 come from left
@@ -93,6 +93,7 @@ void MotorDrive::checkColorSensor() {
 	if (color_reading_in_progress) return;
 	millis_t time_now = millis(); // store to avoid overflow if the times are close
 	if (time_now > disable_color_sensor_until) {
+		has_read_a_color = false;
 		color_reading_in_progress = true;
 		checkColorSensorPhase1();
 	}
@@ -108,9 +109,7 @@ void MotorDrive::checkColorSensorPhase1() {
 	redFreq = pulseIn(Pins::drive_rgb_sensorOut, LOW);
 	redFreq = map(redFreq, 130, 555, 0, 255);
 	if (redFreq < 50 && (redFreq < redFreq && redFreq < blueFreq)) {
-		sensorRed = true;
-		sensorBlue = false;
-		sensorGreen = false;
+		has_read_a_color = true;
 		detectedColor = CanType::red;
 	}
 	AsyncHandler.addCallback(&checkColorSensorPhase2, 100);
@@ -122,9 +121,7 @@ void MotorDrive::checkColorSensorPhase2() {
 	greenFreq = pulseIn(Pins::drive_rgb_sensorOut, LOW);
 	greenFreq = map(greenFreq, 190, 1300, 0, 255);
 	if (greenFreq < 50 && (greenFreq < redFreq && greenFreq < blueFreq)) {
-		sensorGreen = true;
-		sensorBlue = false;
-		sensorRed = false;
+		has_read_a_color = true;
 		detectedColor = CanType::green;
 	}
 	AsyncHandler.addCallback(&checkColorSensorPhase3, 100);
@@ -136,12 +133,9 @@ void MotorDrive::checkColorSensorPhase3() {
 	blueFreq = pulseIn(Pins::drive_rgb_sensorOut, LOW);
 	blueFreq = map(blueFreq, 55, 370, 0, 255);
 	if (blueFreq < 50 && (blueFreq < greenFreq && blueFreq < redFreq)) {
-		sensorBlue = true;
-		sensorGreen = false;
-		sensorRed = false;
+		has_read_a_color = true;
 		detectedColor = CanType::blue;
 	}
-	has_read_a_color = sensorRed || sensorGreen || sensorBlue;
 	color_reading_in_progress = false;
 	disable_color_sensor_until = millis() + 100;
 	AsyncHandler.addCallback(&checkSensedColor);
@@ -165,15 +159,13 @@ void MotorDrive::checkSensedColor() {
 
 //implements line following PID and adds values to drive
 void MotorDrive::addLinePidValues() {
-	static constexpr int whiteTape = 863, whiteTapeFwd = 563, whiteTapeRwd = 570;
-	static constexpr int blackTape = 1000, blackTapeFwd = 981, blackTapeRwd = 970;
+	static constexpr int whiteTapeFwd = 563, whiteTapeRwd = 570;
+	static constexpr int blackTapeFwd = 981, blackTapeRwd = 970;
 	static constexpr double iZone = 10, kP = 0.02, kI = 0.0, kD = 0.0;
-	static int leftBaseSpeed = 140, rightBaseSpeed = 140;
-	static int currentPosition;
 	static double previousError = 0;
-	static int mapLower = 90, mapUpper = 90;
 
-	int targetPosition = (blackTape + whiteTape) / 2;
+	//int targetPosition = (blackTape + whiteTape) / 2;
+	int targetPosition, currentPosition;
 	if (dir == 1) { //checks which sensor to read and prepares the mapping values accordingly
 		currentPosition = analogRead(Pins::drive_forward_sensor);
 		targetPosition = (blackTapeFwd + whiteTapeFwd) / 2;
@@ -207,6 +199,7 @@ void MotorDrive::addLinePidValues() {
 	// Serial.print("\t");
 	// Serial.print(constrain(leftMotorSpeed, 0, 180));
 	// Serial.print("\n");
+	int leftBaseSpeed, rightBaseSpeed;
 	int leftWrite, rightWrite;
 	if (dir == 1) { //moving forwards
 		leftBaseSpeed = 75;
