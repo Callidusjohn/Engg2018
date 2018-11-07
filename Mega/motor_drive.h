@@ -11,6 +11,25 @@
 
 struct MotorDrive {
 
+	static void init();
+	//~MotorDrive();
+
+
+	static void ISRleft();
+	static void ISRright();
+
+	static bool inRange(int val, int minimum, int maximum);
+
+	//implements line following PID and adds values to drive
+	static void addLinePidValues();
+
+	static void checkColorSensor();
+
+	static void updatePIDValues();
+
+	static void driveSomewhere();
+
+private:
 	//main PID consts
 	static constexpr auto OUTPUT_MIN_IR = 0;
 	static constexpr auto OUTPUT_MAX_IR = 180;
@@ -27,11 +46,11 @@ struct MotorDrive {
 	static constexpr auto LEFT_KD = 0.0;
 
 	//rgb sensor
-	//static constexpr auto S0 = 4;
-	//static constexpr auto S1 = 5;
-	//static constexpr auto S2 = 6;
-	//static constexpr auto S3 = 7;
-	//static constexpr auto sensorOut = 8;
+//static constexpr auto S0 = 4;
+//static constexpr auto S1 = 5;
+//static constexpr auto S2 = 6;
+//static constexpr auto S3 = 7;
+//static constexpr auto sensorOut = 8;
 
 	static double countLeft;
 	static double countRight;
@@ -75,73 +94,6 @@ struct MotorDrive {
 	static AutoPID leftPID;// = AutoPID(&countLeft, &driveSetPoint, &outputLDrive, OUTPUT_MIN_IR, OUTPUT_MAX_IR, LEFT_KP, LEFT_KI, LEFT_KD);
 	static AutoPID rightPID;// = AutoPID(&countRight, &driveSetPoint, &outputRDrive, OUTPUT_MIN_IR, OUTPUT_MAX_IR, RIGHT_KP, RIGHT_KI, RIGHT_KD);
 
-	MotorDrive();
-	//~MotorDrive();
-
-
-	static void ISRleft();
-	static void ISRright();
-
-	static bool inRange(int val, int minimum, int maximum);
-
-	static void addLeftPidValues();
-	static void addRightPidValues();
-
-	//implements line following PID and adds values to drive
-	static void addLinePidValues(int dir);
-
-	static void requestColor(CanType canColor);
-
-	static void checkColorSensor();
-
-	static void updatePIDValues();
-
-	static void driveSomewhere();
-
-	//static void loop() {
-
-	//	if (true) { // put your main code here, to run repeatedly:
-	//		if (true) { //moveCommandFromStateIsTrue
-
-	//		  //will come from state, 1,2,3 r,g,b
-	//			int colourRequest = colour;
-	//			if (colour == 0 && (countLeft > 0 || countRight > 0)) { // go back because we have everything
-	//				dir = -1;
-	//			}
-	//			else {
-	//				dir = 1;
-	//			}
-
-	//			checkColorSensor();
-
-	//			if (colourRequest == detectedColour) {
-	//				servoLeft.write(90);
-	//				servoRight.write(90);
-	//				return;
-	//			} 
-
-	//			//every 100 millis
-	//			if (sensorMetro.check() == 1) {
-	//				Serial.print("every100millis");
-	//				addLeftPidValues();
-	//				addRightPidValues();
-	//				addLinePidValues(dir);
-	//				servoLeft.write(constrain(throttleLeft, 0, 180) * dir);
-	//				servoRight.write(constrain(throttleRight, 0, 180) * dir);
-	//			}
-
-
-
-	//		}
-
-	//	}
-	//	else { //power off stop robot
-	//		servoLeft.write(90);
-	//		servoRight.write(90);
-	//	}
-	//}
-
-private:
 	static bool has_read_a_color;
 	static bool color_reading_in_progress;
 	static millis_t disable_color_sensor_until;
@@ -150,6 +102,8 @@ private:
 	static void checkColorSensorPhase2();
 	static void checkColorSensorPhase3();
 	static void checkSensedColor();
-} extern MotorDrive;
+
+
+};
 
 #endif

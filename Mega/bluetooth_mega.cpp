@@ -50,8 +50,8 @@ void BluetoothMega::init() {
 }
 
 String BluetoothMega::getData() {
+	String temp = "";
 	if (Serial2.available()) {
-		String temp = "";
 		while (Serial2.available()) {
 			delay(100);
 			char c = Serial2.read();
@@ -60,8 +60,8 @@ String BluetoothMega::getData() {
 		temp = encryptData(temp);
 		if (!calcChecksum(temp)) {
 			return "Error"; // fix this to be error code
-		}
-	}
+		};
+	};
 	return temp;
 }
 

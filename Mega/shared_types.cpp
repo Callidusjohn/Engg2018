@@ -6,6 +6,6 @@ uint8_t& CanQuantities::quantityOf(CanType type) noexcept {
 	case CanType::red: return this->red;
 	case CanType::green: return this->green;
 	case CanType::blue: return this->blue;
-		//definite error otherwise
+	default:return this->blue; // will never happen, but prevents warnings
 	};
 }
