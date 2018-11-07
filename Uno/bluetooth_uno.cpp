@@ -18,10 +18,10 @@ void BluetoothUno::initiateConnToMega() {
 	Serial.println(" ");
 
 	BTSerial.begin(9600);
-	BTSerial.write("AT+ROLE1");
-	BTSerial.write("AT+COND43639D8A14C"); // Mega address: D43639D8A14C
+	//BTSerial.write("AT+ROLE1");
+	//BTSerial.write("AT+COND43639D8A14C"); // Mega address: D43639D8A14C
 	Serial.println("Arduino Uno: Bluetooth Serial started at 9600 Baud.");
-	BTSerial.print(calcChecksum(encryptData("Connection to Uno has been established.")));
+	//transmitToMega("Connection to Uno has been established.");
 }
 
 String BluetoothUno::getData() {

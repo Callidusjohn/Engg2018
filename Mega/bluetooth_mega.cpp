@@ -12,13 +12,13 @@ void BluetoothMega::loopHook() {
 	if (Serial2.available()) {
 		String data = getData();
 		Serial.print("\n");
-		Serial.print("Message: ");
-		Serial.println(data);
+		Serial.print("Data received: ");
+		Serial.print(data);
 		if (data[0] == '0') {
 			CanQuantities cans;
 			cans = inputData(data);
 			Serial.print("\n");
-			Serial.print("Message: ");
+			Serial.print("Whole message: ");
 			Serial.println(data);
 			Serial.print("Red cans: ");
 			Serial.println(cans.red);
@@ -29,6 +29,9 @@ void BluetoothMega::loopHook() {
 
 			//CanIntake::setQuantities(cans);
 			//AsyncHandler.addCallback(MotorDrive::driveSomewhere);
+		} else {
+			String data = getData();
+			Serial.println(data);
 		}
 	}
 	AsyncHandler.addCallback(BluetoothMega::loopHook, 100);
@@ -47,7 +50,7 @@ void BluetoothMega::init() {
 		Serial2.write("AT+COND43639D8AE8A"); // Uno address: D43639D8AE8A
 	}
 	Serial.println("Arduino Mega: Bluetooth Serial started at 9600 Baud.");
-	Serial2.print(encryptData("Connection to Mega has been established."));
+	//Serial2.print(encryptData("Connection to Mega has been established."));
 }
 
 String BluetoothMega::getData() {
@@ -60,7 +63,8 @@ String BluetoothMega::getData() {
 		};
 		temp = encryptData(temp);
 		if (!calcChecksum(temp)) {
-			return "Checksum incorrect."; // fix this to be error code
+			Serial.println("Something is " + temp);
+			return temp; // fix this to be error code
 		};
 	};
 	return temp;
@@ -69,7 +73,7 @@ String BluetoothMega::getData() {
 void BluetoothMega::transmitToUno(String data) {
 	data = addChecksum(data);
 	data = encryptData(data);
-	for (size_t i = 0; i < data.length(); i++) {
+	for (int i = 0; i < data.length(); i++) {
 		Serial2.write(data[i]);
 	};
 }
@@ -87,7 +91,7 @@ CanQuantities BluetoothMega::inputData(const String& temp) {
 // any chars should only be uppercase
 String BluetoothMega::encryptData(String data) {
 	String ROT18Msg = data;
-	for (size_t i = 0; i < data.length(); i++) {
+	for (int i = 0; i < data.length(); i++) {
 		// NOTE: assume upper case; message[i] = toupper(message[i]);
 		char c = data[i];
 		if (c > 47 && c < 58) {
@@ -110,7 +114,7 @@ String BluetoothMega::encryptData(String data) {
 String BluetoothMega::addChecksum(String message) {
 	int sum = 0;
 	String sumChar = "1";
-	for (size_t i = 0; i < message.length(); i++) {
+	for (int i = 0; i < message.length(); i++) {
 		char c = message[i];
 		sum += c % 2;
 	}
