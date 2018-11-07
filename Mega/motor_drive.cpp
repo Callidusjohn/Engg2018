@@ -86,6 +86,7 @@ void MotorDrive::driveSomewhere() {
 	};
 	// TODO: determine a distance to drive before stopping again if we need more cans from the
 	// ... same color shelf but have exhausted the last row
+	// ... (apparently about 1000 units of revolution)
 	AsyncHandler.addCallback(driveLoop, 100);
 }
 

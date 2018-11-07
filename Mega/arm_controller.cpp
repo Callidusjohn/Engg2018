@@ -162,7 +162,7 @@ int CanIntake::ArmController::checkCount() {
 }
 
 void impl_init() {
-	MagnetArm::sensor.setQuantities();
+	MagnetArm::sensor.init();
 }
 
 void impl_reset() {
